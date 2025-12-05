@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Allow access to local network for live streaming.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for live streaming.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is required for live streaming.</string>
 </dict>
 </plist>
