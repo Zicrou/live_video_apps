@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-              child: const Text("Watch Live (Viewer)"),
+              child: const Text("Watch Live (Viewers)"),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => ViewerPage()),
