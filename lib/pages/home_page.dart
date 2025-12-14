@@ -1,5 +1,8 @@
 // /lib/pages/home_page.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:live_video_apps/app/modules/login/login_screen.dart';
+import 'package:live_video_apps/pages/signup_screen.dart';
 import 'host_page.dart';
 import 'viewer_page.dart';
 
@@ -14,17 +17,12 @@ class HomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               child: const Text("Start Live (Host)"),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => HostPage()),
-              ),
+              onPressed: () => Get.to(HostPage()),
             ),
             ElevatedButton(
               child: const Text("Watch Live (Viewers)"),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => ViewerPage()),
-              ),
+              onPressed: () =>
+                  () => Get.to(ViewerPage()),
             ),
           ],
         ),

@@ -1,7 +1,12 @@
 // /lib/pages/host_page.dart
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:get/get.dart';
+import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:logger/web.dart';
 import '../services/api.dart';
+
+Logger logger = Logger();
 
 class HostPage extends StatefulWidget {
   @override
@@ -11,21 +16,37 @@ class HostPage extends StatefulWidget {
 class _HostPageState extends State<HostPage> {
   late RtcEngine _engine;
   bool _initialized = false;
+  // late String token;
+  ApiService apiService = ApiService();
 
   @override
   void initState() {
     super.initState();
-    startLive();
+    storeLive();
+  }
+
+  Future<void> storeLive() async {
+    logger.i("Storing live for host ...");
+    var response = await apiService.fetchListLives(
+      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
+    );
+    logger.i("Response Store Live: $response");
+    // AuthController authController = Get.find<AuthController>();
+    // token = await ApiService.getHostToken(
+    //   "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
+    // ); // UserToken
   }
 
   Future<void> startLive() async {
-    final token =
-        "007eJxTYLhWIlzD9KCmYM96Nx/75OO3mW//mf4zW69PyNunr2mjwSYFBkMD80RLQ3MTQ6O0RBPLRHNLIwsTS1MjI0sT0+SkFHMjCxujzIZARob2hWGMjAwQCOLzMGTkF5fEJ2ck5uWl5jAwAAATySEY"; //await ApiService.getHostToken("host_channel");
+    final token = await ApiService.getHostToken("UserToken");
+    //"007eJxTYIj0iv3QXsbwrer7022X9Gas/TdTzGPJFlUf3wpm928MX1MUGAwNzBMtDc1NDI3SEk0sE80tjSxMLE2NjCxNTJOTUsyNtm03zWwIZGRQSclgZWSAQBCfhyEjv7gkPjkjMS8vNYeBAQBnFyIV"; //
 
     _engine = createAgoraRtcEngine();
-    await _engine.initialize(
-      const RtcEngineContext(appId: "107a917412fa49a792849522945cbd72"),
-    );
+    await _engine.initialize(RtcEngineContext(appId: ApiService.appId));
+
+    // await _engine.initialize(
+    //   const RtcEngineContext(appId: "107a917412fa49a792849522945cbd72"),
+    // );
 
     await _engine.enableVideo();
     await _engine.startPreview();
