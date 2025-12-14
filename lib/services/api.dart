@@ -7,7 +7,7 @@ import 'package:logger/web.dart';
 Logger logger = Logger();
 
 class ApiService {
-  static String baseUrl = "http://192.168.1.4:8000/api/V1";
+  static String baseUrl = "http://192.168.1.4:8000/api/V1/";
   static String appId = "107a917412fa49a792849522945cbd72";
   static final Dio _dio = Dio();
 
@@ -50,6 +50,12 @@ class ApiService {
           },
         ),
       );
+      logger.i("Response Fetch Lives: ${response}");
+      logger.i("Response.statusCode Fetch Lives: ${response.statusCode}");
+
+      // Future.delayed(Duration(seconds: 2), () async {
+      //   await fetchListLives(userToken);
+      // });
     } catch (e) {
       throw Exception("Error Store Live: ${e.toString()}");
     } // UserToken

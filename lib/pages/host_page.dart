@@ -25,9 +25,17 @@ class _HostPageState extends State<HostPage> {
     storeLive();
   }
 
-  Future<void> storeLive() async {
+  Future<void> fetchLives() async {
     logger.i("Storing live for host ...");
     var response = await apiService.fetchListLives(
+      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
+    );
+    logger.i("Response Store Live: $response");
+  }
+
+  Future<void> storeLive() async {
+    logger.i("Storing live for host ...");
+    var response = await apiService.storeLive(
       "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
     );
     logger.i("Response Store Live: $response");
@@ -38,7 +46,9 @@ class _HostPageState extends State<HostPage> {
   }
 
   Future<void> startLive() async {
-    final token = await ApiService.getHostToken("UserToken");
+    final token = await ApiService.getHostToken(
+      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
+    );
     //"007eJxTYIj0iv3QXsbwrer7022X9Gas/TdTzGPJFlUf3wpm928MX1MUGAwNzBMtDc1NDI3SEk0sE80tjSxMLE2NjCxNTJOTUsyNtm03zWwIZGRQSclgZWSAQBCfhyEjv7gkPjkjMS8vNYeBAQBnFyIV"; //
 
     _engine = createAgoraRtcEngine();
