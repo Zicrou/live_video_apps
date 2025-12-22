@@ -1,5 +1,6 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:live_video_apps/app/core/values/storage_keys.dart';
+import 'package:live_video_apps/app/data/models/live.dart';
 
 class StorageProvider {
   final appStorage = GetStorage();
@@ -31,5 +32,21 @@ class StorageProvider {
 
   set seenOnBoarding(bool? value) {
     appStorage.write(seenOnBoardingKey, value);
+  }
+
+  Live? get currentLive {
+    var data = appStorage.read(currentLiveKeyToken);
+    if (data != null) {
+      return Live.fromJson(data);
+    }
+    return null;
+  }
+
+  set currentLive(Live? value) {
+    if (value != null) {
+      appStorage.write(currentLiveKeyToken, value.toJson());
+    } else {
+      appStorage.remove(currentLiveKeyToken);
+    }
   }
 }

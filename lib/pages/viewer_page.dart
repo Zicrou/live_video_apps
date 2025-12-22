@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import '../services/api.dart';
+import 'package:live_video_apps/services/api_services.dart';
 
 class ViewerPage extends StatefulWidget {
+  const ViewerPage({super.key});
+
   @override
   State<ViewerPage> createState() => _ViewerPageState();
 }
 
 class _ViewerPageState extends State<ViewerPage> {
   late RtcEngine _engine;
-  int? _remoteUid;
+  int? _remoteUid = 3;
   bool _initialized = false;
-
+  ApiServices apiService = ApiServices();
   @override
   void initState() {
     super.initState();
@@ -19,13 +21,18 @@ class _ViewerPageState extends State<ViewerPage> {
   }
 
   Future<void> joinLive() async {
-    final token = await ApiService.getViewerToken("host_channel");
+    final token =
+        "006107a917412fa49a792849522945cbd72IACcnD1/0E69OlIS2xfKJMOn6IQurVThYTJO/+9samlIiWC2BVSbjtJtEADmLC2R1etJaQEAAQBlqEhp"; //await ApiServices.getViewerToken("host_channel");
+    // apiService.fetchListLives(
+    //   "7|58d40KeniQkF5pdogfdysaQPWQkksqVhINR5BHww7c311947",
+    // );
 
     _engine = createAgoraRtcEngine();
-    await _engine.initialize(RtcEngineContext(appId: ApiService.appId));
+    await _engine.initialize(RtcEngineContext(appId: ApiServices.appId));
+    logger.i("AGORA APP ID: ${ApiServices.appId}");
 
     await _engine.enableVideo();
-
+    logger.i("enabling video called");
     _engine.registerEventHandler(
       RtcEngineEventHandler(
         onUserJoined: (RtcConnection connection, int uid, int elapsed) {
@@ -33,14 +40,14 @@ class _ViewerPageState extends State<ViewerPage> {
         },
         onUserOffline:
             (RtcConnection connection, int uid, UserOfflineReasonType reason) {
-              setState(() => _remoteUid = null);
+              setState(() => _remoteUid = uid);
             },
       ),
     );
-
+    logger.i("Joining video called");
     await _engine.joinChannel(
       token: token,
-      channelId: "host_channel",
+      channelId: "live_eTP6Q2Ogz0",
       uid: 0,
       options: const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleAudience,
@@ -62,7 +69,7 @@ class _ViewerPageState extends State<ViewerPage> {
             controller: VideoViewController.remote(
               rtcEngine: _engine,
               canvas: VideoCanvas(uid: _remoteUid),
-              connection: const RtcConnection(channelId: "host_channel"),
+              connection: const RtcConnection(channelId: "live_eTP6Q2Ogz0"),
             ),
           ),
         ],

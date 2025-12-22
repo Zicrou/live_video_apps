@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/lives/livesController.dart';
+import 'package:live_video_apps/services/api_services.dart';
 import 'package:logger/web.dart';
-import '../services/api.dart';
 
 Logger logger = Logger();
 
@@ -17,46 +18,45 @@ class _HostPageState extends State<HostPage> {
   late RtcEngine _engine;
   bool _initialized = false;
   // late String token;
-  ApiService apiService = ApiService();
+  ApiServices apiService = ApiServices();
+  final userToken = "6|nLXfQ2leXiMRuzYGRdp7ijIHziAr2SD2s1aB9hQc9d5e613e";
+  // Livescontroller livescontroller = Get.put(Livescontroller());
 
   @override
   void initState() {
     super.initState();
-    storeLive();
+    startLives();
   }
 
   Future<void> fetchLives() async {
     logger.i("Storing live for host ...");
-    var response = await apiService.fetchListLives(
-      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
-    );
+    var response = await apiService.fetchListLives(userToken);
     logger.i("Response Store Live: $response");
   }
 
-  Future<void> storeLive() async {
+  Future<void> storeLives() async {
     logger.i("Storing live for host ...");
-    var response = await apiService.storeLive(
-      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
-    );
+    var response = await apiService.storeLives(userToken);
     logger.i("Response Store Live: $response");
     // AuthController authController = Get.find<AuthController>();
     // token = await ApiService.getHostToken(
-    //   "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
+    //   ,
     // ); // UserToken
   }
 
-  Future<void> startLive() async {
-    final token = await ApiService.getHostToken(
-      "4|xB1f3IkRGBSk4grNYsgKfdXNDBeyz8AWAiFHZoGJ7b761875",
-    );
-    //"007eJxTYIj0iv3QXsbwrer7022X9Gas/TdTzGPJFlUf3wpm928MX1MUGAwNzBMtDc1NDI3SEk0sE80tjSxMLE2NjCxNTJOTUsyNtm03zWwIZGRQSclgZWSAQBCfhyEjv7gkPjkjMS8vNYeBAQBnFyIV"; //
+  Future<void> getLive() async {
+    logger.i("Storing live for host ...");
+    var response = await apiService.getLive(userToken);
+    logger.i("Response Store Live: $response");
+  }
 
+  Future<void> startLives() async {
+    final startLive = await apiService.startLives(userToken);
+    var liveStarted = startLive.data;
+    final token = liveStarted['liveToken'];
+    logger.i("TOKEN FROM START LIVE: $token");
     _engine = createAgoraRtcEngine();
-    await _engine.initialize(RtcEngineContext(appId: ApiService.appId));
-
-    // await _engine.initialize(
-    //   const RtcEngineContext(appId: "107a917412fa49a792849522945cbd72"),
-    // );
+    await _engine.initialize(RtcEngineContext(appId: ApiServices.appId));
 
     await _engine.enableVideo();
     await _engine.startPreview();
@@ -67,7 +67,7 @@ class _HostPageState extends State<HostPage> {
 
     await _engine.joinChannel(
       token: token,
-      channelId: "host_channel",
+      channelId: "${liveStarted['channel_name']}",
       uid: 0,
       options: const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -75,6 +75,11 @@ class _HostPageState extends State<HostPage> {
     );
 
     setState(() => _initialized = true);
+  }
+
+  Future<void> stopLives() async {
+    final startLive = await apiService.stopLives(userToken);
+    return;
   }
 
   @override
@@ -101,6 +106,7 @@ class _HostPageState extends State<HostPage> {
                   child: const Icon(Icons.call_end),
                   onPressed: () async {
                     await _engine.leaveChannel();
+                    await stopLives();
                     Navigator.pop(context);
                   },
                 ),
