@@ -22,7 +22,7 @@ class LivesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchLives();
+    startLive();
   }
 
   Future<void> fetchLives() async {
@@ -48,7 +48,7 @@ class LivesController extends GetxController {
 
   Future<void> startLive() async {
     logger.i("Starting live for host ...");
-    final token = await apiService.startLives(userToken);
+    final live = await apiService.startLives(userToken);
     //"007eJxTYIj0iv3QXsbwrer7022X9Gas/TdTzGPJFlUf3wpm928MX1MUGAwNzBMtDc1NDI3SEk0sE80tjSxMLE2NjCxNTJOTUsyNtm03zWwIZGRQSclgZWSAQBCfhyEjv7gkPjkjMS8vNYeBAQBnFyIV"; //
 
     _engine = createAgoraRtcEngine();
@@ -66,8 +66,8 @@ class LivesController extends GetxController {
     );
 
     await _engine.joinChannel(
-      token: token,
-      channelId: "host_channel",
+      token: live.data['liveToken'],
+      channelId: live.data['channel_name'],
       uid: 0,
       options: const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleBroadcaster,

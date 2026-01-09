@@ -1,4 +1,6 @@
 // /lib/pages/host_page.dart
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:get/get.dart';
@@ -51,10 +53,15 @@ class _HostPageState extends State<HostPage> {
   }
 
   Future<void> startLives() async {
-    final startLive = await apiService.startLives(userToken);
-    var liveStarted = startLive.data;
-    final token = liveStarted['liveToken'];
-    logger.i("TOKEN FROM START LIVE: $token");
+    // final data =
+    //     await ApiServices.getHostToken("test_channel") as Map<String, dynamic>;
+    var channelName = "test_channel"; // data['channel'];
+    var token =
+        "007eJxTYJh+/qrtM8VfTOdm3eIVyLj+830f5zP3yuWVR5fwOz0wmHZAgcHQwDzR0tDcxNAoLdHEMtHc0sjCxNLUyMjSxDQ5KcXc6EN6QiZDWULmkautrIwMjAwsQAwCTGCSGUyygEkehpLU4pL45IzEvLzUHEYGAwBImyRg"; //"007eJxTYHgmdnJfvuvXK+91Hklu44wMuNVeYR44x2tHXcLG/1EGy6UUGAwNzBMtDc1NDI3SEk0sE80tjSxMLE2NjCxNTJOTUsyNSp2CMxsCGRlSSyYzMjJAIIjPwZCTWZYab2hkzMAAANecH6Y=";
+    // var liveStarted = startLive.data;
+    logger.i("TOKEN FROM START LIVE: token: $token, channel: $channelName");
+
+    // logger.i("ChannelName FROM START LIVE: ${liveStarted['channel_name']}");
     _engine = createAgoraRtcEngine();
     await _engine.initialize(RtcEngineContext(appId: ApiServices.appId));
 
@@ -67,7 +74,7 @@ class _HostPageState extends State<HostPage> {
 
     await _engine.joinChannel(
       token: token,
-      channelId: "${liveStarted['channel_name']}",
+      channelId: channelName,
       uid: 0,
       options: const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -75,6 +82,24 @@ class _HostPageState extends State<HostPage> {
     );
 
     setState(() => _initialized = true);
+
+    await _engine.initialize(RtcEngineContext(appId: ApiServices.appId));
+
+    await _engine.enableVideo();
+
+    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+
+    await _engine.startPreview();
+
+    // await _engine.joinChannel(
+    //   token: token,
+    //   channelId: channelName,
+    //   uid: 0,
+    //   options: const ChannelMediaOptions(
+    //     publishCameraTrack: true,
+    //     publishMicrophoneTrack: true,
+    //   ),
+    // );
   }
 
   Future<void> stopLives() async {
