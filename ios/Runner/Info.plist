@@ -51,5 +51,9 @@
 	<string>Camera access is required for live streaming.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access is required for live streaming.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your videos</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>

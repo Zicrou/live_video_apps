@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/pages/signup_screen.dart';
+import 'package:live_video_apps/pages/upload_videos_page.dart';
 import 'package:logger/logger.dart';
 import 'host_page.dart';
 import 'viewer_page.dart';
@@ -30,6 +31,15 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 logger.i("Navigating to Viewer Page...");
                 Get.to(ViewerPage());
+                // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
+              },
+              // () => Get.to(ViewerPage()),
+            ),
+            ElevatedButton(
+              child: const Text("Uplload Videos"),
+              onPressed: () {
+                logger.i("Navigating to Upload Videos Page...");
+                Get.to(UploadVideosPage());
                 // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
               },
               // () => Get.to(ViewerPage()),
