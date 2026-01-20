@@ -106,16 +106,16 @@ class AuthRepositories {
     }
   }
 
-  Future createVente(Map<String, dynamic> json) async {
-    try {
-      logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(createVenteEndpoint, json);
-      logger.w('AuthRepositories: Create Vente response: $res');
-      return res;
-    } on BadRequestException {
-      rethrow;
-    }
-  }
+  // Future createVente(Map<String, dynamic> json) async {
+  //   try {
+  //     logger.i("Json from Repositories: ${json}");
+  //     final res = await _apiProvider.post(createVenteEndpoint, json);
+  //     logger.w('AuthRepositories: Create Vente response: $res');
+  //     return res;
+  //   } on BadRequestException {
+  //     rethrow;
+  //   }
+  // }
 
   // Future<List<dynamic>> fetchVentes() async {
   //   try {

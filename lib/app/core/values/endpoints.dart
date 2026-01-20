@@ -1,9 +1,15 @@
-const baseUrl = 'http://10.0.2.2:8000/api/V1';
+const baseUrl = 'http://192.168.1.8:8000/api/V1';
 
 const loginEndpoint = '$baseUrl/login';
 const registerEndPoint = '$baseUrl/register';
 const signOutEndpoint = '$baseUrl/logout';
-const createVenteEndpoint = '$baseUrl/ventes/';
+const uploadVideosEndpoint = '$baseUrl/upload-video';
+const fetchVideosEndpoint = '$baseUrl/videos';
+
+const listLivesEndpoint = '$baseUrl/lives';
+const storeLiveEndpoint = '$baseUrl/lives';
+const startLiveEndpoint = '$baseUrl/lives/start';
+
 const venteListEndpoint = '$baseUrl/ventes/';
 const depensesListEndpoint = '$baseUrl/depenses/';
 const createDepenses = '$baseUrl/depenses/';

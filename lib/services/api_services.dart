@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:live_video_apps/app/core/values/endpoints.dart';
+import 'package:live_video_apps/app/data/models/feeds.dart';
 import 'package:live_video_apps/app/data/models/live.dart';
+import 'package:live_video_apps/app/data/providers/api_providers.dart';
 import 'package:logger/web.dart';
 
 Logger logger = Logger();
@@ -12,6 +15,22 @@ class ApiServices {
   static String baseUrl = "http://192.168.1.7:8000/api/V1";
   static String appId = "107a917412fa49a792849522945cbd72";
   static final Dio _dio = Dio();
+
+  final ApiProvider apiProvider = Get.find<ApiProvider>();
+
+  Future<dynamic> uploadVideos(String video) async {
+    try {
+      var res = await apiProvider.postFormData(uploadVideosEndpoint, {
+        "video": video,
+      });
+      logger.i("Upload Video Response: ${res}");
+      logger.i("Upload Video Response Data: ${res.data}");
+      return res;
+    } catch (e) {
+      print("Error fetching token: $e");
+      return null;
+    }
+  }
 
   Future<dynamic> fetchListLives(String userToken) async {
     // AuthController authController = Get.find<AuthController>();
@@ -226,5 +245,40 @@ class ApiServices {
     // var token = jsonDecode(res.body)["token"];
     // logger.i("Token from getViewerToken: $token");
     // return jsonDecode(res.body)["token"];
+  }
+
+  // Other API methods can be added here
+  static String baseUrlFeed = "http://192.168.1.3:8000/api/V1";
+
+  static Future<List<FeedItem>> fetchFeed(String userToken) async {
+    try {
+      final res = await Dio().get(
+        "$baseUrlFeed/feed",
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $userToken',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      final data = res.data as List;
+      return data.map((json) => FeedItem.fromJson(json)).toList();
+    } catch (e) {
+      print("Error fetching feed: $e");
+      return [];
+    }
+  }
+
+  static Future<String?> getToken(String channelName, String role) async {
+    try {
+      final res = await Dio().post(
+        "$baseUrlFeed/live/token",
+        data: {"channel_name": channelName, "role": role},
+      );
+      return res.data['token'];
+    } catch (e) {
+      print("Error fetching token: $e");
+      return null;
+    }
   }
 }
