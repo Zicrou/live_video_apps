@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
-import 'package:live_video_apps/pages/signup_screen.dart';
+import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
 import 'package:live_video_apps/pages/upload_videos_page.dart';
 import 'package:logger/logger.dart';
 import 'host_page.dart';
@@ -23,8 +23,9 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              child: const Text("Start Live (Host)"),
-              onPressed: () => Get.to(HostPage()),
+              child: const Text("Login"),
+              onPressed: () => Get.to(LoginScreen()),
+              // onPressed: () => Get.to(HostPage()),
             ),
             ElevatedButton(
               child: const Text("Watch Live (Viewers)"),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
-import 'package:live_video_apps/pages/signup_screen.dart';
+import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();

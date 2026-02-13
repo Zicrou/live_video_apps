@@ -1,7 +1,11 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:live_video_apps/app/core/interceptors/api_interceptors.dart';
 import 'package:live_video_apps/app/core/values/endpoints.dart';
+import 'package:live_video_apps/app/data/models/videoActionState.dart';
+import 'package:live_video_apps/app/modules/videos/videos/video_actions_controller.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -17,10 +21,13 @@ class UploadVideosPage extends StatefulWidget {
 }
 
 class _UploadVideosPageState extends State<UploadVideosPage> {
+  final _actionsController = Get.find<VideoActionsController>();
   final List<VideoPlayerController> _controllers = [];
   final List<String> _videoPaths = []; // Local picked videos or network URLs
+  final RxList<VideoActionsState> _videos = <VideoActionsState>[].obs;
   final ImagePicker _picker = ImagePicker();
   final baseUrl = 'http://192.168.1.8:8000/api/V1';
+  // late VideoActionsState videoState;
 
   @override
   void dispose() {
@@ -48,19 +55,34 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
   }
 
   // Example network videos
-  void addSampleNetworkVideos() {
-    final urls = [
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    ];
-    for (var url in urls) {
-      final controller = VideoPlayerController.networkUrl(Uri.parse(url));
-      controller.initialize().then((_) {
+  Future<void> addSampleNetworkVideos() async {
+    logger.i(
+      'Fetched video from API: ${_actionsController.videosList.length} videos',
+    );
+    final urls = _actionsController.videosList.value.obs;
+    for (var video in urls) {
+      logger.i(
+        'Fetched video from API: ${video.url}, id: ${video.id}, isLiked: ${video.isLiked}, likeCount: ${video.likeCount}',
+      );
+    }
+
+    // final urls = [
+    //   'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    //   'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    // ];
+
+    var listVideos = await _actionsController.videosList;
+    for (var video in listVideos) {
+      final controller = VideoPlayerController.networkUrl(
+        Uri.parse(video.url.value),
+      );
+      await controller.initialize().then((_) {
         controller.setLooping(true);
         setState(() {});
       });
       _controllers.add(controller);
-      _videoPaths.add(url);
+      _videoPaths.add(video.url.value);
+      _videos.add(video);
     }
   }
 
@@ -87,7 +109,7 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_box, size: 32),
-            label: '',
+            label: 'Ajouter',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.inbox), label: 'Inbox'),
         ],
@@ -195,33 +217,134 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                 Positioned(
                   right: 12,
                   bottom: 120,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _ActionButton(
-                        icon: Icons.favorite,
-                        label: '1.2K',
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 16),
-                      _ActionButton(
-                        icon: Icons.comment,
-                        label: '321',
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 16),
-                      _ActionButton(
-                        icon: Icons.bookmark,
-                        label: 'Save',
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 16),
-                      _ActionButton(
-                        icon: Icons.share,
-                        label: 'Share',
-                        onTap: () {},
-                      ),
-                    ],
+                  child: Builder(
+                    builder: (context) {
+                      _actionsController.fetchVideos();
+                      // _videos[index]
+                      //     .id, // Should use video ID instead of hardcoded '1'
+                      // ); // Initialize state for this video ID
+
+                      return Obx(() {
+                        // final state = actionsController.videoStates[videoId]!;
+
+                        final state =
+                            _videos[index]; // Should use video ID instead of hardcoded '1'
+                        if (state == null) {
+                          logger.w(
+                            "No state found for video at index $index, id: ${_actionsController.videosList[index].id}",
+                          );
+                          return const SizedBox.shrink();
+                        }
+                        // actionsController
+                        //     .videoStates[index]; // Should use video ID instead of hardcoded '1'
+                        // _videoPaths[index];
+
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // ❤️ LIKE
+                            IconButton(
+                              icon: Icon(
+                                Icons.favorite,
+                                color: state.isLiked.value
+                                    ? Colors.red
+                                    : Colors.white,
+
+                                size: 32,
+                              ),
+                              onPressed: () {
+                                logger.i(
+                                  "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
+                                );
+
+                                // logger.i(
+                                //   "Toggled like for video $index, new state: ${state.isLiked}",
+                                // );
+                                _actionsController.toggleLike(state);
+                                logger.i(
+                                  "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
+                                );
+                                if (state.isLiked.value) {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now liked. Like count: ${state.likeCount.value}",
+                                  );
+                                  // Icon(
+                                  //   Icons.favorite,
+                                  //   color: Colors.red,
+                                  //   size: 32,
+                                  // );
+                                } else {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now unliked. Like count: ${state.likeCount.value}",
+                                  );
+                                  // Icon(
+                                  //   Icons.favorite,
+                                  //   color: Colors.white,
+                                  //   size: 32,
+                                  // );
+                                }
+                              },
+                            ),
+                            Text(
+                              '${state.likeCount.value}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // 💬 COMMENT
+                            IconButton(
+                              icon: const Icon(
+                                Icons.comment,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                // TODO: open comments bottom sheet
+                              },
+                            ),
+                            Text(
+                              '${state.commentCount}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // 💾 SAVE
+                            IconButton(
+                              icon: Icon(
+                                Icons.bookmark,
+                                color: //state.isSaved.value
+                                    // ? Colors.yellow
+                                    Colors.white,
+                                size: 30,
+                              ),
+                              onPressed: () =>
+                                  _actionsController.toggleSave(state.id.value),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // 🔗 SHARE
+                            IconButton(
+                              icon: const Icon(
+                                Icons.share,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                              onPressed: () =>
+                                  _actionsController.shareVideo(state.id.value),
+                            ),
+                          ],
+                        );
+                      });
+                    },
                   ),
                 ),
 

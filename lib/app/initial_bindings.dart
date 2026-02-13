@@ -6,6 +6,8 @@ import 'package:live_video_apps/app/data/repositories/auth_repositories.dart';
 import 'package:live_video_apps/app/data/services/auth_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/login/login_controller.dart';
+import 'package:live_video_apps/app/modules/signup/Signup_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos/video_actions_controller.dart';
 
 class AppInitialBindings extends Bindings {
   @override
@@ -19,6 +21,8 @@ class AppInitialBindings extends Bindings {
     // Get.put(RemoteServices());
     // safe to find dependencies
     Get.lazyPut(() => LoginController());
+    Get.lazyPut(() => SignupController());
     Get.lazyPut(() => AuthController());
+    Get.lazyPut(() => VideoActionsController());
   }
 }
