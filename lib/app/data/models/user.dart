@@ -1,17 +1,18 @@
 class User {
-  int? id;
+  String? id;
   String? name;
   String? phoneNumber;
+  String? email;
   String? deletedAt;
   String? createdAt;
   String? updatedAt;
-  int? team_id;
+  // int? team_id;
 
   User({
     this.id,
     this.name,
     this.phoneNumber,
-    this.team_id,
+    // this.team_id,
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
@@ -21,7 +22,7 @@ class User {
     id = json['id'];
     name = json['name'];
     phoneNumber = json['phone_number'];
-    team_id = json['team_id'];
+    // team_id = json['team_id'];
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -29,17 +30,18 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['phone_number'] = this.phoneNumber;
-    data['deleted_at'] = this.deletedAt;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['deleted_at'] = deletedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 
   @override
   String toString() {
-    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, Team id: ${team_id}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
+    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, Email: ${email}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
   }
 }

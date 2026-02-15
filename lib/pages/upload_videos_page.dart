@@ -256,10 +256,6 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                                 logger.i(
                                   "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
                                 );
-
-                                // logger.i(
-                                //   "Toggled like for video $index, new state: ${state.isLiked}",
-                                // );
                                 _actionsController.toggleLike(state);
                                 logger.i(
                                   "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
@@ -268,20 +264,10 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                                   logger.i(
                                     "Video at index ${state.id.value} is now liked. Like count: ${state.likeCount.value}",
                                   );
-                                  // Icon(
-                                  //   Icons.favorite,
-                                  //   color: Colors.red,
-                                  //   size: 32,
-                                  // );
                                 } else {
                                   logger.i(
                                     "Video at index ${state.id.value} is now unliked. Like count: ${state.likeCount.value}",
                                   );
-                                  // Icon(
-                                  //   Icons.favorite,
-                                  //   color: Colors.white,
-                                  //   size: 32,
-                                  // );
                                 }
                               },
                             ),
@@ -303,7 +289,22 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                                 size: 30,
                               ),
                               onPressed: () {
-                                // TODO: open comments bottom sheet
+                                logger.i(
+                                  "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
+                                );
+                                _actionsController.toggleLike(state);
+                                logger.i(
+                                  "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
+                                );
+                                if (state.isLiked.value) {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now liked. Like count: ${state.likeCount.value}",
+                                  );
+                                } else {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now unliked. Like count: ${state.likeCount.value}",
+                                  );
+                                }
                               },
                             ),
                             Text(
@@ -325,8 +326,22 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                                     Colors.white,
                                 size: 30,
                               ),
-                              onPressed: () =>
-                                  _actionsController.toggleSave(state.id.value),
+                              onPressed: () {
+                                _actionsController.toggleSave(state);
+
+                                logger.i(
+                                  "After toggling save for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isSaved.value}",
+                                );
+                                if (state.isSaved.value) {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now saved.",
+                                  );
+                                } else {
+                                  logger.i(
+                                    "Video at index ${state.id.value} is now unsaved.",
+                                  );
+                                }
+                              },
                             ),
 
                             const SizedBox(height: 16),

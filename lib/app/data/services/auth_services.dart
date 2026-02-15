@@ -28,26 +28,27 @@ class AuthServices extends GetxService {
   //   }
   // }
 
-  Future<UserInfo> login(String phone, String password) async {
+  Future<UserInfo> login(String email, String password) async {
     logger.w("AuthReppositories: ${_authRepositories}");
 
     logger.i(
-      'AuthService: Logging in with phone: $phone and password: $password',
+      'AuthService: Logging in with email: $email and password: $password',
     );
-    return await _authRepositories.login(phone, password);
+    return await _authRepositories.login(email, password);
   }
 
   Future<UserRegister> signin(
     String name,
     String phone,
     String password,
+    String email,
   ) async {
     logger.w("AuthReppositories: ${_authRepositories}");
 
     logger.i(
-      'AuthService: Signing in with name: ${name}, phone: $phone and password: $password',
+      'AuthService: Signing in with name: ${name}, phone: $phone, email: $email and password: $password',
     );
-    return await _authRepositories.signin(name, phone, password);
+    return await _authRepositories.signin(name, phone, password, email);
   }
 
   Future<dynamic> signout() async {

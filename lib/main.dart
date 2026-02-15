@@ -17,7 +17,7 @@ class LiveApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: AppInitialBindings(),
-      home: HomePage(),
+      home: LoginScreen(),
     );
   }
 }

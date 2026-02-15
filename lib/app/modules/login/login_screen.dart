@@ -38,19 +38,19 @@ class LoginScreen extends GetView<AuthController> {
                       }
                       return null;
                     },
-                    controller: controller.phoneNumberController,
+                    controller: controller.emailController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.email,
                         color: Color.fromARGB(255, 10, 151, 217),
                       ),
-                      labelText: "Numéro de téléphone",
+                      labelText: "Email ou numéro de téléphone",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
-                      errorText: controller.isPhoneNumberValid.value
+                      errorText: controller.isEmailValid.value
                           ? null
-                          : "Numéro de téléphone invalide",
+                          : "Email ou numéro de téléphone invalide",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -111,10 +111,6 @@ class LoginScreen extends GetView<AuthController> {
                         )
                       : ElevatedButton(
                           onPressed: () => controller.login(),
-                          child: Text(
-                            "Se connecter",
-                            style: TextStyle(fontSize: 18),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 0, 173, 253),
                             foregroundColor: Colors.white,
@@ -122,6 +118,10 @@ class LoginScreen extends GetView<AuthController> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
+                          ),
+                          child: Text(
+                            "Se connecter",
+                            style: TextStyle(fontSize: 18),
                           ),
                         ),
                 ),

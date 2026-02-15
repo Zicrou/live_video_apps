@@ -46,7 +46,7 @@ class VideoActionsController extends GetxController {
   Future<void> fetchVideos() async {
     isLoading(true);
     try {
-      // var ventes = await RemoteServices.fetchVentes();
+      // var videos = await RemoteServices.fetchVentes();
       final Map<String, dynamic> listVideos = {
         "videos": [
           {
@@ -87,7 +87,7 @@ class VideoActionsController extends GetxController {
   }
 
   // ❤️ LIKE
-  Future<void> toggleLike(videofromScreen) async {
+  Future<void> toggleLike(VideoActionsState videofromScreen) async {
     logger.i(
       "Toggling like for video ${videofromScreen.id}, ${videofromScreen.url}, current video: ${videofromScreen.isLiked}",
     );
@@ -114,11 +114,7 @@ class VideoActionsController extends GetxController {
         );
       }
     }
-    for (var video in videosList) {
-      logger.i(
-        "Controller Video in list after toggle: ${video.id}, ${video.url}, isLiked: ${video.isLiked}",
-      );
-    }
+
     // await fetchVideos();
 
     // try {
@@ -132,18 +128,18 @@ class VideoActionsController extends GetxController {
   }
 
   // 💾 SAVE
-  Future<void> toggleSave(int videoId) async {
-    // final state = videoStates[videoId]!;
-
+  Future<void> toggleSave(videofromScreen) async {
+    final state = videofromScreen;
+    
     // state.isSaved.value = !state.isSaved.value;
     // videoStates.refresh();
 
-    try {
-      await dio.post('/videos/$videoId/save');
-    } catch (e) {
-      // state.isSaved.value = !state.isSaved.value;
-      // videoStates.refresh();
-    }
+    // try {
+    //   await dio.post('/videos/$videoId/save');
+    // } catch (e) {
+    //   // state.isSaved.value = !state.isSaved.value;
+    //   // videoStates.refresh();
+    // }
   }
 
   // 💬 COMMENT

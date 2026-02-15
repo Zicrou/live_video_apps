@@ -28,11 +28,10 @@ class HomePage extends StatelessWidget {
               // onPressed: () => Get.to(HostPage()),
             ),
             ElevatedButton(
-              child: const Text("Watch Live (Viewers)"),
+              child: const Text("Sign Up"),
               onPressed: () {
-                logger.i("Navigating to Viewer Page...");
-                Get.to(ViewerPage());
-                // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
+                logger.i("Navigating to Sign Up Page...");
+                Get.to(SignupScreen());
               },
               // () => Get.to(ViewerPage()),
             ),

@@ -26,113 +26,144 @@ class SignupScreen extends GetView<AuthController> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-                Obx(
-                  () => TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Svp veuillez remplir le champs";
-                      }
-                      return null;
-                    },
-                    controller: controller.nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      labelText: "Nom & Prénom",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      errorText: controller.isNameValid.value
-                          ? null
-                          : "Nom et Prénom invalide",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Svp veuillez remplir le champs";
+                    }
+                    return null;
+                  },
+                  controller: controller.nameController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    keyboardType: TextInputType.text,
-                    obscureText: false,
+                    labelText: "Nom & Prénom",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    errorText: controller.isNameValid.value
+                        ? null
+                        : "Nom et Prénom invalide",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  keyboardType: TextInputType.text,
+                  obscureText: false,
                 ),
+
                 SizedBox(height: 20),
-                Obx(
-                  () => TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Svp veuillez remplir le champs";
-                      }
-                      return null;
-                    },
-                    controller: controller.phoneNumberController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.phone,
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      labelText: "Numéro de téléphone",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      errorText: controller.isPhoneNumberValid.value
-                          ? null
-                          : "Numéro de téléphone invalide",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Svp veuillez remplir le champs";
+                    }
+                    return null;
+                  },
+                  controller: controller.phoneNumberController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.phone,
+                      color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    keyboardType: TextInputType.phone,
+                    labelText: "Numéro de téléphone",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    errorText: controller.isPhoneNumberValid.value
+                        ? null
+                        : "Numéro de téléphone invalide",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  keyboardType: TextInputType.phone,
                 ),
+
                 SizedBox(height: 20),
-                Obx(
-                  () => TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Svp veuillez remplir le champs";
-                      }
-                      return null;
-                    },
-                    controller: controller.passwordController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.lock,
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      labelText: "Mot de passe",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      errorText: controller.isPasswordValid.value
-                          ? null
-                          : "Mot de passe invalide, saisir au moins 6 caractéres",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Svp veuillez remplir le champs";
+                    }
+                    return null;
+                  },
+                  controller: controller.emailController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    obscureText: true,
+                    labelText: "Adresse email",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    errorText: controller.isEmailValid.value
+                        ? null
+                        : "Adresse email invalide",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  keyboardType: TextInputType.phone,
+                ),
+
+                SizedBox(height: 20),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Svp veuillez remplir le champs";
+                    }
+                    return null;
+                  },
+                  controller: controller.passwordController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    labelText: "Mot de passe",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    errorText: controller.isPasswordValid.value
+                        ? null
+                        : "Mot de passe invalide, saisir au moins 6 caractéres",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  obscureText: true,
                 ),
                 SizedBox(height: 20),
 
@@ -146,10 +177,6 @@ class SignupScreen extends GetView<AuthController> {
                         )
                       : ElevatedButton(
                           onPressed: () => controller.signup(),
-                          child: Text(
-                            "Sign Up",
-                            style: TextStyle(fontSize: 18),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 0, 173, 253),
                             foregroundColor: Colors.white,
@@ -158,10 +185,14 @@ class SignupScreen extends GetView<AuthController> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ),
                 ),
                 TextButton(
-                  onPressed: () => Get.to(LoginScreen()),
+                  onPressed: () => Get.offAll(LoginScreen()),
                   child: Text(
                     "Already have an account ? Sign In",
                     style: TextStyle(

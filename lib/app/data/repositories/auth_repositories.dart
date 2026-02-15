@@ -16,20 +16,21 @@ class AuthRepositories {
   final _authProvider = Get.find<AuthProvider>();
   final _apiProvider = Get.find<ApiProvider>();
 
-  Future<UserInfo> login(String phone, String password) async {
+  Future<UserInfo> login(String email, String password) async {
     try {
       logger.i(
-        'Auth Repositories: login with phone => $phone and password => $password',
+        'Auth Repositories: login with email => $email and password => $password',
       );
       final response = await _apiProvider.postN(
         loginEndpoint,
-        {'phone_number': phone, 'password': password},
-        //options: Options(headers: {'Content-type': 'application/json'}),
+        {"email": email, "password": password},
+        // options: Options(headers: {'Content-type': 'application/json'}),
       );
+      print("Response from Auth Repositories: ${response}");
       if (response == null) {
         return response;
       }
-      // logger.w('Login response: $response');
+      logger.w('Login response: $response');
       // logger.w('Login response data: $response.data');
 
       // var userRegister = UserRegister();
@@ -54,26 +55,28 @@ class AuthRepositories {
     String name,
     String phone,
     String password,
+    String email,
   ) async {
     try {
       logger.i(
-        'Auth Repositories: login with phone => $phone and password => $password',
+        'Auth Repositories: Sign in with phone => $phone and password => $password, name => $name and email => $email',
       );
       final response = await _apiProvider.postN(
         registerEndPoint,
-        {'name': name, 'phone_number': phone, 'password': password},
-        //options: Options(headers: {'Content-type': 'application/json'}),
+        {
+          'name': name,
+          'phone': phone,
+          'password': password,
+          'email': email,
+        },
+        // options: Options(headers: {'Content-type': 'application/json'}),
       );
-      // logger.w('Login response: $response');
-      // logger.w('Login response data: $response.data');
 
-      // var userRegister = UserRegister();
-      // userRegister = UserRegister.fromJson((response));
       var userRegister = UserRegister();
       userRegister = UserRegister.fromJson((response));
 
       if (userRegister.token == null) {
-        throw Exception("Login failed: token is null in response");
+        throw Exception("Registering failed: token is null in response");
       }
       _authProvider.isAuthenticated = true;
       _authProvider.authToken = userRegister.token!;

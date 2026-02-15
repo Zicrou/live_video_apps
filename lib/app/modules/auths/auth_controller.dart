@@ -20,10 +20,12 @@ class AuthController extends GetxController {
   var phoneNumberController = TextEditingController();
   var passwordController = TextEditingController();
   var nameController = TextEditingController();
+  var emailController = TextEditingController();
 
   var isPhoneNumberValid = true.obs;
   var isPasswordValid = true.obs;
   var isNameValid = true.obs;
+  var isEmailValid = true.obs;
 
   void login() async {
     logger.i("LoginFormKey: ${loginFormKey}");
@@ -32,14 +34,14 @@ class AuthController extends GetxController {
       _isLoading.value = true;
       if (loginFormKey.currentState!.validate()) {
         loginFormKey.currentState!.save();
-        String phoneNumber = phoneNumberController.text.trim();
+        String email = emailController.text.trim();
         String password = passwordController.text.trim();
 
         // Call the post Api method to send data
-        var userInfo = await authServices.login(phoneNumber, password);
+        var userInfo = await authServices.login(email, password);
         logger.i("Response Auth Controller: ${userInfo}");
 
-        phoneNumberController.clear();
+        emailController.clear();
         passwordController.clear();
 
         authProvider.user = userInfo;
@@ -60,12 +62,13 @@ class AuthController extends GetxController {
     String phoneNumber = phoneNumberController.text.trim();
     String password = passwordController.text.trim();
     String name = nameController.text.trim();
+    String email = emailController.text.trim();
     try {
       if (signupFormKey.currentState!.validate()) {
         //signupFormKey.currentState!.save();
         logger.i("Signin in signinFormKey : ${signupFormKey}");
         _isLoading.value = true;
-        var userRegistred = authServices.signin(name, phoneNumber, password);
+        var userRegistred = authServices.signin(name, phoneNumber, password, email);
         authProvider.userRegister = await userRegistred;
         Get.offAll(() => LoginScreen());
         goodMessage("Succés: Inscription");
