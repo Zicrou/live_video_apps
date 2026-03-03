@@ -12,7 +12,7 @@ class User {
     this.id,
     this.name,
     this.phoneNumber,
-    // this.team_id,
+    this.email,
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
@@ -21,8 +21,8 @@ class User {
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    phoneNumber = json['phone_number'];
-    // team_id = json['team_id'];
+    phoneNumber = json['phone'];
+    email = json['email'];
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

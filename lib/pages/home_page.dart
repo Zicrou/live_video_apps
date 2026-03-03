@@ -1,10 +1,12 @@
 // /lib/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
-import 'package:live_video_apps/pages/upload_videos_page.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
+import 'package:live_video_apps/pages/upload_videos_screen.dart';
 import 'package:logger/logger.dart';
 import 'host_page.dart';
 import 'viewer_page.dart';
@@ -12,12 +14,51 @@ import 'viewer_page.dart';
 Logger logger = Logger();
 
 class HomePage extends StatelessWidget {
-  // final LivesController controller = Get.put(LivesController());
+  final AuthController controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Live Video App")),
+      appBar: AppBar(
+        title: const Text("Live Video App"),
+        backgroundColor: Color.fromARGB(255, 0, 173, 253),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.red),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Déconnexion"),
+                    content: Text(
+                      "Êtes-vous sûr de vouloir vous déconnecter ?",
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text("Annuler"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Se déconnecter"),
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // Close the dialog
+                          await controller.logout();
+                          Get.to(() => LoginScreen());
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      backgroundColor: Color(0xFFF5F5F5),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +80,7 @@ class HomePage extends StatelessWidget {
               child: const Text("Uplload Videos"),
               onPressed: () {
                 logger.i("Navigating to Upload Videos Page...");
-                Get.to(UploadVideosPage());
+                Get.to(VideosScreen());
                 // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
               },
               // () => Get.to(ViewerPage()),

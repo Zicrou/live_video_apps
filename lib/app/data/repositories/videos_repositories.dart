@@ -3,49 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/core/exceptions/network_exceptions.dart';
 import 'package:live_video_apps/app/core/values/endpoints.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/user_info.dart';
 import 'package:live_video_apps/app/data/models/user_register.dart';
+import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/api_providers.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-class AuthRepositories {
+class VideosRepositories {
   final dio = Dio();
   final _authProvider = Get.find<AuthProvider>();
   final _apiProvider = Get.find<ApiProvider>();
 
-  Future<UserInfo> login(String email, String password) async {
+  Future<dynamic> fetchVideos() async {
     try {
-      logger.i(
-        'Auth Repositories: login with email => $email and password => $password',
-      );
-      final response = await _apiProvider.postN(
-        loginEndpoint,
-        {"email": email, "password": password},
-        // options: Options(headers: {'Content-type': 'application/json'}),
-      );
-      print("Response login from Auth Repositories login : ${response}");
+      final response = await _apiProvider.get(listVideosEndpoint);
+      print("Response Videos from Videos Repositories : ${response}");
       if (response == null) {
         return response;
       }
-      logger.w('Login response: $response');
-      // logger.w('Login response data: $response.data');
+      logger.w(
+        'Fetching Videos response video repositories: ${response['videos']}',
+      );
+      // print("Response.data ${response.data}");
+      // print("Data type 1: ${response.runtimeType}");
+      // print("Data type 2: ${response['videos'].runtimeType}");
+      // print(
+      //   "List videos from repository: ${VideosInfo.fromJson(response)}",
+      // );
 
-      // var userRegister = UserRegister();
-      // userRegister = UserRegister.fromJson((response));
-      var userInfo = UserInfo();
-      userInfo = UserInfo.fromJson((response));
+      // final List list = response['videos'];
 
-      if (userInfo.token == null) {
-        throw Exception("Login failed: token is null in response");
-      }
-      _authProvider.isAuthenticated = true;
-      _authProvider.authToken = userInfo.token!;
-      // logger.i('authToken: ${_authProvider.authToken}');
-      // logger.i("userInfo from Repositories: ${userInfo.toString()}");
-      return userInfo;
+      // RxList<VideosInfo> videos = <VideosInfo>[].obs;
+
+      var res = VideosInfo.fromJson(response);
+      logger.i("Liste des videos ${res}");
+      return res;
     } on BadRequestException {
       rethrow;
     }

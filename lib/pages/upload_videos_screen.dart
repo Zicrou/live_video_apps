@@ -1,41 +1,43 @@
-import 'dart:ffi';
+// import 'dart:ffi';
+// import 'dart:io';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:live_video_apps/app/core/interceptors/api_interceptors.dart';
-import 'package:live_video_apps/app/core/values/endpoints.dart';
+// import 'package:live_video_apps/app/core/interceptors/api_interceptors.dart';
+// import 'package:live_video_apps/app/core/values/endpoints.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
+// import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/modules/videos/videos/video_actions_controller.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 
 Logger logger = Logger();
 
-class UploadVideosPage extends StatefulWidget {
-  const UploadVideosPage({super.key});
-  @override
-  State<UploadVideosPage> createState() => _UploadVideosPageState();
-}
+class UploadVideosScreen extends StatelessWidget {
+  final VideoActionsController _actionsController = Get.put(
+    VideoActionsController(),
+  );
 
-class _UploadVideosPageState extends State<UploadVideosPage> {
-  final _actionsController = Get.find<VideoActionsController>();
   final List<VideoPlayerController> _controllers = [];
   final List<String> _videoPaths = []; // Local picked videos or network URLs
   final RxList<VideoActionsState> _videos = <VideoActionsState>[].obs;
   final ImagePicker _picker = ImagePicker();
   final baseUrl = 'http://192.168.1.8:8000/api/V1';
+
+  // UploadVideosScreen({super.key});
   // late VideoActionsState videoState;
 
-  @override
-  void dispose() {
-    for (var c in _controllers) {
-      c.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // super.dispose();
+  //   for (var c in _controllers) {
+  //     c.dispose();
+  //   }
+  // }
 
   // Pick a video from gallery
   Future<void> pickVideo() async {
@@ -48,52 +50,57 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
     await controller.initialize();
     controller.setLooping(true);
 
-    setState(() {
-      _controllers.add(controller);
-      _videoPaths.add(picked.path);
-    });
+    // setState(() {
+    // _controllers.add(controller);
+    // _videoPaths.add(picked.path);
+    // });
   }
 
-  // Example network videos
-  Future<void> addSampleNetworkVideos() async {
-    logger.i(
-      'Fetched video from API: ${_actionsController.videosList.length} videos',
-    );
-    final urls = _actionsController.videosList.value.obs;
-    for (var video in urls) {
-      logger.i(
-        'Fetched video from API: ${video.url}, id: ${video.id}, isLiked: ${video.isLiked}, likeCount: ${video.likeCount}',
-      );
-    }
+  // // Example network videos
+  // Future<void> addSampleNetworkVideos() async {
+  //   // final urls = _actionsController.videosList.value.obs;
+  //   // var videos = _actionsController.videosList[0].videos;
+  //   // print("Urls: ${urls[0].videos}");
+  //   // print("videos: ${videos}");
 
-    // final urls = [
-    //   'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-    //   'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    // ];
+  //   // for (var video in urls) {
+  //   //   logger.i(
+  //   //     'Fetched video from API: ${video}, id: ${video}, isLiked: ${video}, likeCount: ${video}',
+  //   //   );
+  //   // }
 
-    var listVideos = await _actionsController.videosList;
-    for (var video in listVideos) {
-      final controller = VideoPlayerController.networkUrl(
-        Uri.parse(video.url.value),
-      );
-      await controller.initialize().then((_) {
-        controller.setLooping(true);
-        setState(() {});
-      });
-      _controllers.add(controller);
-      _videoPaths.add(video.url.value);
-      _videos.add(video);
-    }
-  }
+  //   // final urls = [
+  //   //   'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+  //   //   'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+  //   // ];
 
-  @override
-  void initState() {
-    super.initState();
-    addSampleNetworkVideos();
-  }
+    // var listVideos = _actionsController.videosList[0].videos;
+    // if (listVideos!.isEmpty) {
+    //   for (var video in listVideos) {
+    //     final controller = VideoPlayerController.networkUrl(
+    //       Uri.parse(video.videoUrl!), // Add the video url
+    //     );
+    //     await controller.initialize().then((_) {
+    //       controller.setLooping(true);
+    //       setState(() {});
+    //     });
+    //     _controllers.add(controller);
+    //     _videoPaths.add(video.videoUrl!); // Add the video path
+    //     // _videos.add(video.videoUrl!); // Add the videoUrl
+    //   }
+    // }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    if (_actionsController.videosList.isEmpty) {
+      print("VideoList is Empty:");
+    } else {
+      print(
+        "Total des videos: ${(_actionsController.videosList != null) ? _actionsController.videosList[0].videos!.length : null}",
+        // "Total des produits: ${(controller.produitsList != null) ? controller.produitsList[0].produits!.length : null}",
+      );
+    }
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -219,22 +226,24 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
                   bottom: 120,
                   child: Builder(
                     builder: (context) {
-                      _actionsController.fetchVideos();
+                      // _actionsController.fetchVideos();
                       // _videos[index]
                       //     .id, // Should use video ID instead of hardcoded '1'
                       // ); // Initialize state for this video ID
 
-                      return Obx(() {
+                       return Obx(() {
                         // final state = actionsController.videoStates[videoId]!;
+                        
 
                         final state =
                             _videos[index]; // Should use video ID instead of hardcoded '1'
                         if (state == null) {
                           logger.w(
-                            "No state found for video at index $index, id: ${_actionsController.videosList[index].id}",
+                            "No state found for video at index $index, id: ${_actionsController.videosList[index]}",
                           );
                           return const SizedBox.shrink();
                         }
+
                         // actionsController
                         //     .videoStates[index]; // Should use video ID instead of hardcoded '1'
                         // _videoPaths[index];
@@ -397,7 +406,7 @@ class _UploadVideosPageState extends State<UploadVideosPage> {
 
       /// ➕ ADD BUTTON
       floatingActionButton: FloatingActionButton(
-        onPressed: pickVideo,
+        onPressed: () => {}, //pickVideo,
         child: const Icon(Icons.add),
       ),
     );

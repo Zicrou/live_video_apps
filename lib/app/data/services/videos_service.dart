@@ -1,17 +1,12 @@
-// import 'package:ciilaabokk/app/data/models/user_info.dart';
-// import 'package:ciilaabokk/app/data/models/user_register.dart';
-// import 'package:ciilaabokk/app/data/models/vente_info.dart';
-// import 'package:ciilaabokk/app/data/models/ventes.dart';
-// import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
-// import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 // import 'package:get/get.dart';
+// import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 // import 'package:logger/logger.dart';
 
 // final logger = Logger();
 
-// class VenteServices extends GetxService {
-//   //final _authProvider = Get.find<AuthProvider>();
-//   final _venteServices = Get.find<VentesRepository>();
+// class VideosService extends GetxService {
+//   final _authProvider = Get.find<AuthProvider>();
+  
 
 //   @override
 //   void onInit() {

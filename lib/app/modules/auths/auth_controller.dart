@@ -45,7 +45,7 @@ class AuthController extends GetxController {
         passwordController.clear();
 
         authProvider.user = userInfo;
-        //authProvider.user.token;
+        // print(authProvider.user.token);
         // Get.offAll(() => VentesScreen());
         Get.offAll(() => HomePage());
         goodMessage("Connexion avec succés");
@@ -68,7 +68,12 @@ class AuthController extends GetxController {
         //signupFormKey.currentState!.save();
         logger.i("Signin in signinFormKey : ${signupFormKey}");
         _isLoading.value = true;
-        var userRegistred = authServices.signin(name, phoneNumber, password, email);
+        var userRegistred = authServices.signin(
+          name,
+          phoneNumber,
+          password,
+          email,
+        );
         authProvider.userRegister = await userRegistred;
         Get.offAll(() => LoginScreen());
         goodMessage("Succés: Inscription");
@@ -85,8 +90,13 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     Get.offAll(() => LoginScreen());
-    authProvider.reset();
     // Rebind if need it
     goodMessage("Déconneté");
+    try {
+      await authServices.signout();
+      // authProvider.reset();
+    } catch (e) {
+      logger.w("Error during signout: ${e}");
+    }
   }
 }

@@ -25,3 +25,4 @@ const produitSupAZeroEndpoint = '$baseUrl/produits/supeAzero';
 const rechercheProduits = '$baseUrl/produits/searchProduits';
 const journauxEndpoints = '$baseUrl/journal/';
 const teamEndpoints = '$baseUrl/team/';
+const listVideosEndpoint = '$baseUrl/videos';
