@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
-import 'package:live_video_apps/app/data/models/videoActionState.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
-import 'package:live_video_apps/app/modules/videos/videos/video_actions_controller.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:logger/web.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -22,9 +22,7 @@ class VideosScreen extends StatefulWidget {
 }
 
 class _VideosScreenState extends State<VideosScreen> {
-  final VideoActionsController _actionsController = Get.put(
-    VideoActionsController(),
-  );
+  final VideosController _actionsController = Get.put(VideosController());
 
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
@@ -76,7 +74,23 @@ class _VideosScreenState extends State<VideosScreen> {
         type: BottomNavigationBarType.fixed,
         currentIndex: 0,
         onTap: (index) {
-          // handle navigation
+          switch (index) {
+            case 0:
+              Get.off(() => VideosScreen());
+              break;
+
+            case 1:
+              Get.to(() => "ExploreScreen");
+              break;
+
+            case 2:
+              Get.to(() => VideoScreen());
+              break;
+
+            case 3:
+              Get.to(() => "InboxScreen");
+              break;
+          }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -517,7 +531,7 @@ class _RightActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<VideoActionsController>();
+    final controller = Get.find<VideosController>();
 
     return Column(
       children: [

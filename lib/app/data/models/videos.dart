@@ -65,9 +65,9 @@ class Videos {
     data['owner_id'] = this.ownerId;
     data['post_id'] = this.postId;
     data['post_type'] = this.postType;
-    if (this.likes != null) {
-      data['likes'] = this.likes!.map((v) => v.toJson()).toList();
-    }
+    // if (this.likes != null) {
+    //   data['likes'] = this.likes!.map((v) => v.toJson()).toList();
+    // }
     return data;
   }
 

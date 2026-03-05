@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 // import 'package:live_video_apps/app/core/values/endpoints.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
 // import 'package:live_video_apps/app/data/models/videos.dart';
-import 'package:live_video_apps/app/modules/videos/videos/video_actions_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -18,8 +18,8 @@ import 'package:image_picker/image_picker.dart';
 Logger logger = Logger();
 
 class UploadVideosScreen extends StatelessWidget {
-  final VideoActionsController _actionsController = Get.put(
-    VideoActionsController(),
+  final VideosController _actionsController = Get.put(
+    VideosController(),
   );
 
   final List<VideoPlayerController> _controllers = [];

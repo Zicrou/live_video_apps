@@ -31,13 +31,6 @@ class VideosRepositories {
       // print("Response.data ${response.data}");
       // print("Data type 1: ${response.runtimeType}");
       // print("Data type 2: ${response['videos'].runtimeType}");
-      // print(
-      //   "List videos from repository: ${VideosInfo.fromJson(response)}",
-      // );
-
-      // final List list = response['videos'];
-
-      // RxList<VideosInfo> videos = <VideosInfo>[].obs;
 
       var res = VideosInfo.fromJson(response);
       logger.i("Liste des videos ${res}");
@@ -47,67 +40,68 @@ class VideosRepositories {
     }
   }
 
-  Future<UserRegister> signin(
-    String name,
-    String phone,
-    String password,
-    String email,
-  ) async {
+  Future createVideos(Map<String, dynamic> json) async {
     try {
-      logger.i(
-        'Auth Repositories: Sign in with phone => $phone and password => $password, name => $name and email => $email',
-      );
-      final response = await _apiProvider.postN(
-        registerEndPoint,
-        {'name': name, 'phone': phone, 'password': password, 'email': email},
-        // options: Options(headers: {'Content-type': 'application/json'}),
-      );
-
-      var userRegister = UserRegister();
-      userRegister = UserRegister.fromJson((response));
-
-      if (userRegister.token == null) {
-        throw Exception("Registering failed: token is null in response");
-      }
-      _authProvider.isAuthenticated = true;
-      _authProvider.authToken = userRegister.token!;
-      // logger.i('authToken: ${_authProvider.authToken}');
-      // logger.i("userRegister from Repositories: ${userRegister.toString()}");
-      return userRegister;
+      
+      logger.i("Json from Repositories: ${json}");
+      final res = await _apiProvider.post(createPostsEndpoint, json);
+      logger.w('AuthRepositories: Create Video response: $res');
+      return res;
     } on BadRequestException {
       rethrow;
     }
   }
 
-  Future<dynamic> signout() async {
-    try {
-      logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
-      final response = await _apiProvider.post(
-        signOutEndpoint,
-        // options: Options(
-        //   headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
-        // ),
-        {"token": _authProvider.authToken},
-      );
-      logger.i("Response from Auth Repositories logout: ${response}");
-      _authProvider.reset();
-      print("Auth Repositories: reset authProvider ${_authProvider.authToken}");
-      if (!_authProvider.isAuthenticated) {
-        return true;
-      } else {
-        return false;
-      }
-    } on BadRequestException {
-      rethrow;
-    }
-  }
-
-  // Future createVente(Map<String, dynamic> json) async {
+  // Future<UserRegister> signin(
+  //   String name,
+  //   String phone,
+  //   String password,
+  //   String email,
+  // ) async {
   //   try {
-  //     logger.i("Json from Repositories: ${json}");
-  //     final res = await _apiProvider.post(createVenteEndpoint, json);
-  //     logger.w('AuthRepositories: Create Vente response: $res');
-  //     return res;
+  //     logger.i(
+  //       'Auth Repositories: Sign in with phone => $phone and password => $password, name => $name and email => $email',
+  //     );
+  //     final response = await _apiProvider.postN(
+  //       registerEndPoint,
+  //       {'name': name, 'phone': phone, 'password': password, 'email': email},
+  //       // options: Options(headers: {'Content-type': 'application/json'}),
+  //     );
+
+  //     var userRegister = UserRegister();
+  //     userRegister = UserRegister.fromJson((response));
+
+  //     if (userRegister.token == null) {
+  //       throw Exception("Registering failed: token is null in response");
+  //     }
+  //     _authProvider.isAuthenticated = true;
+  //     _authProvider.authToken = userRegister.token!;
+  //     // logger.i('authToken: ${_authProvider.authToken}');
+  //     // logger.i("userRegister from Repositories: ${userRegister.toString()}");
+  //     return userRegister;
+  //   } on BadRequestException {
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<dynamic> signout() async {
+  //   try {
+  //     logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
+  //     final response = await _apiProvider.post(
+  //       signOutEndpoint,
+  //       // options: Options(
+  //       //   headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
+  //       // ),
+  //       {"token": _authProvider.authToken},
+  //     );
+  //     logger.i("Response from Auth Repositories logout: ${response}");
+  //     _authProvider.reset();
+  //     print("Auth Repositories: reset authProvider ${_authProvider.authToken}");
+  //     if (!_authProvider.isAuthenticated) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
   //   } on BadRequestException {
   //     rethrow;
   //   }

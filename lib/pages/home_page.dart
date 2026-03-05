@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
               // () => Get.to(ViewerPage()),
             ),
             ElevatedButton(
-              child: const Text("Uplload Videos"),
+              child: const Text("Videos"),
               onPressed: () {
                 logger.i("Navigating to Upload Videos Page...");
                 Get.to(VideosScreen());

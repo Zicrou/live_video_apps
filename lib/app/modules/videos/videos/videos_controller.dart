@@ -13,7 +13,7 @@ import 'package:logger/logger.dart';
 
 Logger logger = Logger();
 
-class VideoActionsController extends GetxController {
+class VideosController extends GetxController {
   var isLoading = true.obs;
   VideosRepositories _videosRepositories = VideosRepositories();
   final authProvider = Get.find<AuthProvider>();

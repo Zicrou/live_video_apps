@@ -26,3 +26,4 @@ const rechercheProduits = '$baseUrl/produits/searchProduits';
 const journauxEndpoints = '$baseUrl/journal/';
 const teamEndpoints = '$baseUrl/team/';
 const listVideosEndpoint = '$baseUrl/videos';
+const createPostsEndpoint = '$baseUrl/posts';
