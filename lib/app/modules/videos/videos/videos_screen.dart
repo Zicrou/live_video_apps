@@ -426,7 +426,13 @@ class _VideosScreenState extends State<VideosScreen> {
           },
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {_actionsController.pickVideo()}, //pickVideo,
+        child: const Icon(Icons.add, color: Colors.blue),
+      ),
     );
+
+    /// ➕ ADD BUTTON
   }
 }
 // class VideosScreen extends StatelessWidget {

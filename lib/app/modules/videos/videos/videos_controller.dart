@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/data/models/Videos.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
@@ -9,7 +11,9 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:logger/logger.dart';
+import 'package:video_player/video_player.dart';
 
 Logger logger = Logger();
 
@@ -20,6 +24,59 @@ class VideosController extends GetxController {
   final authControler = Get.find<AuthController>();
   var videosList = <VideosInfo>[].obs;
   RxList<Videos> videos = <Videos>[].obs;
+  final ImagePicker _picker = ImagePicker();
+
+  VideoPlayerController? previewController;
+  Rx<File?> selectedVideo = Rx<File?>(null);
+  RxBool previewInitialized = false.obs;
+
+  Future<void> pickVideo() async {
+    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+    // if (picked == null) return;
+
+    // final file = File(picked.path);
+
+    // logger.i('Picked video path: ${picked.path}');
+
+    // selectedVideo.value = file;
+
+    // previewController?.dispose();
+
+    // previewController = VideoPlayerController.networkUrl(
+    //   Uri.parse(
+    //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    //   ),
+    // );
+
+    // await previewController!.initialize();
+
+    // previewController!.setLooping(true);
+    // previewController!.play();
+
+    // previewInitialized.value = true;
+    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+    // if (picked == null) return;
+
+    final file = File('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',);
+
+    // logger.i('Picked video path: ${picked.path}');
+
+    selectedVideo.value = file;
+
+    Get.to(() => VideoPreviewScreen(videoFile: file));
+  }
+
+  Future<void> previewFromUrl(String url) async {
+    previewController?.dispose();
+
+    previewController = VideoPlayerController.networkUrl(Uri.parse(url));
+
+    await previewController!.initialize();
+
+    previewController!.play();
+
+    update();
+  }
 
   final Dio dio = Dio(
     BaseOptions(

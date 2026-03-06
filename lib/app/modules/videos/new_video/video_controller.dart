@@ -12,6 +12,7 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
@@ -37,8 +38,11 @@ class VideoController extends GetxController {
   final video_url = TextEditingController();
   var user_id;
   VideoPlayerController? videoPlayerController;
-
   RxBool isVideoInitialized = false.obs;
+
+  VideoPlayerController? previewController;
+  Rx<File?> selectedVideo = Rx<File?>(null);
+  RxBool previewInitialized = false.obs;
 
   // final nombre = TextEditingController();
   // Add your login logic here
@@ -63,8 +67,8 @@ class VideoController extends GetxController {
       var json = {
         "post_type": "video",
         "caption": caption.text.trim(),
-        "video_url": video_url.text.trim()
-            // "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+        "video_url": video_url.text.trim(),
+        // "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
       };
 
       final response = await _videosRepositories.createVideos(json);
@@ -119,22 +123,56 @@ class VideoController extends GetxController {
     }
   }
 
-  Future<void> pickVideo() async {
-    final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
-    // picked = ''
-    if (picked == null) return;
+  // Future<void> pickVideo() async {
+  //   final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+  //   // picked = ''
+  //   if (picked == null) return;
 
-    final controller = VideoPlayerController.networkUrl(Uri.parse(picked.path));
-    logger.i('Picked video path: ${picked.path}');
-    selected_video.value = File(picked.path);
-    await controller.initialize();
-    controller.setLooping(true);
-    controller.play();
+  //   final controller = VideoPlayerController.networkUrl(Uri.parse(picked.path));
+  //   logger.i('Picked video path: ${picked.path}');
+  //   selected_video.value = File(picked.path);
+  //   await controller.initialize();
+  //   controller.setLooping(true);
+  //   controller.play();
 
-    isVideoInitialized.value = true;
+  //   isVideoInitialized.value = true;
 
-    update(); // if using GetX
-  }
+  //   update(); // if using GetX
+  // }
+
+  //   Future<void> pickVideo() async {
+  //   final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+  //   if (picked == null) return;
+
+  //   final file = File(picked.path);
+
+  //   logger.i('Picked video path: ${picked.path}');
+
+  //   selectedVideo.value = file;
+
+  //   previewController?.dispose();
+
+  //   previewController = VideoPlayerController.networkUrl(Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'));
+
+  //   await previewController!.initialize();
+
+  //   previewController!.setLooping(true);
+  //   previewController!.play();
+
+  //   previewInitialized.value = true;
+  // }
+
+  //   Future<void> previewFromUrl(String url) async {
+  //     previewController?.dispose();
+
+  //     previewController = VideoPlayerController.networkUrl(Uri.parse(url));
+
+  //     await previewController!.initialize();
+
+  //     previewController!.play();
+
+  //     update();
+  //   }
 
   /// Convert selected image to Base64
   Future<String?> getImageBase64() async {
@@ -304,5 +342,18 @@ class VideoController extends GetxController {
         isLoading(false);
       }
     }
+  }
+
+  Future<void> pickVideo() async {
+    final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+    if (picked == null) return;
+
+    final file = File(picked.path);
+
+    logger.i('Picked video path: ${picked.path}');
+
+    selected_video.value = file;
+
+    Get.to(() => VideoPreviewScreen(videoFile: file));
   }
 }
