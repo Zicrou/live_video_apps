@@ -13,6 +13,7 @@ import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
@@ -64,14 +65,18 @@ class VideoController extends GetxController {
       //Retreive the parameter from video Screen then submit it to video_repositories after a preview of that video
       // var video = Videos();
       // video.id = produitFromForm.id; // Assuming produit has an id field
+
       var json = {
         "post_type": "video",
         "caption": caption.text.trim(),
         "video_url": video_url.text.trim(),
         // "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
       };
+      print(
+          "Json: ${json["post_type"]}, caption: ${json["caption"]}, video url: ${json["video_url"]}}");
 
       final response = await _videosRepositories.createVideos(json);
+      Get.offAll(VideosScreen());
     } catch (e) {
       print("Erreur: $e");
     } finally {
@@ -87,6 +92,8 @@ class VideoController extends GetxController {
   @override
   void onInit() {
     // produit = Get.arguments ?? Produit();
+    // video_url.value = Get.arguments.videoFile.path;
+    // print("Video url on Init ${video_url}");
     super.onInit();
     //getTypes();
     // Initialize any necessary data or state here
@@ -344,16 +351,55 @@ class VideoController extends GetxController {
     }
   }
 
+  // Future<void> pickVideo() async {
+  //   final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+  //   if (picked == null) return;
+
+  //   final file = File(picked.path);
+
+  //   logger.i('Picked video path: ${picked.path}');
+
+  //   selected_video.value = file;
+
+  //   Get.to(() => VideoPreviewScreen(videoFile: file));
+  // }
   Future<void> pickVideo() async {
-    final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
-    if (picked == null) return;
+    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+    // if (picked == null) return;
 
-    final file = File(picked.path);
+    // final file = File(picked.path);
 
-    logger.i('Picked video path: ${picked.path}');
+    // logger.i('Picked video path: ${picked.path}');
 
-    selected_video.value = file;
+    // selectedVideo.value = file;
 
+    // previewController?.dispose();
+
+    // previewController = VideoPlayerController.networkUrl(
+    //   Uri.parse(
+    //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    //   ),
+    // );
+
+    // await previewController!.initialize();
+
+    // previewController!.setLooping(true);
+    // previewController!.play();
+
+    // previewInitialized.value = true;
+
+    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
+    // if (picked == null) return;
+
+    final file = File(
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    );
+
+    logger.i('Picked video path: ${file.path}');
+
+    selectedVideo.value = file;
+    video_url.text = file.path;
+    print('Video url controller: ${video_url}');
     Get.to(() => VideoPreviewScreen(videoFile: file));
   }
 }

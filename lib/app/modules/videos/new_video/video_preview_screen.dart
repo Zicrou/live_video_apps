@@ -34,18 +34,19 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final video = Get.arguments;
+    // video_controller.video_url.text = video_controller.selectedVideo.value;
+    // print("Video: ${video_controller.video_url.text.trim()}");
+    // print("Selected file: ${video_controller.selectedVideo.value!.path}");
     return Scaffold(
       backgroundColor: Colors.black,
-
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const Text("Preview"),
       ),
-
       body: Column(
         children: [
           /// VIDEO PREVIEW
-          // video_controller.video_url.value = widget.videoFile.path
           Expanded(
             child: Center(
               child: isInitialized
@@ -76,37 +77,36 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  TextFormField(
-                    controller: video_controller.video_url,
+                  // TextFormField(
+                  //   controller: video_controller.video_url,
+                  //   decoration: InputDecoration(
+                  //     prefixIcon: Icon(
+                  //       Icons.video_file,
+                  //       color: Color.fromARGB(255, 0, 173, 253),
+                  //     ),
+                  //     labelText: "Video Url",
+                  //     labelStyle: TextStyle(
+                  //       color: Color.fromARGB(255, 0, 173, 253),
+                  //     ),
+                  //     // errorText: controller.isPrixValid.value
+                  //     //     ? null
+                  //     //     : "Prix invalide",
+                  //     filled: true,
 
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.video_file,
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      labelText: "Video Url",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
-                      // errorText: controller.isPrixValid.value
-                      //     ? null
-                      //     : "Prix invalide",
-                      filled: true,
-
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    obscureText: false,
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(height: 20),
+                  //     fillColor: Colors.white,
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //   ),
+                  //   obscureText: false,
+                  //   keyboardType: TextInputType.text,
+                  // ),
+                  // SizedBox(height: 20),
 
                   /// POST BUTTON
                   Padding(
@@ -114,8 +114,9 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         print("Caption: ${video_controller.caption}");
-                        print("Caption: ${video_controller.video_url}");
-                        // video_controller.createVideo();
+
+                        print("Video Url: ${video_controller.video_url}");
+                        video_controller.createVideo();
                       },
                       child: const Text("Post Video"),
                     ),

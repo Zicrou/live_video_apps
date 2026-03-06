@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:logger/web.dart';
@@ -23,6 +24,7 @@ class VideosScreen extends StatefulWidget {
 
 class _VideosScreenState extends State<VideosScreen> {
   final VideosController _actionsController = Get.put(VideosController());
+  final VideoController _video_controller = Get.put(VideoController());
 
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
@@ -51,6 +53,7 @@ class _VideosScreenState extends State<VideosScreen> {
         controller.setLooping(true);
         // setState(() {
         _controllers.add(controller);
+        
         // _videoPaths.add(video.videoUrl!); // Add the video path
 
         // });
@@ -66,6 +69,7 @@ class _VideosScreenState extends State<VideosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // var videos = _actionsController.videosList[0].videos;
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -122,9 +126,9 @@ class _VideosScreenState extends State<VideosScreen> {
           scrollDirection: Axis.vertical,
           itemCount: _actionsController.videosList[0].videos!.length,
           itemBuilder: (context, index) {
-            final video = _actionsController.videosList[0].videos![index];
+            var video = _actionsController.videosList[0].videos![index];
             final controller = _controllers[index];
-
+            print("Video Caption: ${video.caption}");
             if (!controller.value.isInitialized) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -229,8 +233,8 @@ class _VideosScreenState extends State<VideosScreen> {
                         // ); // Initialize state for this video ID
 
                         return Obx(() {
-                          final videos =
-                              _actionsController.videosList[0].videos!;
+                          // final videos =
+                          //     _actionsController.videosList[0].videos!;
 
                           final state =
                               video; // Should use video ID instead of hardcoded '1'
@@ -255,7 +259,6 @@ class _VideosScreenState extends State<VideosScreen> {
                                   color: state.isLiked.value
                                       ? Colors.red
                                       : Colors.white,
-
                                   size: 32,
                                 ),
                                 onPressed: () {
@@ -388,7 +391,8 @@ class _VideosScreenState extends State<VideosScreen> {
                         ),
                         SizedBox(height: 6),
                         Text(
-                          'This is my TikTok-style caption 🎬🔥',
+                          // var current_video = _actionsController.videosList[0].videos![index];
+                          "Caption",
                           style: TextStyle(color: Colors.white),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -396,6 +400,7 @@ class _VideosScreenState extends State<VideosScreen> {
                       ],
                     ),
                   ),
+
                   const _TopBar(),
                 ],
               ),
@@ -427,8 +432,9 @@ class _VideosScreenState extends State<VideosScreen> {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {_actionsController.pickVideo()}, //pickVideo,
-        child: const Icon(Icons.add, color: Colors.blue),
+        backgroundColor: Colors.blue,
+        onPressed: () => {_video_controller.pickVideo()}, //pickVideo,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
 
@@ -557,16 +563,12 @@ class _RightActions extends StatelessWidget {
             style: const TextStyle(color: Colors.white),
           ),
         ),
-
         const SizedBox(height: 16),
-
         IconButton(
           icon: const Icon(Icons.bookmark, color: Colors.white),
           onPressed: () => controller.toggleSave(video),
         ),
-
         const SizedBox(height: 16),
-
         IconButton(
           icon: const Icon(Icons.share, color: Colors.white),
           onPressed: () => controller.shareVideo(video.id),
