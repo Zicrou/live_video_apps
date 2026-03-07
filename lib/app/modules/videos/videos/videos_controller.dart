@@ -146,7 +146,6 @@ class VideosController extends GetxController {
       // }
       var json = {
         "video_id": videofromScreen.id,
-        "like_id": likeId,
       };
       var response = _videosRepositories.toggleLikeDislike(json);
       // await fetchVideos();
