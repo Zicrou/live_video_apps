@@ -1,5 +1,7 @@
 // const baseUrl = 'http://192.168.1.8:8000/api/V1';
 // const baseUrl = 'http://127.0.0.1:8000/api/V1';
+import 'package:http/http.dart';
+
 const baseUrl = 'http://10.0.2.2:8000/api/V1';
 
 const loginEndpoint = '$baseUrl/login';
@@ -27,3 +29,4 @@ const journauxEndpoints = '$baseUrl/journal/';
 const teamEndpoints = '$baseUrl/team/';
 const listVideosEndpoint = '$baseUrl/videos';
 const createPostsEndpoint = '$baseUrl/posts';
+const toggleLikesDislikesEndpoint = '$baseUrl/likes/toggleLikeDislike';

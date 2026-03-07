@@ -20,7 +20,7 @@ Logger logger = Logger();
 class VideosController extends GetxController {
   var isLoading = true.obs;
   VideosRepositories _videosRepositories = VideosRepositories();
-  final authProvider = Get.find<AuthProvider>();
+  // final authProvider = Get.find<AuthProvider>();
   final authControler = Get.find<AuthController>();
   var videosList = <VideosInfo>[].obs;
   RxList<Videos> videos = <Videos>[].obs;
@@ -29,55 +29,11 @@ class VideosController extends GetxController {
   VideoPlayerController? previewController;
   Rx<File?> selectedVideo = Rx<File?>(null);
   RxBool previewInitialized = false.obs;
-
-  Future<void> pickVideo() async {
-    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
-    // if (picked == null) return;
-
-    // final file = File(picked.path);
-
-    // logger.i('Picked video path: ${picked.path}');
-
-    // selectedVideo.value = file;
-
-    // previewController?.dispose();
-
-    // previewController = VideoPlayerController.networkUrl(
-    //   Uri.parse(
-    //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-    //   ),
-    // );
-
-    // await previewController!.initialize();
-
-    // previewController!.setLooping(true);
-    // previewController!.play();
-
-    // previewInitialized.value = true;
-    // final XFile? picked = await _picker.pickVideo(source: ImageSource.gallery);
-    // if (picked == null) return;
-
-    final file = File('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',);
-
-    // logger.i('Picked video path: ${picked.path}');
-
-    selectedVideo.value = file;
-
-    Get.to(() => VideoPreviewScreen(videoFile: file));
+  String? user_id;
+  VideosController() {
+    final authProvider = Get.find<AuthProvider>();
+    user_id = authProvider.user?.user?.id;
   }
-
-  Future<void> previewFromUrl(String url) async {
-    previewController?.dispose();
-
-    previewController = VideoPlayerController.networkUrl(Uri.parse(url));
-
-    await previewController!.initialize();
-
-    previewController!.play();
-
-    update();
-  }
-
   final Dio dio = Dio(
     BaseOptions(
       baseUrl: 'https://your-api.com/api',
@@ -148,13 +104,13 @@ class VideosController extends GetxController {
   }
 
   // ❤️ LIKE
-  Future<void> toggleLike(videofromScreen) async {
+  Future<void> toggleLike(videofromScreen, like) async {
     logger.i(
-      "Toggling like for video ${videofromScreen.id}, ${videofromScreen.videoUrl}, current video: ${videofromScreen.isLiked}",
+      "Toggling like for video controller ${videofromScreen.id}, ${videofromScreen.videoUrl}, current video: ${videofromScreen.isLiked} ${like}",
     );
 
     final state = videofromScreen;
-    // videoStates[video.id]!;
+
     // state.isLiked.value = !state.isLiked.value;
     // state.likeCount.value += state.isLiked.value ? 1 : -1;
 
@@ -177,18 +133,22 @@ class VideosController extends GetxController {
     // }
 
     try {
+      var likeId = null;
+      // si isLiked = 1 donc true alors on cree une nouvelle like, video_id et like_id = null
+      // si isLike = -1 donc false on supprime la like, video_id et like_id = "like_id"
       videofromScreen.isLiked.value = !videofromScreen.isLiked.value!;
-      videofromScreen.likeCount.value =
-          videofromScreen.likeCount.value +
+      videofromScreen.likeCount.value = videofromScreen.likeCount.value +
           (videofromScreen.isLiked.value ? 1 : -1);
-      if (!videofromScreen.isLiked.value) {
-        await dio.post('/videos/${videofromScreen.id}/like'); //for Delete
-      } else {
-        await dio.post(
-          '/videos/${videofromScreen.id}/like',
-          data: {},
-        ); //for like
-      }
+      // if (videofromScreen.isLiked.value == -1) {
+      //   likeId = "";
+      // } else {
+      //   likeId = null;
+      // }
+      var json = {
+        "video_id": videofromScreen.id,
+        "like_id": likeId,
+      };
+      var response = _videosRepositories.toggleLikeDislike(json);
       // await fetchVideos();
     } catch (e) {
       // rollback on error

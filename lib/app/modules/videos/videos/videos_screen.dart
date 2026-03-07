@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
+import 'package:live_video_apps/app/data/models/likes.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
@@ -53,7 +54,7 @@ class _VideosScreenState extends State<VideosScreen> {
         controller.setLooping(true);
         // setState(() {
         _controllers.add(controller);
-        
+
         // _videoPaths.add(video.videoUrl!); // Add the video path
 
         // });
@@ -102,11 +103,13 @@ class _VideosScreenState extends State<VideosScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.add_box, size: 32),
             label: 'Ajouter',
+            // backgroundColor: Colors.black.
           ),
           BottomNavigationBarItem(icon: Icon(Icons.inbox), label: 'Inbox'),
         ],
       ),
       backgroundColor: Colors.black,
+
       // backgroundColor: Colors.black,
       // bottomNavigationBar: BottomNavigationBar(),
       body: Obx(() {
@@ -262,22 +265,32 @@ class _VideosScreenState extends State<VideosScreen> {
                                   size: 32,
                                 ),
                                 onPressed: () {
-                                  // logger.i(
-                                  //   "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
-                                  // );
-                                  // _actionsController.toggleLike(state);
-                                  // logger.i(
-                                  //   "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
-                                  // );
-                                  // if (state.isLiked.value) {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now liked. Like count: ${state.likeCount.value}",
-                                  //   );
-                                  // } else {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now unliked. Like count: ${state.likeCount.value}",
-                                  //   );
-                                  // }
+                                  var likes = state.likes;
+                                  var like;
+                                  // like = likes!
+                                  //     .where((like) =>
+                                  //         like.userId ==
+                                  //         _actionsController.user_id)
+                                  //     .first;
+                                      // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone, 
+                                      // avoir un boulot pour me permettra de le faire,
+                                      // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
+                                  logger.i(
+                                    "Toggling like for video at index , ${_actionsController.user_id}, ${state.id} current state: ${state.isLiked.value}",
+                                  );
+                                  _actionsController.toggleLike(state, like=null);
+                                  logger.i(
+                                    "After toggling like for video at index ${state.id}, ${state.likeCount}, ${state.id} current state: ${state.isLiked.value}",
+                                  );
+                                  if (state.isLiked.value) {
+                                    logger.i(
+                                      "Video at index ${state.id} is now liked. Like count: ${state.likeCount.value}",
+                                    );
+                                  } else {
+                                    logger.i(
+                                      "Video at index ${state.id} is now unliked. Like count: ${state.likeCount.value}",
+                                    );
+                                  }
                                 },
                               ),
                               Text(
@@ -299,11 +312,11 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                                 onPressed: () {
                                   // logger.i(
-                                  //   "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
+                                  //   "Toggling like for video at index ${state}, ${state.videoUrl}, ${state.id} current state: ${state.isLiked}",
                                   // );
                                   // _actionsController.toggleLike(state);
                                   // logger.i(
-                                  //   "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
+                                  //   "After toggling like for video at index ${state.id}, ${state.videoUrl}, ${state.id} current state: ${state.isLiked.value}",
                                   // );
                                   // if (state.isLiked.value) {
                                   //   logger.i(
@@ -554,7 +567,7 @@ class _RightActions extends StatelessWidget {
               color: video.isLiked.value ? Colors.red : Colors.white,
               size: 32,
             ),
-            onPressed: () => controller.toggleLike(video),
+            onPressed: () {},
           ),
         ),
         Obx(

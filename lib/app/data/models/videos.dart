@@ -55,6 +55,8 @@ class Videos {
     likeCount.value = json['likes_count'];
     commentCount.value = json['comments_count'];
     savedCount.value = json['saveds_count'];
+
+    isLiked.value = json['isLiked'] > 0 ? true : false;
   }
 
   Map<String, dynamic> toJson() {

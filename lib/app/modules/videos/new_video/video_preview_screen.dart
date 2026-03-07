@@ -50,9 +50,36 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
           Expanded(
             child: Center(
               child: isInitialized
-                  ? AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
+                  ? Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
+
+                        // Pause/Play overlay button
+                        GestureDetector(
+                          onTap: () {
+                            if (_controller.value.isPlaying) {
+                              _controller.pause();
+                            } else {
+                              _controller.play();
+                            }
+                          },
+                          child: Container(
+                            color: Colors.transparent, // Detect taps anywhere
+                            alignment: Alignment.center,
+                            child: Icon(
+                              _controller.value.isPlaying
+                                  ? Icons.pause_circle_outline
+                                  : Icons.play_circle_outline,
+                              size: 64,
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   : const CircularProgressIndicator(),
             ),

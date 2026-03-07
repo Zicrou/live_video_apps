@@ -52,6 +52,18 @@ class VideosRepositories {
     }
   }
 
+  Future toggleLikeDislike(Map<String, dynamic> json) async {
+    try {
+      
+      logger.i("Json from Repositories: ${json}");
+      final res = await _apiProvider.post(toggleLikesDislikesEndpoint, json);
+      logger.w('VideosRepositories: Create like response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
   // Future<UserRegister> signin(
   //   String name,
   //   String phone,

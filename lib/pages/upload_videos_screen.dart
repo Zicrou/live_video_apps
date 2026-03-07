@@ -265,7 +265,7 @@ class UploadVideosScreen extends StatelessWidget {
                                 logger.i(
                                   "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
                                 );
-                                _actionsController.toggleLike(state);
+                                // _actionsController.toggleLike(state);
                                 logger.i(
                                   "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
                                 );
@@ -301,7 +301,7 @@ class UploadVideosScreen extends StatelessWidget {
                                 logger.i(
                                   "Toggling like for video at index ${state}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked}",
                                 );
-                                _actionsController.toggleLike(state);
+                                // _actionsController.toggleLike(state);
                                 logger.i(
                                   "After toggling like for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isLiked.value}",
                                 );
