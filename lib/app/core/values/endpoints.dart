@@ -30,3 +30,7 @@ const teamEndpoints = '$baseUrl/team/';
 const listVideosEndpoint = '$baseUrl/videos';
 const createPostsEndpoint = '$baseUrl/posts';
 const toggleLikesDislikesEndpoint = '$baseUrl/likes/toggleLikeDislike';
+const toggleSavesUnSavesEndpoint = '$baseUrl/save/toggleSaveUnSaved';
+const listCommentsEndpoint = '$baseUrl/videos/comments/';
+const listAddReplyEndpoint = '$baseUrl/comments/';
+const listAddCommentEndpoint = '$baseUrl/comments/';

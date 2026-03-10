@@ -61,7 +61,8 @@ class VideosController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchVideos();
+    getComments("9694d240-999b-4dce-b527-3ee9c6c1a426");
+    // fetchVideos();
   }
 
   Future<void> fetchVideos() async {
@@ -104,46 +105,11 @@ class VideosController extends GetxController {
   }
 
   // ❤️ LIKE
-  Future<void> toggleLike(videofromScreen, like) async {
-    logger.i(
-      "Toggling like for video controller ${videofromScreen.id}, ${videofromScreen.videoUrl}, current video: ${videofromScreen.isLiked} ${like}",
-    );
-
-    final state = videofromScreen;
-
-    // state.isLiked.value = !state.isLiked.value;
-    // state.likeCount.value += state.isLiked.value ? 1 : -1;
-
-    // videoStates.refresh();
-    // for (var video in videosList) {
-    //   if (video.id == state.id) {
-    //     logger.i(
-    //       "Controller Found matching video in list: ${video.id}, ${state.id}",
-    //     );
-    //     video.isLiked.value = !video.isLiked.value!;
-    //     video.likeCount.value =
-    //         video.likeCount.value + (video.isLiked.value ? 1 : -1);
-    //     logger.i(
-    //       "Controller State video from Screen: ${state.id}, ${state.id}, isLiked: ${state.isLiked}",
-    //     );
-    //     logger.i(
-    //       "Controller Video in list: ${video.id}, ${video.url}, isLiked: ${video.isLiked}",
-    //     );
-    //   }
-    // }
-
+  Future<void> toggleLike(videofromScreen) async {
     try {
-      var likeId = null;
-      // si isLiked = 1 donc true alors on cree une nouvelle like, video_id et like_id = null
-      // si isLike = -1 donc false on supprime la like, video_id et like_id = "like_id"
       videofromScreen.isLiked.value = !videofromScreen.isLiked.value!;
       videofromScreen.likeCount.value = videofromScreen.likeCount.value +
           (videofromScreen.isLiked.value ? 1 : -1);
-      // if (videofromScreen.isLiked.value == -1) {
-      //   likeId = "";
-      // } else {
-      //   likeId = null;
-      // }
       var json = {
         "video_id": videofromScreen.id,
       };
@@ -151,31 +117,66 @@ class VideosController extends GetxController {
       // await fetchVideos();
     } catch (e) {
       // rollback on error
-      // state.isLiked = !state.isLiked;
-      // state.likeCount += state.isLiked ? 1 : -1;
-      // videoStates.refresh();
+      videofromScreen.isLiked.value = !videofromScreen.isLiked.value!;
+      videofromScreen.likeCount.value = videofromScreen.likeCount.value +
+          (videofromScreen.isLiked.value ? 1 : -1);
     }
   }
 
   // 💾 SAVE
   Future<void> toggleSave(videofromScreen) async {
-    final state = videofromScreen;
-
-    // state.isSaved.value = !state.isSaved.value;
-    // videoStates.refresh();
-
-    // try {
-    //   await dio.post('/videos/$videoId/save');
-    // } catch (e) {
-    //   // state.isSaved.value = !state.isSaved.value;
-    //   // videoStates.refresh();
-    // }
+    try {
+      videofromScreen.isSaved.value = !videofromScreen.isSaved.value!;
+      videofromScreen.savedCount.value = videofromScreen.savedCount.value +
+          (videofromScreen.isSaved.value ? 1 : -1);
+      var json = {
+        "video_id": videofromScreen.id,
+      };
+      var response = _videosRepositories.toggleSavedUnsaved(json);
+      // await fetchVideos();
+    } catch (e) {
+      // rollback on error
+      videofromScreen.isSaved.value = !videofromScreen.isSaved.value!;
+      videofromScreen.savedCount.value = videofromScreen.savedCount.value +
+          (videofromScreen.isSaved.value ? 1 : -1);
+    }
   }
 
   // 💬 COMMENT
-  Future<void> addComment(String videoId, String text) async {
+  Future<void> addComment(String videoId, String comment, String user_id, String parent_id) async {
+    var data = {
+      'comment': comment,
+      'video_id': videoId,
+      'user_id': user_id,
+      'parent_id': parent_id
+    };
     try {
-      await dio.post('/videos/$videoId/comments', data: {'comment': text});
+      var response = _videosRepositories.addComment(data);
+
+      // videoStates[videoId]!.commentCount++;
+      // videoStates.refresh();
+    } catch (e) {}
+  }
+
+  Future<void> getComments(String video_id) async {
+    try {
+      var response = await _videosRepositories.fetchVideoComments(video_id);
+      print(response);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> addReply(
+      String videoId, String comment, String user_id, String parent_id) async {
+    var data = {
+      'comment': comment,
+      'video_id': videoId,
+      'user_id': user_id,
+      'parent_id': parent_id
+    };
+    try {
+      var response = _videosRepositories.addReply(data);
 
       // videoStates[videoId]!.commentCount++;
       // videoStates.refresh();
@@ -187,5 +188,20 @@ class VideosController extends GetxController {
     try {
       await dio.post('/videos/$videoId/share');
     } catch (e) {}
+  }
+
+  String formatCount(int count) {
+    if (count >= 1000000) {
+      double value = count / 1000000;
+      return value % 1 == 0
+          ? "${value.toInt()}M"
+          : "${value.toStringAsFixed(1)}M";
+    } else if (count >= 1000) {
+      double value = count / 1000;
+      return value % 1 == 0
+          ? "${value.toInt()}K"
+          : "${value.toStringAsFixed(1)}K";
+    }
+    return count.toString();
   }
 }

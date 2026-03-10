@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
 import 'dart:io';
 
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
+import 'package:logger/web.dart';
+
+Logger logger = Logger();
 
 Videos videosFromJson(String str) => Videos.fromJson(json.decode(str));
 
@@ -16,6 +20,7 @@ class Videos {
   String? postId;
   String? postType;
   RxList<Likes>? likes;
+  RxList<Comments>? comments;
   // int? likesCount;
   /// UI STATE (GetX)
   RxBool isLiked = false.obs;
@@ -24,15 +29,15 @@ class Videos {
   RxInt commentCount = 0.obs;
   RxInt savedCount = 0.obs;
 
-  Videos({
-    this.id,
-    this.videoUrl,
-    this.caption,
-    this.ownerId,
-    this.postId,
-    this.postType,
-    this.likes,
-  });
+  Videos(
+      {this.id,
+      this.videoUrl,
+      this.caption,
+      this.ownerId,
+      this.postId,
+      this.postType,
+      this.likes,
+      this.comments});
 
   Videos.fromJson(Map<String, dynamic> json) {
     logger.i("Listing Videos in Video Model: $json");
@@ -57,6 +62,16 @@ class Videos {
     savedCount.value = json['saveds_count'];
 
     isLiked.value = json['isLiked'] > 0 ? true : false;
+    isSaved.value = json['isSaveds'] > 0 ? true : false;
+    // if (json['comments'] != null) {
+    //   logger.i("Listing Comments in Video Model: ${json['comments']}");
+    //   comments = <Comments>[].obs;
+    //   json['comments'].forEach((v) {
+    //     logger.w("Adding this comment ${v} to comment list");
+    //     likes!.add(Comments.fromJson(v));
+    //     logger.i("list of comments: ${comments.toString()}");
+    //   });
+    // }
   }
 
   Map<String, dynamic> toJson() {

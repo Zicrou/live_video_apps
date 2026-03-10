@@ -265,36 +265,23 @@ class _VideosScreenState extends State<VideosScreen> {
                                   size: 32,
                                 ),
                                 onPressed: () {
-                                  var likes = state.likes;
-                                  var like;
+                                  // var likes = state.likes;
+                                  // var like;
                                   // like = likes!
                                   //     .where((like) =>
                                   //         like.userId ==
                                   //         _actionsController.user_id)
                                   //     .first;
-                                      // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone, 
-                                      // avoir un boulot pour me permettra de le faire,
-                                      // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
-                                  logger.i(
-                                    "Toggling like for video at index , ${_actionsController.user_id}, ${state.id} current state: ${state.isLiked.value}",
-                                  );
-                                  _actionsController.toggleLike(state, like=null);
-                                  logger.i(
-                                    "After toggling like for video at index ${state.id}, ${state.likeCount}, ${state.id} current state: ${state.isLiked.value}",
-                                  );
-                                  if (state.isLiked.value) {
-                                    logger.i(
-                                      "Video at index ${state.id} is now liked. Like count: ${state.likeCount.value}",
-                                    );
-                                  } else {
-                                    logger.i(
-                                      "Video at index ${state.id} is now unliked. Like count: ${state.likeCount.value}",
-                                    );
-                                  }
+                                  // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone,
+                                  // avoir un boulot pour me permettra de le faire,
+                                  // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
+
+                                  _actionsController.toggleLike(state);
                                 },
                               ),
                               Text(
-                                '${state.likeCount.value}',
+                                _actionsController
+                                    .formatCount(state.likeCount.value),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -311,22 +298,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                   size: 30,
                                 ),
                                 onPressed: () {
-                                  // logger.i(
-                                  //   "Toggling like for video at index ${state}, ${state.videoUrl}, ${state.id} current state: ${state.isLiked}",
-                                  // );
-                                  // _actionsController.toggleLike(state);
-                                  // logger.i(
-                                  //   "After toggling like for video at index ${state.id}, ${state.videoUrl}, ${state.id} current state: ${state.isLiked.value}",
-                                  // );
-                                  // if (state.isLiked.value) {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now liked. Like count: ${state.likeCount.value}",
-                                  //   );
-                                  // } else {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now unliked. Like count: ${state.likeCount.value}",
-                                  //   );
-                                  // }
+                                  _actionsController.toggleLike(state);
                                 },
                               ),
                               Text(
@@ -343,27 +315,35 @@ class _VideosScreenState extends State<VideosScreen> {
                               IconButton(
                                 icon: Icon(
                                   Icons.bookmark,
-                                  color: //state.isSaved.value
-                                      // ? Colors.yellow
-                                      Colors.white,
+                                  color: state.isSaved.value
+                                      ? Colors.yellow
+                                      : Colors.white,
                                   size: 30,
                                 ),
                                 onPressed: () {
                                   _actionsController.toggleSave(state);
 
-                                  // logger.i(
-                                  //   "After toggling save for video at index ${state.id.value}, ${state.url.value}, ${state.id.value} current state: ${state.isSaved.value}",
-                                  // );
-                                  // if (state.isSaved.value) {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now saved.",
-                                  //   );
-                                  // } else {
-                                  //   logger.i(
-                                  //     "Video at index ${state.id.value} is now unsaved.",
-                                  //   );
-                                  // }
+                                  logger.i(
+                                    "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved.value}",
+                                  );
+                                  if (state.isSaved.value) {
+                                    logger.i(
+                                      "Video at index ${state.id} is now saved.",
+                                    );
+                                  } else {
+                                    logger.i(
+                                      "Video at index ${state.id} is now unsaved.",
+                                    );
+                                  }
                                 },
+                              ),
+                              Text(
+                                _actionsController
+                                    .formatCount(state.savedCount.value),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
                               ),
 
                               const SizedBox(height: 16),
@@ -587,6 +567,54 @@ class _RightActions extends StatelessWidget {
           onPressed: () => controller.shareVideo(video.id),
         ),
       ],
+    );
+  }
+}
+
+class CommentSheet extends StatelessWidget {
+  final int videoId;
+
+  const CommentSheet({super.key, required this.videoId});
+
+  @override
+  Widget build(BuildContext context) {
+    final _actionController = Get.find<VideosController>();
+    return Container(
+      height: Get.height * 0.7,
+      color: Colors.white,
+      child: Column(
+        children: [
+
+          const Text("Comments"),
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: 0,//_actionController.comments.length,
+              itemBuilder: (context,index){
+                // final comment = _actionController.comments[index];
+
+                return ListTile(
+                  // title: Text(comment.user.name),
+                  // subtitle: Text(comment.comment),
+                );
+              },
+            ),
+          ),
+
+          TextField(
+            // controller: controller.commentController,
+            decoration: InputDecoration(
+              hintText: "Add a comment",
+              suffixIcon: IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () {
+                  // controller.addComment(videoId);
+                },
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
