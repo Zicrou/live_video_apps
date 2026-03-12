@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/comment_info.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
@@ -61,8 +62,8 @@ class VideosController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getComments("9694d240-999b-4dce-b527-3ee9c6c1a426");
-    // fetchVideos();
+    // getComments("9694d240-999b-4dce-b527-3ee9c6c1a426");
+    fetchVideos();
   }
 
   Future<void> fetchVideos() async {
@@ -142,47 +143,7 @@ class VideosController extends GetxController {
     }
   }
 
-  // 💬 COMMENT
-  Future<void> addComment(String videoId, String comment, String user_id, String parent_id) async {
-    var data = {
-      'comment': comment,
-      'video_id': videoId,
-      'user_id': user_id,
-      'parent_id': parent_id
-    };
-    try {
-      var response = _videosRepositories.addComment(data);
-
-      // videoStates[videoId]!.commentCount++;
-      // videoStates.refresh();
-    } catch (e) {}
-  }
-
-  Future<void> getComments(String video_id) async {
-    try {
-      var response = await _videosRepositories.fetchVideoComments(video_id);
-      print(response);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> addReply(
-      String videoId, String comment, String user_id, String parent_id) async {
-    var data = {
-      'comment': comment,
-      'video_id': videoId,
-      'user_id': user_id,
-      'parent_id': parent_id
-    };
-    try {
-      var response = _videosRepositories.addReply(data);
-
-      // videoStates[videoId]!.commentCount++;
-      // videoStates.refresh();
-    } catch (e) {}
-  }
-
+  
   // 🔗 SHARE
   Future<void> shareVideo(videoId) async {
     try {

@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
@@ -26,7 +28,7 @@ class VideosScreen extends StatefulWidget {
 class _VideosScreenState extends State<VideosScreen> {
   final VideosController _actionsController = Get.put(VideosController());
   final VideoController _video_controller = Get.put(VideoController());
-
+  final CommentsController commentsController = Get.put(CommentsController());
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
 
@@ -49,7 +51,7 @@ class _VideosScreenState extends State<VideosScreen> {
       // controller.setLooping(true);
 
       // _controllers.add(controller);
-
+ 
       await controller.initialize().then((_) {
         controller.setLooping(true);
         // setState(() {
@@ -298,7 +300,12 @@ class _VideosScreenState extends State<VideosScreen> {
                                   size: 30,
                                 ),
                                 onPressed: () {
-                                  _actionsController.toggleLike(state);
+                                  // void openComments(videoId) {
+                                  Get.bottomSheet(
+                                    CommentSheet(videoId: video.id!),
+                                    isScrollControlled: true,
+                                  );
+                                  // }
                                 },
                               ),
                               Text(
@@ -567,54 +574,6 @@ class _RightActions extends StatelessWidget {
           onPressed: () => controller.shareVideo(video.id),
         ),
       ],
-    );
-  }
-}
-
-class CommentSheet extends StatelessWidget {
-  final int videoId;
-
-  const CommentSheet({super.key, required this.videoId});
-
-  @override
-  Widget build(BuildContext context) {
-    final _actionController = Get.find<VideosController>();
-    return Container(
-      height: Get.height * 0.7,
-      color: Colors.white,
-      child: Column(
-        children: [
-
-          const Text("Comments"),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: 0,//_actionController.comments.length,
-              itemBuilder: (context,index){
-                // final comment = _actionController.comments[index];
-
-                return ListTile(
-                  // title: Text(comment.user.name),
-                  // subtitle: Text(comment.comment),
-                );
-              },
-            ),
-          ),
-
-          TextField(
-            // controller: controller.commentController,
-            decoration: InputDecoration(
-              hintText: "Add a comment",
-              suffixIcon: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  // controller.addComment(videoId);
-                },
-              ),
-            ),
-          )
-        ],
-      ),
     );
   }
 }

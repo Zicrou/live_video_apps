@@ -15,7 +15,7 @@ Logger logger = Logger();
 
 class HomePage extends StatelessWidget {
   final AuthController controller = Get.find<AuthController>();
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

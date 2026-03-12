@@ -20,7 +20,7 @@ class CommentInfo {
         logger.w("liste comments CommentInfo: $c");
         comments!.add(new Comments.fromJson(c));
       });
-        commentCount?.value = json['comments_count'];
+        commentCount?.value = json['commentsCount'];
     }
 
     // likesCount = json['videos']['likesCount'];
