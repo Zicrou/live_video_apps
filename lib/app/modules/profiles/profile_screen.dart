@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
 @override
   void initState() {
     // super.initState();
-    _initVideos();
+    // _initVideos();
   }
 
   // Future<void> _initVideos() async {
@@ -62,10 +62,10 @@ class ProfileScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _buildVideoGrid(controller.myVideos), // My videos
-            _buildVideoGrid(controller.likedVideos), // Liked videos
-            _buildVideoGrid(controller.savedVideos), // Saved videos
-            _buildVideoGrid(controller.sharedVideos), // Shared videos
+            // _buildVideoGrid(controller.myVideos), // My videos
+            // _buildVideoGrid(controller.likedVideos), // Liked videos
+            // _buildVideoGrid(controller.savedVideos), // Saved videos
+            // _buildVideoGrid(controller.sharedVideos), // Shared videos
           ],
         ),
       ),
@@ -96,7 +96,7 @@ class ProfileScreen extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               // Play video in a new screen or inline
-              Get.to(() => VideoPreviewScreen(controller: controller));
+              // Get.to(() => VideoPreviewScreen(controller: controller));
             },
             child: Stack(
               alignment: Alignment.center,

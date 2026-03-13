@@ -8,82 +8,100 @@ import 'package:logger/web.dart';
 
 Logger logger = Logger();
 
-class CommentSheet extends StatelessWidget {
+class CommentSheet extends StatefulWidget {
   final String videoId;
 
-  // final VideoController _video_controller = Get.put(VideoController());
-  final CommentsController _commentController = Get.put(CommentsController());
+  const CommentSheet({super.key, required this.videoId});
 
-  CommentSheet({super.key, required this.videoId}) {
-    print("video from comment $videoId}");
-  }
+  @override
+  State<CommentSheet> createState() => _CommentSheetState();
+}
+
+class _CommentSheetState extends State<CommentSheet> {
+  final _commentController = Get.find<CommentsController>();
+
   @override
   void initState() {
-    _initComment();
+    super.initState();
+    initComments();
   }
 
-  Future<void> _initComment() async {
-    final _commentController = Get.find();
-    await _commentController.getComments(videoId);
-    // final videos = _actionsController.videosList[0].videos!;
+  Future<void> initComments() async {
+    await _commentController.getComments(widget.videoId);
   }
 
   @override
   Widget build(BuildContext context) {
+    // final CommentsController _commentController = Get.put(CommentsController());
+
+    // final _commentController = Get.find<CommentsController>();
+
     return Container(
       height: Get.height * 0.7,
       color: Colors.white,
       child: Column(
         children: [
           const Text("Comments"),
-          Expanded(
-              child: (_commentController.commentList.isEmpty)
-                  ? const Center(child: Text("No comments"))
-                  : ListView.builder(
-                      itemCount:
-                          _commentController.commentList[0].comments!.length,
-                      itemBuilder: (context, index) {
-                        final c =
-                            _commentController.commentList[0].comments![index];
+          Obx(() {
+            if (_commentController.commentList.isEmpty ||
+                _commentController.commentList[0] == null ||
+                _commentController.commentList[0].comments == null ||
+                _commentController.commentList[0].comments!.isEmpty) {
+              print("Comment list is empty");
+              return Center(child: Text("Comment list is empty"));
+            }
+            return Expanded(
+                child: ListView.builder(
+              itemCount: _commentController.commentList[0].comments?.length,
+              itemBuilder: (context, index) {
+                final c = _commentController.commentList[0].comments?[index];
 
-                        return ListTile(
-                          title: Text(c.user!.name!),
-                          subtitle: Text(c.comment ?? ""),
-                        );
-                      },
-                    )
+                return CommentTile(c: c!);
+              },
+            )
+                // ListView.builder(
+                //   itemCount: _commentController.commentList[0].comments!.length,
+                //   itemBuilder: (context, index) {
+                //     final comments =
+                //         _commentController.commentList[0].comments![index];
+                //     // return Column(
+                //     //   children: comments!.map((c) {
+                //     return CommentTile(c: comments);
+                //     //   }).toList(),
+                //     // );
 
-              // ListView.builder(
-              //   itemCount: _commentController.commentList[0].comments?.length,
-              //   itemBuilder: (context, index) {
-              //     if (_commentController.commentList.isEmpty) {
-              //       return null;
-              //     }
+                //     //     return ListTile(
+                //     //       title: Text(c.user!.name!),
+                //     //       subtitle: Text(c.comment ?? ""),
+                //     //     );
+                //     //   },
+                //     // )
 
-              //     final comments = _commentController.commentList[0].comments;
+                //     // ListView.builder(
+                //     //   itemCount: _commentController.commentList[0].comments?.length,
+                //     //   itemBuilder: (context, index) {
+                //     //     // if (_commentController.commentList.isEmpty) {
+                //     //     //   return null;
+                //     //     // }
 
-              //     var totalComments =
-              //         _commentController.commentList[0].commentCount?.value;
-              //     final topComments =
-              //         comments!.where((c) => c.parent_id == null).toList();
-              //     return const Text("1");
+                //     //     final comments = _commentController.commentList[0].comments;
 
-              //     // return Column(
-              //     //   children: topComments.map((c) {
-              //     //     return CommentTile(c: c);
-              //     //   }).toList(),
-              //     // );
-              //     // ListView.builder(
-              //     //   itemCount: _commentController.commentList[0].comments?.length,
-              //     //   itemBuilder: (context, index) {
-              //     //     final c = comments[index];
+                //     //     // var totalComments =
+                //     //     //     _commentController.commentList[0].commentCount?.value;
+                //     //     // final topComments =
+                //     //     //     comments!.where((c) => c.parent_id == null).toList();
+                //     //     // return const Text("1");
 
-              //     // return CommentTile(c: topComments[index]);
-              //     //   },
-              //     // );
-              //   },
-              // ),
-              ),
+                //     // return Column(
+                //     //   children: topComments.map((c) {
+                //     //     return CommentTile(c: c);
+                //     //   }).toList(),
+                //     // );
+
+                //   },
+                // ),
+                );
+          }),
           TextField(
             // controller: controller.commentController,
             decoration: InputDecoration(
