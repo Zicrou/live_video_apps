@@ -11,11 +11,25 @@ Logger logger = Logger();
 class CommentSheet extends StatelessWidget {
   final String videoId;
 
-  const CommentSheet({super.key, required this.videoId});
+  // final VideoController _video_controller = Get.put(VideoController());
+  final CommentsController _commentController = Get.put(CommentsController());
+
+  CommentSheet({super.key, required this.videoId}) {
+    print("video from comment $videoId}");
+  }
+  @override
+  void initState() {
+    _initComment();
+  }
+
+  Future<void> _initComment() async {
+    final _commentController = Get.find();
+    await _commentController.getComments(videoId);
+    // final videos = _actionsController.videosList[0].videos!;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _commentController = Get.find<CommentsController>();
     return Container(
       height: Get.height * 0.7,
       color: Colors.white,
@@ -23,34 +37,53 @@ class CommentSheet extends StatelessWidget {
         children: [
           const Text("Comments"),
           Expanded(
-            child: ListView.builder(
-              itemCount: _commentController.commentList[0].comments?.length,
-              itemBuilder: (context, index) {
-                if (_commentController.commentList.isEmpty) {
-                  return null;
-                }
-                final comments = _commentController.commentList[0].comments;
+              child: (_commentController.commentList.isEmpty)
+                  ? const Center(child: Text("No comments"))
+                  : ListView.builder(
+                      itemCount:
+                          _commentController.commentList[0].comments!.length,
+                      itemBuilder: (context, index) {
+                        final c =
+                            _commentController.commentList[0].comments![index];
 
-                var totalComments =
-                    _commentController.commentList[0].commentCount?.value;
-                final topComments =
-                    comments!.where((c) => c.parent_id == null).toList();
-                // return Column(
-                //   children: topComments.map((c) {
-                //     return CommentTile(c: c);
-                //   }).toList(),
-                // );
-                // ListView.builder(
-                //   itemCount: _commentController.commentList[0].comments?.length,
-                //   itemBuilder: (context, index) {
-                //     final c = comments[index];
+                        return ListTile(
+                          title: Text(c.user!.name!),
+                          subtitle: Text(c.comment ?? ""),
+                        );
+                      },
+                    )
 
-                    return CommentTile(c: topComments[index]);
-                //   },
-                // );
-              },
-            ),
-          ),
+              // ListView.builder(
+              //   itemCount: _commentController.commentList[0].comments?.length,
+              //   itemBuilder: (context, index) {
+              //     if (_commentController.commentList.isEmpty) {
+              //       return null;
+              //     }
+
+              //     final comments = _commentController.commentList[0].comments;
+
+              //     var totalComments =
+              //         _commentController.commentList[0].commentCount?.value;
+              //     final topComments =
+              //         comments!.where((c) => c.parent_id == null).toList();
+              //     return const Text("1");
+
+              //     // return Column(
+              //     //   children: topComments.map((c) {
+              //     //     return CommentTile(c: c);
+              //     //   }).toList(),
+              //     // );
+              //     // ListView.builder(
+              //     //   itemCount: _commentController.commentList[0].comments?.length,
+              //     //   itemBuilder: (context, index) {
+              //     //     final c = comments[index];
+
+              //     // return CommentTile(c: topComments[index]);
+              //     //   },
+              //     // );
+              //   },
+              // ),
+              ),
           TextField(
             // controller: controller.commentController,
             decoration: InputDecoration(

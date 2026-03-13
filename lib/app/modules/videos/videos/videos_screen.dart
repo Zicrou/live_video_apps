@@ -51,7 +51,7 @@ class _VideosScreenState extends State<VideosScreen> {
       // controller.setLooping(true);
 
       // _controllers.add(controller);
- 
+
       await controller.initialize().then((_) {
         controller.setLooping(true);
         // setState(() {
@@ -133,7 +133,7 @@ class _VideosScreenState extends State<VideosScreen> {
           itemBuilder: (context, index) {
             var video = _actionsController.videosList[0].videos![index];
             final controller = _controllers[index];
-            print("Video Caption: ${video.caption}");
+            print("Video Id: ${video.id}");
             if (!controller.value.isInitialized) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -301,6 +301,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                                 onPressed: () {
                                   // void openComments(videoId) {
+                                  print("Video id:: ${video.id}");
                                   Get.bottomSheet(
                                     CommentSheet(videoId: video.id!),
                                     isScrollControlled: true,

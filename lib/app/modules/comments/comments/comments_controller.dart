@@ -24,6 +24,7 @@ class CommentsController extends GetxController {
   CommentsRepository _commentsRepository = CommentsRepository();
   var commentList = <CommentInfo>[].obs;
   String? user_id;
+  late final videoID;
   VideosController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
@@ -32,7 +33,9 @@ class CommentsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getComments("9694d240-999b-4dce-b527-3ee9c6c1a426");
+    // videoID = widget.videoId;
+    // print("Video from init commentcontroller ${videoID}");
+    // getComments(videoId);
   }
 
   // 💬 COMMENT
@@ -63,18 +66,18 @@ class CommentsController extends GetxController {
 
       commentList.assignAll([response]);
       print("CommentList ${commentList}");
-    var comment = commentList[0].comments;
+      var comment = commentList[0].comments;
       comment?.forEach((c) {
         // comment
         // var comment = c.comments;
         // comment!.forEach((c) {
-          print("User and comment from commentList");
-          print(c.user!.name);
-          print(c.comment);
-          c.replies?.forEach((r) {
-            print(r.user!.name);
-            print(r.comment);
-          });
+        print("User and comment from commentList");
+        print(c.user!.name);
+        print(c.comment);
+        c.replies?.forEach((r) {
+          print(r.user!.name);
+          print(r.comment);
+        });
         // });
       });
       return response;
