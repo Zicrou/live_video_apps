@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/data/models/Videos.dart';
 import 'package:live_video_apps/app/data/models/comment_info.dart';
@@ -13,6 +15,7 @@ import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
@@ -23,9 +26,12 @@ class CommentsController extends GetxController {
   var isLoading = true.obs;
   CommentsRepository _commentsRepository = CommentsRepository();
   var commentList = <CommentInfo>[].obs;
+  final comment = TextEditingController();
+  final GlobalKey<FormState> createCommmentKeyForm = GlobalKey<FormState>();
+
   String? user_id;
-  late final videoID;
-  VideosController() {
+  String? videoID;
+  CommentsController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
   }
@@ -38,18 +44,31 @@ class CommentsController extends GetxController {
     // getComments(videoId);
   }
 
+  @override
+  void onClose() {
+    comment.dispose();
+  }
+
   // 💬 COMMENT
-  Future<void> addComment(
-      String videoId, String comment, String user_id, String parent_id) async {
-    var data = {
-      'comment': comment,
-      'video_id': videoId,
-      'user_id': user_id,
-      'parent_id': parent_id
-    };
-    try {
-      var response = _commentsRepository.addComment(data);
-    } catch (e) {}
+  Future<void> addComment() async {
+    if (createCommmentKeyForm.currentState!.validate()) {
+      createCommmentKeyForm.currentState!.save();
+
+      var com = comment.text.trim();
+      print("Video ID: $videoID, user: $user_id, comment: $com");
+      var data = {
+        'comment': com,
+        'video_id': videoID,
+        'user_id': user_id,
+        // 'parent_id': parent_id
+      };
+      try {
+        var response = _commentsRepository.addComment(data);
+        print(response);
+        getComments(data['video_id']!);
+        // Get.offAll(CommentSheet(videoId: data['video_id']!));
+      } catch (e) {}
+    }
   }
 
   Future<CommentInfo> getComments(String video_id) async {
@@ -113,5 +132,23 @@ class CommentsController extends GetxController {
           : "${value.toStringAsFixed(1)}K";
     }
     return count.toString();
+  }
+
+  Future<void> toggleLike(comment) async {
+    try {
+      comment.isLiked.value = !comment.isLiked.value!;
+      comment.likeCount.value = comment.likeCount.value +
+          (comment.isLiked.value ? 1 : -1);
+      var json = {
+        "comment_id": comment.id,
+      };
+      var response = _commentsRepository.toggleLikeDislike(json);
+      // await fetchVideos();
+    } catch (e) {
+      // rollback on error
+      comment.isLiked.value = !comment.isLiked.value!;
+      comment.likeCount.value = comment.likeCount.value +
+          (comment.isLiked.value ? 1 : -1);
+    }
   }
 }

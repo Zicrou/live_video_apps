@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/reply.dart';
@@ -13,6 +15,7 @@ class Comments {
   String? video_id;
   String? parent_id;
   User? user;
+  RxInt likeCount = 0.obs;
   RxList<Reply>? replies;
 
   Comments(
@@ -23,6 +26,8 @@ class Comments {
       this.parent_id,
       this.user,
       this.replies}); //
+
+  RxBool isLiked = false.obs;
 
   Comments.fromJson(Map<String, dynamic> json) {
     logger.i("Listing Comment in Video Model: $json");
@@ -44,6 +49,8 @@ class Comments {
         replies?.add(new Reply.fromJson(r));
       });
     }
+    isLiked.value = (json['isLiked'] == 1) ? true : false;
+    likeCount.value = json['likes_count'];
   }
 
   Map<String, dynamic> toJson() {

@@ -100,7 +100,7 @@ class VideosRepositories {
   Future<dynamic> addComment(Map<String, dynamic> json) async {
     try {
       final response = await _apiProvider.post(
-          '$listAddCommentEndpoint${json['video_id']}', json);
+          '$addCommentEndpoint${json['video_id']}', json);
       if (response == null) {
         return response;
       }

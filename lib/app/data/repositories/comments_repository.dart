@@ -41,12 +41,12 @@ class CommentsRepository {
   Future<dynamic> addComment(Map<String, dynamic> json) async {
     try {
       final response = await _apiProvider.post(
-          '$listAddCommentEndpoint${json['video_id']}', json);
+          '$addCommentEndpoint', json);
       if (response == null) {
         return response;
       }
       logger.w(
-        'Fetching Comment response video repositories: ${response['comments']}',
+        'Fetching Comment response comment repositories: ${response['comment']}',
       );
 
       return response;
@@ -70,6 +70,17 @@ class CommentsRepository {
       return response;
     } catch ($e) {
       print($e.toString());
+    }
+  }
+
+  Future toggleLikeDislike(Map<String, dynamic> json) async {
+    try {
+      logger.i("Json from Repositories: ${json}");
+      final res = await _apiProvider.post(toggleLikesDislikesCommentEndpoint, json);
+      logger.w('CommentsRepositories: Toggle likeUnlike response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
     }
   }
 }
