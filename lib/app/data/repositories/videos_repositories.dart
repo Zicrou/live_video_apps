@@ -117,7 +117,7 @@ class VideosRepositories {
   Future<dynamic> addReply(Map<String, dynamic> json) async {
     try {
       final response = await _apiProvider.post(
-          '$listAddReplyEndpoint${json['parent_id']}', // Validate parent_id in the backend
+          '$addCommentReplyEndpoint${json['parent_id']}', // Validate parent_id in the backend
            json);
       if (response == null) {
         return response;

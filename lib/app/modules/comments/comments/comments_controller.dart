@@ -28,9 +28,11 @@ class CommentsController extends GetxController {
   var commentList = <CommentInfo>[].obs;
   final comment = TextEditingController();
   final GlobalKey<FormState> createCommmentKeyForm = GlobalKey<FormState>();
+  final GlobalKey<FormState> createReplyKeyForm = GlobalKey<FormState>();
 
   String? user_id;
   String? videoID;
+  String? parentID;
   CommentsController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
@@ -106,17 +108,28 @@ class CommentsController extends GetxController {
     }
   }
 
-  Future<void> addReply(
-      String videoId, String comment, String user_id, String parent_id) async {
-    var data = {
-      'comment': comment,
-      'video_id': videoId,
-      'user_id': user_id,
-      'parent_id': parent_id
-    };
-    try {
-      var response = _commentsRepository.addReply(data);
-    } catch (e) {}
+  Future<void> addReply(String commentId) async {
+    if (createReplyKeyForm.currentState!.validate()) {
+      createReplyKeyForm.currentState!.save();
+
+      var com = comment.text.trim();
+      print(
+          "Video ID: $videoID, user: $user_id, comment: $com, parentId: $commentId");
+      var data = {
+        'comment': com,
+        'video_id': videoID,
+        'user_id': user_id,
+        'parent_id': commentId
+      };
+
+      try {
+        var response = _commentsRepository.addReply(data);
+        // print(response);
+        getComments(data['video_id']!);
+      } catch (e) {
+        print(e.toString());
+      }
+    }
   }
 
   String formatCount(int count) {
@@ -137,18 +150,30 @@ class CommentsController extends GetxController {
   Future<void> toggleLike(comment) async {
     try {
       comment.isLiked.value = !comment.isLiked.value!;
-      comment.likeCount.value = comment.likeCount.value +
-          (comment.isLiked.value ? 1 : -1);
+      comment.likeCount.value =
+          comment.likeCount.value + (comment.isLiked.value ? 1 : -1);
       var json = {
         "comment_id": comment.id,
       };
       var response = _commentsRepository.toggleLikeDislike(json);
-      // await fetchVideos();
+      update(); // 🔥 THIS refreshes GetBuilder UI
+      // return true;
     } catch (e) {
       // rollback on error
       comment.isLiked.value = !comment.isLiked.value!;
-      comment.likeCount.value = comment.likeCount.value +
-          (comment.isLiked.value ? 1 : -1);
+      comment.likeCount.value =
+          comment.likeCount.value + (comment.isLiked.value ? 1 : -1);
+      throw "${e.toString()}";
     }
+  }
+
+  void openReply(String commentId) {
+    parentID = commentId;
+    update();
+  }
+
+  void closeReply() {
+    parentID = null;
+    update();
   }
 }

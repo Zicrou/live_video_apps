@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
+import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
@@ -304,8 +305,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                   print("Video id:: ${video.id}");
                                   Get.bottomSheet(
                                     CommentSheet(videoId: video.id!),
-                                    isScrollControlled: true,
-                                  );
+                                    isScrollControlled: true);
                                   // }
                                 },
                               ),

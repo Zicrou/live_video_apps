@@ -32,6 +32,6 @@ const createPostsEndpoint = '$baseUrl/posts';
 const toggleLikesDislikesEndpoint = '$baseUrl/likes/toggleLikeDislike';
 const toggleSavesUnSavesEndpoint = '$baseUrl/save/toggleSaveUnSaved';
 const listCommentsEndpoint = '$baseUrl/videos/comments/';
-const listAddReplyEndpoint = '$baseUrl/comments/';
+const addCommentReplyEndpoint = '$baseUrl/comments/';
 const addCommentEndpoint = '$baseUrl/comments/';
 const toggleLikesDislikesCommentEndpoint = '$baseUrl/likeUnlike/comments';

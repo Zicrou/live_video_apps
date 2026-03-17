@@ -40,8 +40,7 @@ class CommentsRepository {
 
   Future<dynamic> addComment(Map<String, dynamic> json) async {
     try {
-      final response = await _apiProvider.post(
-          '$addCommentEndpoint', json);
+      final response = await _apiProvider.post('$addCommentEndpoint', json);
       if (response == null) {
         return response;
       }
@@ -58,7 +57,7 @@ class CommentsRepository {
   Future<dynamic> addReply(Map<String, dynamic> json) async {
     try {
       final response = await _apiProvider.post(
-          '$listAddReplyEndpoint${json['parent_id']}', // Validate parent_id in the backend
+          '$addCommentReplyEndpoint', // Validate parent_id in the backend
           json);
       if (response == null) {
         return response;
@@ -76,7 +75,8 @@ class CommentsRepository {
   Future toggleLikeDislike(Map<String, dynamic> json) async {
     try {
       logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(toggleLikesDislikesCommentEndpoint, json);
+      final res =
+          await _apiProvider.post(toggleLikesDislikesCommentEndpoint, json);
       logger.w('CommentsRepositories: Toggle likeUnlike response: $res');
       return res;
     } on BadRequestException {

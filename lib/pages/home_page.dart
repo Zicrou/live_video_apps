@@ -1,21 +1,20 @@
 // /lib/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
-import 'package:live_video_apps/pages/upload_videos_screen.dart';
 import 'package:logger/logger.dart';
-import 'host_page.dart';
-import 'viewer_page.dart';
+
 
 Logger logger = Logger();
 
 class HomePage extends StatelessWidget {
   final AuthController controller = Get.find<AuthController>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +56,6 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-
       backgroundColor: Color(0xFFF5F5F5),
       body: Center(
         child: Column(

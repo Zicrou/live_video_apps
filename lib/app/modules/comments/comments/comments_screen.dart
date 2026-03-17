@@ -60,49 +60,7 @@ class _CommentSheetState extends State<CommentSheet> {
                 print("user Id: ${_commentController.user_id}");
                 return CommentTile(c: c!);
               },
-            )
-                // ListView.builder(
-                //   itemCount: _commentController.commentList[0].comments!.length,
-                //   itemBuilder: (context, index) {
-                //     final comments =
-                //         _commentController.commentList[0].comments![index];
-                //     // return Column(
-                //     //   children: comments!.map((c) {
-                //     return CommentTile(c: comments);
-                //     //   }).toList(),
-                //     // );
-
-                //     //     return ListTile(
-                //     //       title: Text(c.user!.name!),
-                //     //       subtitle: Text(c.comment ?? ""),
-                //     //     );
-                //     //   },
-                //     // )
-
-                //     // ListView.builder(
-                //     //   itemCount: _commentController.commentList[0].comments?.length,
-                //     //   itemBuilder: (context, index) {
-                //     //     // if (_commentController.commentList.isEmpty) {
-                //     //     //   return null;
-                //     //     // }
-
-                //     //     final comments = _commentController.commentList[0].comments;
-
-                //     //     // var totalComments =
-                //     //     //     _commentController.commentList[0].commentCount?.value;
-                //     //     // final topComments =
-                //     //     //     comments!.where((c) => c.parent_id == null).toList();
-                //     //     // return const Text("1");
-
-                //     // return Column(
-                //     //   children: topComments.map((c) {
-                //     //     return CommentTile(c: c);
-                //     //   }).toList(),
-                //     // );
-
-                //   },
-                // ),
-                );
+            ));
           }),
           Form(
             key: _commentController.createCommmentKeyForm,
@@ -122,13 +80,9 @@ class _CommentSheetState extends State<CommentSheet> {
                       Icons.comment,
                       // color: Color.fromARGB(255, 0, 173, 253),
                     ),
-
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    // errorText: controller.isDesignationValid.value
-                    //     ? null
-                    //     : "Désignation invalide",
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -153,18 +107,6 @@ class _CommentSheetState extends State<CommentSheet> {
                   ),
                   keyboardType: TextInputType.text,
                 ),
-                // TextFormField(
-                //   controller: _commentController.comment,
-                //   decoration: InputDecoration(
-                //     hintText: "Add a comment",
-                //     suffixIcon: IconButton(
-                //       icon: Icon(Icons.send),
-                //       onPressed: () {
-                //         _commentController.addComment();
-                //       },
-                //     ),
-                //   ),
-                // )
               ],
             ),
           ),
@@ -188,52 +130,79 @@ class _CommentTileState extends State<CommentTile> {
   // final controller = Get.find<CommentsController>();
   @override
   Widget build(BuildContext context) {
+    var commentController = Get.find<CommentsController>();
     final c = widget.c;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Obx(() {
+        GetBuilder<CommentsController>(builder: (controller) {
+          final isReplying = controller.parentID == c.id;
+
           return ListTile(
-              title: Text(
-                c.user!.name!,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(c.comment ?? ""),
-              trailing: IconButton(
-                icon: Icon(
-                  c.isLiked.value ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.black,
-                  // size: 32,
+            title: Text(
+              c.user!.name!,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Column(
+              // 👈 CHANGE THIS (important)
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(c.comment ?? ""),
+
+                /// 🔥 REPLY BUTTON (ADD HERE)
+                TextButton(
+                  onPressed: () {
+                    commentController.openReply(c.id!);
+                  },
+                  child: Text("Reply"),
                 ),
-                onPressed: () {
-                  // like comment
-                  print("Like this comment ${c.id}");
-                  if (CommentsController().toggleLike(c) == true) {
-                    c.isLiked.value = true;
-                  }
-                },
-              ));
+
+                /// 🔥 REPLY FORM (SHOW ONLY IF CLICKED)
+                if (isReplying)
+                  ReplyForm(
+                    commentId: c.id!,
+                  ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: Icon(
+                c.isLiked.value ? Icons.favorite : Icons.favorite_border,
+                color: Colors.black,
+                // size: 32,
+              ),
+              onPressed: () {
+                // like comment
+                print("Like this comment ${c.id}");
+                // if (controller.toggleLike(c) == true) {
+                  controller.toggleLike(c);
+                // }
+              },
+            ),
+          );
         }),
 
         /// Reply button
         if (c.replies != null && c.replies!.isNotEmpty)
           Obx(() {
             return Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: TextButton(
-                child: Text(
-                  showReplies
-                      ? "Hide replies"
-                      : "View ${c.replies!.length} replies",
-                ),
-                onPressed: () {
-                  setState(() {
-                    showReplies = !showReplies;
-                  });
-                },
-              ),
-            );
+                padding: const EdgeInsets.only(left: 8),
+                child: Column(
+                  children: [
+                    TextButton(
+                      child: Text(
+                        showReplies
+                            ? "Hide replies"
+                            : "View ${c.replies!.length} replies",
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          showReplies = !showReplies;
+                        });
+                      },
+                    ),
+                  ],
+                ));
           }),
 
         /// Replies
@@ -260,8 +229,78 @@ class _CommentTileState extends State<CommentTile> {
                 }).toList(),
               ),
             );
-          })
+          }),
       ],
+    );
+  }
+}
+
+class ReplyForm extends StatefulWidget {
+  final String commentId;
+
+  const ReplyForm({super.key, required this.commentId});
+
+  @override
+  State<ReplyForm> createState() => _ReplyFormState();
+}
+
+class _ReplyFormState extends State<ReplyForm> {
+  // final TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final commentsController = Get.find<CommentsController>();
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 8),
+      child: Row(children: [
+        Expanded(
+            child: Form(
+          key: commentsController.createReplyKeyForm,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: commentsController.comment,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Svp veuillez remplir le champs";
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.comment,
+                  ),
+                  labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 0, 173, 253),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  hintText: "Reply",
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      print("Reply to this comment ${widget.commentId}");
+                      commentsController.addReply(widget.commentId);
+                      commentsController.comment.clear();
+                    },
+                  ),
+                ),
+                keyboardType: TextInputType.text,
+              ),
+            ],
+          ),
+        ))
+      ]),
     );
   }
 }

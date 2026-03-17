@@ -63,7 +63,7 @@ class VideosController extends GetxController {
   void onInit() {
     super.onInit();
     // getComments("9694d240-999b-4dce-b527-3ee9c6c1a426");
-    fetchVideos();
+    // fetchVideos();
   }
 
   Future<void> fetchVideos() async {
