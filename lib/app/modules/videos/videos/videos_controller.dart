@@ -14,6 +14,7 @@ import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:logger/logger.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 Logger logger = Logger();
@@ -143,12 +144,18 @@ class VideosController extends GetxController {
     }
   }
 
-  
   // 🔗 SHARE
-  Future<void> shareVideo(videoId) async {
+  Future<void> shareVideo(video) async {
     try {
-      await dio.post('/videos/$videoId/share');
-    } catch (e) {}
+      await Share.share(
+        "Watch this video 🎬\n${video.videoUrl}",
+        subject: "Check this video",
+      );
+
+      // await dio.post('/videos/${video.id}/share');
+    } catch (e) {
+      print("share error: ${e.toString()}");
+    }
   }
 
   String formatCount(int count) {

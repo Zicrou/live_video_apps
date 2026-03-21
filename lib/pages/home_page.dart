@@ -79,6 +79,8 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 logger.i("Navigating to Upload Videos Page...");
                 Get.to(VideosScreen());
+                // Test Share videos function
+                
                 // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
               },
               // () => Get.to(ViewerPage()),

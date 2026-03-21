@@ -12,7 +12,9 @@ import 'package:live_video_apps/app/modules/comments/comments/comments_screen.da
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
+import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:logger/web.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -304,8 +306,8 @@ class _VideosScreenState extends State<VideosScreen> {
                                   // void openComments(videoId) {
                                   print("Video id:: ${video.id}");
                                   Get.bottomSheet(
-                                    CommentSheet(videoId: video.id!),
-                                    isScrollControlled: true);
+                                      CommentSheet(videoId: video.id!),
+                                      isScrollControlled: true);
                                   // }
                                 },
                               ),
@@ -363,8 +365,21 @@ class _VideosScreenState extends State<VideosScreen> {
                                   color: Colors.white,
                                   size: 28,
                                 ),
-                                onPressed: () {
-                                  // actionsController.shareVideo(
+                                onPressed: () async {
+                                  final videoUrl = state.videoUrl;
+                                  if (videoUrl!.isEmpty) {
+                                    await showCannotShareEmptyVideoDialog(
+                                        context);
+                                  } else {
+                                    await SharePlus.instance.share(
+                                      ShareParams(
+                                        text:
+                                            "🔥 Watch this video\n${videoUrl}",
+                                        subject: "Check this video",
+                                      ),
+                                    );
+                                  }
+                                  // _actionsController.shareVideo(state);
                                   // state.id.value,
                                 },
                               ),
@@ -572,9 +587,10 @@ class _RightActions extends StatelessWidget {
         const SizedBox(height: 16),
         IconButton(
           icon: const Icon(Icons.share, color: Colors.white),
-          onPressed: () => controller.shareVideo(video.id),
+          onPressed: () => controller.shareVideo(video),
         ),
       ],
     );
   }
 }
+
