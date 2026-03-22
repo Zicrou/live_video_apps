@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/services/auth_services.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:live_video_apps/pages/home_page.dart';
 import 'package:logger/web.dart';
@@ -47,7 +48,7 @@ class AuthController extends GetxController {
         authProvider.user = userInfo;
         // print(authProvider.user.token);
         // Get.offAll(() => VentesScreen());
-        Get.offAll(() => HomePage());
+        Get.offAll(() => VideosScreen());
         goodMessage("Connexion avec succés");
       }
     } catch (e) {

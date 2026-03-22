@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
 import 'dart:io';
@@ -28,6 +29,7 @@ class Videos {
   RxInt likeCount = 0.obs;
   RxInt commentCount = 0.obs;
   RxInt savedCount = 0.obs;
+  RxInt sharesCount = 0.obs;
 
   Videos(
       {this.id,
@@ -60,9 +62,10 @@ class Videos {
     likeCount.value = json['likes_count'];
     commentCount.value = json['comments_count'];
     savedCount.value = json['saveds_count'];
-
+    sharesCount.value = json['shares_count'];
     isLiked.value = json['isLiked'] > 0 ? true : false;
     isSaved.value = json['isSaveds'] > 0 ? true : false;
+
     // if (json['comments'] != null) {
     //   logger.i("Listing Comments in Video Model: ${json['comments']}");
     //   comments = <Comments>[].obs;

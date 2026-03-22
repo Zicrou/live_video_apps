@@ -118,7 +118,7 @@ class VideosRepositories {
     try {
       final response = await _apiProvider.post(
           '$addCommentReplyEndpoint${json['parent_id']}', // Validate parent_id in the backend
-           json);
+          json);
       if (response == null) {
         return response;
       }
@@ -126,6 +126,21 @@ class VideosRepositories {
         'Response Reply repositories: ${response}',
       );
 
+      return response;
+    } catch ($e) {
+      print($e.toString());
+    }
+  }
+
+  Future<dynamic> shareVideos(String id) async {
+    try {
+      final response = await _apiProvider.post('$baseUrl/videos/$id/share', {});
+      if (response == null) {
+        return response;
+      }
+      print(
+        'Response Share videos repositories: ${response}',
+      );
       return response;
     } catch ($e) {
       print($e.toString());

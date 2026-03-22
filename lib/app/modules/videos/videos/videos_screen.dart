@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/core/values/app_colors.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
@@ -209,7 +210,13 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              const Icon(Icons.search, color: Colors.white),
+                              TextButton(
+                                onPressed: () {
+                                  print("Ok");
+                                },
+                                child: const Icon(Icons.search,
+                                    color: Colors.white),
+                              )
                             ],
                           ),
                         ],
@@ -218,15 +225,36 @@ class _VideosScreenState extends State<VideosScreen> {
                   ),
 
                   /// 🎥 VIDEO
-                  SizedBox.expand(
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: controller.value.size.width,
-                        height: controller.value.size.height,
-                        child: VideoPlayer(controller),
+                  Stack(
+                    children: [
+                      /// 🎥 VIDEO
+                      SizedBox.expand(
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: SizedBox(
+                            width: controller.value.size.width,
+                            height: controller.value.size.height,
+                            child: VideoPlayer(controller),
+                          ),
+                        ),
                       ),
-                    ),
+
+                      /// ⏱️ PROGRESS BAR (no time)
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: VideoProgressIndicator(
+                          controller,
+                          allowScrubbing: true, // optional (user can seek)
+                          colors: VideoProgressColors(
+                            playedColor: Colors.white,
+                            bufferedColor: Colors.white30,
+                            backgroundColor: Colors.white10,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   /// ❤️ RIGHT ACTIONS
@@ -371,6 +399,8 @@ class _VideosScreenState extends State<VideosScreen> {
                                     await showCannotShareEmptyVideoDialog(
                                         context);
                                   } else {
+                                    state.sharesCount.value =
+                                        state.sharesCount.value + 1;
                                     await SharePlus.instance.share(
                                       ShareParams(
                                         text:
@@ -378,11 +408,21 @@ class _VideosScreenState extends State<VideosScreen> {
                                         subject: "Check this video",
                                       ),
                                     );
+                                    await _actionsController.shareVideo(state);
                                   }
-                                  // _actionsController.shareVideo(state);
                                   // state.id.value,
                                 },
                               ),
+                              Text(
+                                _actionsController
+                                    .formatCount(state.sharesCount.value),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+
+                              const SizedBox(height: 16),
                             ],
                           );
                         });
@@ -593,4 +633,3 @@ class _RightActions extends StatelessWidget {
     );
   }
 }
-

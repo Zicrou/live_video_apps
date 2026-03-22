@@ -147,13 +147,11 @@ class VideosController extends GetxController {
   // 🔗 SHARE
   Future<void> shareVideo(video) async {
     try {
-      await Share.share(
-        "Watch this video 🎬\n${video.videoUrl}",
-        subject: "Check this video",
-      );
-
-      // await dio.post('/videos/${video.id}/share');
+      // video.sharesCount.value =
+      //     video.sharesCount.value + 1;
+      var response = await _videosRepositories.shareVideos(video.id);
     } catch (e) {
+      // video.sharesCount.value = video.sharesCount.value + 1;
       print("share error: ${e.toString()}");
     }
   }
