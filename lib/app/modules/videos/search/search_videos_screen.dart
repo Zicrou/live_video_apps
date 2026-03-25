@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
+import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:video_player/video_player.dart';
 
 class SearchVideosScreen extends StatefulWidget {
@@ -41,19 +42,67 @@ class _SearchVideosScreenState extends State<SearchVideosScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: TextField(
-          controller: controller.searchTextController,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: "Search videos, users...",
-            hintStyle: TextStyle(color: Colors.white54),
-            border: InputBorder.none,
+        title: Form(
+          key: controller.createSeachKeyForm,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Visibility(
+                // visible: venteController.selectedProduit.value == null,
+                child: TextFormField(
+                  controller: controller.searchTextController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.label,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    hintText: "Search videos, users...",
+                    hintStyle: TextStyle(color: Colors.white54),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () {
+                        print(
+                            "Search for ${controller.searchTextController.text.trim()}");
+                        if (controller.searchTextController.text.isEmpty) {
+                          errorMessage("Veuillez remplir ce champs svp!");
+                        }
+
+                        //Search method
+                        controller.search();
+                      },
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+              ),
+              SizedBox(height: 30),
+            ],
           ),
-          onChanged: (value) {
-            controller.searchTextController.text = value;
-            controller.search();
-          },
         ),
+        // TextField(
+        //   controller: controller.searchTextController,
+        //   style: const TextStyle(color: Colors.white),
+        //   decoration: const InputDecoration(
+        //     hintText: "Search videos, users...",
+        //     hintStyle: TextStyle(color: Colors.white54),
+        //     border: InputBorder.none,
+        //   ),
+        //   onChanged: (value) {
+        //     controller.searchTextController.text = value;
+        //     controller.search();
+        //   },
+        // ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {

@@ -9,29 +9,33 @@ class SearchVideosController extends GetxController {
   VideosRepositories _videosRepositories = VideosRepositories();
 
   final TextEditingController searchTextController = TextEditingController();
+  final GlobalKey<FormState> createSeachKeyForm = GlobalKey<FormState>();
 
   final Dio dio = Dio(
     BaseOptions(baseUrl: "http://127.0.0.1:8000/api"),
   );
 
   Future<void> search() async {
-    String query = searchTextController.text.trim();
-    if (query.isEmpty) {
-      results.clear();
-      return;
-    }
+    if (createSeachKeyForm.currentState!.validate()) {
+      createSeachKeyForm.currentState!.save();
+      String query = searchTextController.text.trim();
+      if (query.isEmpty) {
+        results.clear();
+        return;
+      }
 
-    try {
-      isLoading(true);
+      try {
+        isLoading(true);
 
-      final response = await _videosRepositories.fetchSearchVideos(query);
-      print("Response search controller: ${response}");
-      results.assignAll([response]);
-      print("Results from search controller : ${results}");
-    } catch (e) {
-      print("Search error: $e");
-    } finally {
-      isLoading(false);
+        final response = await _videosRepositories.fetchSearchVideos(query);
+        print("Response search controller: ${response}");
+        results.assignAll([response]);
+        print("Results from search controller : ${results}");
+      } catch (e) {
+        print("Search error: $e");
+      } finally {
+        isLoading(false);
+      }
     }
   }
 }
