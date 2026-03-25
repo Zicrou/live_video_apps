@@ -12,6 +12,7 @@ import 'package:live_video_apps/app/modules/comments/comments/comments_controlle
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
+import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:logger/web.dart';
@@ -168,7 +169,7 @@ class _VideosScreenState extends State<VideosScreen> {
                               Text(
                                 'Following',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.6),
+                                  color: Colors.white.withValues(alpha: 0.5),
                                   fontSize: 16,
                                 ),
                               ),
@@ -210,9 +211,19 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
                               const SizedBox(width: 16),
+                              IconButton(
+                                  onPressed: () {
+                                    Get.to(SearchVideosScreen());
+                                  },
+                                  icon: const Icon(
+                                    Icons.search,
+                                    color: Colors.white70,
+                                  )),
+                              const SizedBox(width: 16),
                               TextButton(
                                 onPressed: () {
                                   print("Ok");
+                                  Get.offAll(SearchVideosScreen());
                                 },
                                 child: const Icon(Icons.search,
                                     color: Colors.white),

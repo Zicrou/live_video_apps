@@ -2,18 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
+import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
+import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
+import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
 import 'package:logger/logger.dart';
-
 
 Logger logger = Logger();
 
 class HomePage extends StatelessWidget {
   final AuthController controller = Get.find<AuthController>();
+  VideosRepositories _videosRepositories = VideosRepositories();
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +80,10 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               child: const Text("Videos"),
               onPressed: () {
-                logger.i("Navigating to Upload Videos Page...");
-                Get.to(VideosScreen());
+                logger.i("Videos page...");
+                Get.to(SearchVideosScreen());
                 // Test Share videos function
-                
+
                 // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
               },
               // () => Get.to(ViewerPage()),

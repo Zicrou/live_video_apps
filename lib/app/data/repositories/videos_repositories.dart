@@ -228,4 +228,23 @@ class VideosRepositories {
   //   //final ventesResponse = VenteResponse.fromJson(response.data);
   //   return VenteInfo.fromJson(response.data);
   // }
+
+  Future<dynamic> fetchSearchVideos(String query) async {
+    var _query = query;
+    try {
+      final response = await _apiProvider
+          .get('$resultsSearchVideoEndpoint', params: {"q": _query});
+      print(
+          "Response result videos search from Videos Repositories : ${response['videos'][0]}");
+      if (response == null) {
+        return response;
+      }
+
+      var res = VideosInfo.fromJson(response);
+      print("Liste des videos ${res}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
 }

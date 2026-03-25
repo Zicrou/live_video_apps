@@ -59,10 +59,12 @@ class Videos {
         logger.i("list of likes: ${likes.toString()}");
       });
     }
-    likeCount.value = json['likes_count'];
-    commentCount.value = json['comments_count'];
-    savedCount.value = json['saveds_count'];
-    sharesCount.value = json['shares_count'];
+
+    likeCount.value = json['likes_count'] ?? 0.obs;
+    commentCount.value = json['comments_count'] ?? 0.obs;
+    savedCount.value = json['saveds_count'] ?? 0.obs;
+    sharesCount.value = json['shares_count'] ?? 0.obs;
+
     isLiked.value = json['isLiked'] > 0 ? true : false;
     isSaved.value = json['isSaveds'] > 0 ? true : false;
 
@@ -94,6 +96,6 @@ class Videos {
   @override
   String toString() {
     // TODO: implement toString
-    return "ID: $id, Video_url: $videoUrl, Caption: $caption, Owner_id: $ownerId, Post_id: $postId, Post_type: $postType, Likes: ${likes.toString()}";
+    return "ID: $id, Video_url: $videoUrl, Caption: $caption, Owner_id: $ownerId, Post_id: $postId, Post_type: $postType, Likes: ${likes.toString()}, isLiked: ${isLiked.value}, isSaved: ${isSaved.value}, sharesCount: ${sharesCount.value}, likes_count: ${likeCount.value}, commentsCount: ${commentCount.value}}";
   }
 }

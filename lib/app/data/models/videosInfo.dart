@@ -29,11 +29,11 @@ class VideosInfo {
         logger.w("liste videos VideoInfo: $v");
         videos!.add(new Videos.fromJson(v));
         likesCount?.value =
-            v['likes_count']; // Ensure likes is handled correctly
-        saveds_count?.value = v['saveds_count'];
+            v['likes_count'] ?? 0; // Ensure likes is handled correctly
+        saveds_count?.value = v['saveds_count'] ?? 0;
         // isLiked!.value = v['isLiked'];
         // isSaved!.value = v['isSaved'];
-        commentCount?.value = v['comments_count'];
+        commentCount?.value = v['comments_count'] ?? 0;
       });
     }
 
