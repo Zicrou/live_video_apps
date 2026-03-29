@@ -7,6 +7,7 @@ import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
+import 'package:live_video_apps/app/modules/videos/learn_cloud/video_list_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';

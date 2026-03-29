@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart'
+    hide logger;
+import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
+import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 class SearchVideosScreen extends StatefulWidget {
@@ -13,8 +19,11 @@ class SearchVideosScreen extends StatefulWidget {
 
 class _SearchVideosScreenState extends State<SearchVideosScreen> {
   final controller = Get.put(SearchVideosController());
+
   final List<VideoPlayerController> _controllers = [];
   RxBool _controllersInitialized = false.obs;
+  RxBool isTyping = false.obs;
+  RxBool isSearching = false.obs;
 
   Future<void> _initVideos(List videos) async {
     _controllers.clear(); // VERY IMPORTANT
@@ -39,155 +48,197 @@ class _SearchVideosScreenState extends State<SearchVideosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Form(
-          key: controller.createSeachKeyForm,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Visibility(
-                // visible: venteController.selectedProduit.value == null,
-                child: TextFormField(
-                  controller: controller.searchTextController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.label,
-                      color: Color.fromARGB(255, 0, 173, 253),
-                    ),
-                    hintText: "Search videos, users...",
-                    hintStyle: TextStyle(color: Colors.white54),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: () {
-                        print(
-                            "Search for ${controller.searchTextController.text.trim()}");
-                        if (controller.searchTextController.text.isEmpty) {
-                          errorMessage("Veuillez remplir ce champs svp!");
-                        }
+        backgroundColor: Colors.white,
+        title: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 24, left: 8),
+            child: Form(
+              key: controller.createSeachKeyForm,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Visibility(
+                    // visible: 1 > 0,
+                    child: TextFormField(
+                      controller: controller.searchTextController,
+                      style: const TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.label,
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        hintText: "Search videos, users...",
+                        hintStyle: TextStyle(color: Colors.black),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.send),
+                          onPressed: () {
+                            print(
+                                "Search for ${controller.searchTextController.text.trim()}");
+                            final query =
+                                controller.searchTextController.text.trim();
+                            if (query.isEmpty) {
+                              errorMessage("Veuillez remplir ce champs svp!");
+                            }
 
-                        //Search method
+                            //Search method
+                            controller.search();
+                          },
+                        ),
+                      ),
+                      onChanged: (value) {
+                        controller.searchTextController.text = value;
+                        isTyping.value = value.isNotEmpty;
+                        isSearching.value = false; // 👈 NOT searching yet
                         controller.search();
+                        print("Searching on Change value");
                       },
+                      keyboardType: TextInputType.text,
                     ),
                   ),
-                  keyboardType: TextInputType.text,
-                ),
+                  SizedBox(height: 30),
+                ],
               ),
-              SizedBox(height: 30),
-            ],
+            ),
           ),
         ),
-        // TextField(
-        //   controller: controller.searchTextController,
-        //   style: const TextStyle(color: Colors.white),
-        //   decoration: const InputDecoration(
-        //     hintText: "Search videos, users...",
-        //     hintStyle: TextStyle(color: Colors.white54),
-        //     border: InputBorder.none,
-        //   ),
-        //   onChanged: (value) {
-        //     controller.searchTextController.text = value;
-        //     controller.search();
-        //   },
-        // ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-
         if (controller.results.isEmpty) {
-          return const Center(
-            child: Text("No results", style: TextStyle(color: Colors.white)),
+          return const Text("Nothing searched yet");
+        }
+        final videos = controller.results[0].videos;
+
+        // if (_controllers.length != videos.length) {
+        //   _controllersInitialized.value = false;
+        // }
+
+        // if (!_controllersInitialized.value) {
+        //   Future.microtask(() => _initVideos(videos));
+        //   return const Center(child: CircularProgressIndicator());
+        // }
+
+        /// 🔍 STEP 1: USER IS TYPING → SHOW SUGGESTIONS
+        if (isTyping.value) {
+          return ListView.builder(
+            itemCount: controller.results[0].videos.length,
+            itemBuilder: (context, index) {
+              final video = controller.results[0].videos[index];
+              print("Caption length: ${controller.captions.length}");
+              return ListTile(
+                leading: const Icon(Icons.search, color: Colors.black),
+                title: Text(video.caption),
+                onTap: () {
+                  controller.searchTextController.text = video.caption;
+
+                  isTyping.value = false;
+                  isSearching.value = true;
+
+                  controller.search(); // 🔥 load videos
+                },
+              );
+            },
           );
         }
 
-        final videos = controller.results[0].videos!;
-        if (_controllers.length != videos.length) {
-          _controllersInitialized.value = false;
-        }
-        if (!_controllersInitialized.value) {
-          Future.microtask(() => _initVideos(videos));
-          return const Center(child: CircularProgressIndicator());
-        }
+        /// 🎥 STEP 2: USER CLICKED SEARCH → SHOW GRID
+        if (isSearching.value && controller.results.isNotEmpty) {
+          // final videos = controller.results[0].videos!;
 
-        return GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 9 / 16,
-          ),
-          itemCount: controller.results[0].videos.length,
-          itemBuilder: (context, index) {
-            final item = controller.results[0].videos[index];
-            final controllerVideo = _controllers[index];
+          if (_controllers.length != videos.length) {
+            _controllersInitialized.value = false;
+          }
 
-            return GestureDetector(
-              onTap: () {
-                // Get.to(
-                //   () => FullVideoScreen(videoUrl: item.videoUrl!),
-                //   transition: Transition.fadeIn,
-                //   duration: const Duration(milliseconds: 300),
-                // );
-              },
-              child: Container(
-                margin: const EdgeInsets.all(4),
-                color: Colors.black,
-                child: Stack(
-                  children: [
-                    /// 🎥 FIRST FRAME
-                    _controllers[index].value.isInitialized
-                        ? SizedBox.expand(
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: _controllers[index].value.size.width,
-                                height: _controllers[index].value.size.height,
-                                child: VideoPlayer(_controllers[index]),
+          if (!_controllersInitialized.value) {
+            Future.microtask(() => _initVideos(videos));
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                // mainAxisExtent: 300, // 🔥 control height directly
+                // crossAxisSpacing: 4,
+                // mainAxisSpacing: 4,
+                childAspectRatio: 3 / 4),
+            itemCount: videos.length,
+            itemBuilder: (context, index) {
+              final item = videos[index];
+              final controllerVideo = _controllers[index];
+
+              return GestureDetector(
+                onTap: () {
+                  Get.to(
+                    () => FullVideoScreen(video: item),
+                    transition: Transition.fadeIn,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                  color: Colors.black,
+                  child: Stack(
+                    children: [
+                      /// 🎥 FIRST FRAME
+                      _controllers[index].value.isInitialized
+                          ? SizedBox.expand(
+                              child: AspectRatio(
+                                aspectRatio: 3 / 4, // 🔥 force TikTok ratio
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: VideoPlayer(_controllers[index]),
+                                ),
                               ),
-                            ),
-                          )
-                        : const Center(child: CircularProgressIndicator()),
+                            )
+                          : const Center(child: CircularProgressIndicator()),
 
-                    /// 📝 CAPTION
-                    Positioned(
-                      left: 8,
-                      right: 8,
-                      bottom: 30,
-                      child: Text(
-                        item.caption ?? "",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 12),
+                      /// 📝 CAPTION
+                      Positioned(
+                        left: 8,
+                        right: 8,
+                        bottom: 30,
+                        child: Text(
+                          item.caption ?? "",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
+                        ),
                       ),
-                    ),
 
-                    /// ▶️ PLAY ICON
-                    const Center(
-                      child: Icon(
-                        Icons.play_circle_fill,
-                        color: Colors.white70,
-                        size: 50,
+                      /// ▶️ PLAY ICON
+                      const Center(
+                        child: Icon(
+                          Icons.play_circle_fill,
+                          color: Colors.white70,
+                          size: 50,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          );
+        }
+
+        /// 💤 DEFAULT STATE
+        return const Center(
+          child: Text("Start typing to search"),
         );
       }),
     );
@@ -203,9 +254,9 @@ class _SearchVideosScreenState extends State<SearchVideosScreen> {
 }
 
 class FullVideoScreen extends StatefulWidget {
-  final String videoUrl;
+  final dynamic video;
 
-  const FullVideoScreen({super.key, required this.videoUrl});
+  const FullVideoScreen({super.key, required this.video});
 
   @override
   State<FullVideoScreen> createState() => _FullVideoScreenState();
@@ -214,6 +265,7 @@ class FullVideoScreen extends StatefulWidget {
 class _FullVideoScreenState extends State<FullVideoScreen> {
   late VideoPlayerController _controller;
   bool isInitialized = false;
+  final VideosController _actionsController = Get.put(VideosController());
 
   @override
   void initState() {
@@ -223,7 +275,7 @@ class _FullVideoScreenState extends State<FullVideoScreen> {
 
   Future<void> initVideo() async {
     _controller = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoUrl),
+      Uri.parse(widget.video.videoUrl),
     );
 
     await _controller.initialize();
@@ -282,21 +334,210 @@ class _FullVideoScreenState extends State<FullVideoScreen> {
                         size: 80,
                       ),
 
-                    /// ⏱️ Progress bar
+                    /// ⏱️ PROGRESS BAR (no time)
                     Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,
                       child: VideoProgressIndicator(
                         _controller,
-                        allowScrubbing: true,
-                        colors: const VideoProgressColors(
+                        allowScrubbing: true, // optional (user can seek)
+                        colors: VideoProgressColors(
                           playedColor: Colors.white,
                           bufferedColor: Colors.white30,
                           backgroundColor: Colors.white10,
                         ),
                       ),
                     ),
+
+                    /// ❤️ RIGHT ACTIONS
+                    Positioned(
+                      right: 12,
+                      bottom: 120,
+                      child: Builder(
+                        builder: (context) {
+                          return Obx(() {
+                            final state = widget.video;
+                            if (state == null) {
+                              logger.w(
+                                "No state found for video",
+                              );
+                              return const SizedBox.shrink();
+                            }
+
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                // ❤️ LIKE
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: state.isLiked.value
+                                        ? Colors.red
+                                        : Colors.white,
+                                    size: 32,
+                                  ),
+                                  onPressed: () {
+                                    // var likes = state.likes;
+                                    // var like;
+                                    // like = likes!
+                                    //     .where((like) =>
+                                    //         like.userId ==
+                                    //         _actionsController.user_id)
+                                    //     .first;
+                                    // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone,
+                                    // avoir un boulot pour me permettra de le faire,
+                                    // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
+
+                                    _actionsController.toggleLike(state);
+                                  },
+                                ),
+                                Text(
+                                  _actionsController
+                                      .formatCount(state.likeCount.value),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // 💬 COMMENT
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.comment,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    // void openComments(videoId) {
+                                    print("Video id:: ${widget.video.id}");
+                                    Get.bottomSheet(
+                                        CommentSheet(videoId: widget.video.id!),
+                                        isScrollControlled: true);
+                                    // }
+                                  },
+                                ),
+                                Text(
+                                  '${state.commentCount}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // 💾 SAVE
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.bookmark,
+                                    color: state.isSaved.value
+                                        ? Colors.yellow
+                                        : Colors.white,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    _actionsController.toggleSave(state);
+
+                                    logger.i(
+                                      "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved.value}",
+                                    );
+                                    if (state.isSaved.value) {
+                                      logger.i(
+                                        "Video at index ${state.id} is now saved.",
+                                      );
+                                    } else {
+                                      logger.i(
+                                        "Video at index ${state.id} is now unsaved.",
+                                      );
+                                    }
+                                  },
+                                ),
+                                Text(
+                                  _actionsController
+                                      .formatCount(state.savedCount.value),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // 🔗 SHARE
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.share,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                  onPressed: () async {
+                                    final videoUrl = state.videoUrl;
+                                    if (videoUrl!.isEmpty) {
+                                      await showCannotShareEmptyVideoDialog(
+                                          context);
+                                    } else {
+                                      state.sharesCount.value =
+                                          state.sharesCount.value + 1;
+                                      await SharePlus.instance.share(
+                                        ShareParams(
+                                          text:
+                                              "🔥 Watch this video\n${videoUrl}",
+                                          subject: "Check this video",
+                                        ),
+                                      );
+                                      await _actionsController
+                                          .shareVideo(state);
+                                    }
+                                    // state.id.value,
+                                  },
+                                ),
+                                Text(
+                                  _actionsController
+                                      .formatCount(state.sharesCount.value),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 16),
+                              ],
+                            );
+                          });
+                        },
+                      ),
+                    ),
+
+                    /// 📝 CAPTION
+                    Positioned(
+                      left: 12,
+                      bottom: 40,
+                      right: 80,
+                      child: Column(
+                        // video = widget.video;
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${widget.video.owner.name}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            "${widget.video.caption}",
+                            style: TextStyle(color: Colors.white),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const TopBar(),
                   ],
                 )
               : const CircularProgressIndicator(),

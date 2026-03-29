@@ -14,6 +14,7 @@ import 'package:live_video_apps/app/modules/videos/new_video/video_controller.da
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:logger/web.dart';
 import 'package:share_plus/share_plus.dart';
@@ -274,27 +275,14 @@ class _VideosScreenState extends State<VideosScreen> {
                     bottom: 120,
                     child: Builder(
                       builder: (context) {
-                        // _actionsController.fetchVideos();
-                        // _videos[index]
-                        //     .id, // Should use video ID instead of hardcoded '1'
-                        // ); // Initialize state for this video ID
-
                         return Obx(() {
-                          // final videos =
-                          //     _actionsController.videosList[0].videos!;
-
-                          final state =
-                              video; // Should use video ID instead of hardcoded '1'
+                          final state = video;
                           if (state == null) {
                             logger.w(
                               "No state found for video at index $index, id: ${_actionsController.videosList[0].videos![index]}",
                             );
                             return const SizedBox.shrink();
                           }
-
-                          // actionsController
-                          //     .videoStates[index]; // Should use video ID instead of hardcoded '1'
-                          // _videoPaths[index];
 
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -468,179 +456,20 @@ class _VideosScreenState extends State<VideosScreen> {
                     ),
                   ),
 
-                  const _TopBar(),
+                  const TopBar(),
                 ],
               ),
             );
-            // return Stack(
-            //   children: [
-            //     /// VIDEO
-            //     VideoPlayer(_controllers[index]),
-
-            //     //  RIGHT ACTIONS
-            //     // Positioned(
-            //     //   right: 12,
-            //     //   bottom: 120,
-            //     //   child: _RightActions(video: ),
-            //     // ),
-
-            //     /// CAPTION
-            //     Positioned(
-            //       left: 12,
-            //       bottom: 40,
-            //       child: Text(
-            //         video.caption!,
-            //         style: const TextStyle(color: Colors.white),
-            //       ),
-            //     ),
-            //   ],
-            // );
           },
         );
       }),
+
+      /// ➕ ADD BUTTON
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () => {_video_controller.pickVideo()}, //pickVideo,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-    );
-
-    /// ➕ ADD BUTTON
-  }
-}
-// class VideosScreen extends StatelessWidget {
-
-// }
-
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.white, size: 32),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-
-          /// 🔝 TOP BAR (STATIC)
-        ],
-      ),
-    );
-  }
-}
-
-class _TopBar extends StatelessWidget {
-  const _TopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 50,
-      left: 0,
-      right: 0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            /// Following / Explore
-            Row(
-              children: const [
-                Text('Following', style: TextStyle(color: Colors.white54)),
-                SizedBox(width: 16),
-                Text(
-                  'Explore',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-
-            /// Live + Search
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'LIVE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Icon(Icons.search, color: Colors.white),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RightActions extends StatelessWidget {
-  final Videos video;
-  const _RightActions({required this.video});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<VideosController>();
-
-    return Column(
-      children: [
-        Obx(
-          () => IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: video.isLiked.value ? Colors.red : Colors.white,
-              size: 32,
-            ),
-            onPressed: () {},
-          ),
-        ),
-        Obx(
-          () => Text(
-            '${video.likeCount.value}',
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 16),
-        IconButton(
-          icon: const Icon(Icons.bookmark, color: Colors.white),
-          onPressed: () => controller.toggleSave(video),
-        ),
-        const SizedBox(height: 16),
-        IconButton(
-          icon: const Icon(Icons.share, color: Colors.white),
-          onPressed: () => controller.shareVideo(video),
-        ),
-      ],
     );
   }
 }

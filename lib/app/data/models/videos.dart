@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
+import 'package:live_video_apps/app/data/models/user.dart';
 import 'dart:io';
 
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
@@ -22,6 +23,7 @@ class Videos {
   String? postType;
   RxList<Likes>? likes;
   RxList<Comments>? comments;
+  User? owner;
   // int? likesCount;
   /// UI STATE (GetX)
   RxBool isLiked = false.obs;
@@ -58,6 +60,9 @@ class Videos {
         likes!.add(Likes.fromJson(v));
         logger.i("list of likes: ${likes.toString()}");
       });
+    }
+    if (json['owner'] != null) {
+      owner = User.fromJson(json['owner']);
     }
 
     likeCount.value = json['likes_count'] ?? 0.obs;

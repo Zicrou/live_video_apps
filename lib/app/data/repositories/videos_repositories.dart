@@ -236,6 +236,8 @@ class VideosRepositories {
           .get('$resultsSearchVideoEndpoint', params: {"q": _query});
       print(
           "Response result videos search from Videos Repositories : ${response['videos'][0]}");
+      // print(
+      //     "Response result videos search owner from Videos Repositories : ${response['videos'][0]['owner']}");
       if (response == null) {
         return response;
       }

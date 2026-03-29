@@ -98,8 +98,8 @@ class _CommentSheetState extends State<CommentSheet> {
                       icon: Icon(Icons.send),
                       onPressed: () {
                         var userId = _commentController.user_id;
-                        print(
-                            "Videos id: ${_commentController.videoID}, User : ${userId}");
+                        print("Videos id: ${widget.videoId}, User : ${userId}");
+                        _commentController.videoID = widget.videoId;
                         _commentController.addComment();
                         _commentController.comment.clear();
                       },
@@ -175,7 +175,7 @@ class _CommentTileState extends State<CommentTile> {
                 // like comment
                 print("Like this comment ${c.id}");
                 // if (controller.toggleLike(c) == true) {
-                  controller.toggleLike(c);
+                controller.toggleLike(c);
                 // }
               },
             ),
