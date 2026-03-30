@@ -20,24 +20,26 @@ import 'package:video_player/video_player.dart';
 
 Logger logger = Logger();
 
-class CloudVideoController extends GetxController {
+class CommentsController extends GetxController {
   var isLoading = true.obs;
   final RemoteServices remoteService = Get.find<RemoteServices>();
   // VideosRepositories _videosRepositories = VideosRepositories();
   bool isLiked = false;
   static final Dio _dio = Dio();
+  String videoId = '';
 
-  Future<void> fetchVideosfromCloud() async {
-    final response = await _dio.get('http://13.220.86.245/api/videos');
+  Future<void> fetchComments() async {
+    final response =
+        await _dio.get('http://13.220.86.245/api/comments/$videoId');
   }
 
-  Future<void> toggleLike(String videoId) async {
+  Future<void> toggleLike(String text) async {
     try {
       var response = await _dio.post(
-        'http://YOUR_IP/api/like',
+        'http://YOUR_IP/api/comments',
         data: {
           "video_id": videoId,
-          "user_id": "1",
+          "comment": text,
         },
       );
       isLiked = true;

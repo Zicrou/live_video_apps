@@ -28,27 +28,38 @@ class _VideoListScreenState extends State<VideoListScreen> {
     });
   }
 
+  // int currentIndex = 0;
+
+  // void onPageChanged(int index) {
+  //   setState(() {
+  //     currentIndex = index;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+    int currentIndex = 0;
 
-    return ListView.builder(
+    void onPageChanged(int index) {
+      setState(() {
+        currentIndex = index;
+      });
+    }
+
+    return PageView.builder(
+      scrollDirection: Axis.vertical,
       itemCount: videos.length,
+      onPageChanged: (index) {
+        onPageChanged(index);
+      },
       itemBuilder: (context, index) {
-        final video = videos[index];
-
-        return Column(
-          children: [
-            Text(video['title']),
-            SizedBox(
-              height: 300,
-              child: VideoItemScreen(videoUrl: video['url']),
-            ),
-          ],
+        return VideoItemScreen(
+          video: videos[index],
+          isActive: index == currentIndex,
         );
-        // VideoPlayerController.networkUrl(Uri.parse(video['url']));
       },
     );
   }
