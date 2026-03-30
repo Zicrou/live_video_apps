@@ -58,7 +58,6 @@ class _VideoItemStateScreen extends State<VideoItemScreen> {
     if (!_controller.value.isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
-
     return GestureDetector(
         onTap: () {
           _controller.value.isPlaying
