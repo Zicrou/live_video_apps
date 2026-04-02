@@ -1,0 +1,13 @@
+import 'package:get/get.dart';
+import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
+import 'package:live_video_apps/app/data/services/remote_services.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
+
+class FollowsBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(VideosRepositories()); // Assuming TypesController is needed here
+    Get.put(RemoteServices());
+  }
+}

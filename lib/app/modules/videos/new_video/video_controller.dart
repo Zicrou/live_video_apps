@@ -59,6 +59,11 @@ class VideoController extends GetxController {
   //   );
   // }
 
+  ProduitController() {
+    final authProvider = Get.find<AuthProvider>();
+    user_id = authProvider.user?.user?.id;
+  }
+
   Future<void> createVideo() async {
     isLoading(true);
     try {
@@ -82,11 +87,6 @@ class VideoController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  ProduitController() {
-    final authProvider = Get.find<AuthProvider>();
-    user_id = authProvider.user?.user?.id;
   }
 
   @override

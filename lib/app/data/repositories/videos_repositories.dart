@@ -147,88 +147,6 @@ class VideosRepositories {
     }
   }
 
-  // Future<UserRegister> signin(
-  //   String name,
-  //   String phone,
-  //   String password,
-  //   String email,
-  // ) async {
-  //   try {
-  //     logger.i(
-  //       'Auth Repositories: Sign in with phone => $phone and password => $password, name => $name and email => $email',
-  //     );
-  //     final response = await _apiProvider.postN(
-  //       registerEndPoint,
-  //       {'name': name, 'phone': phone, 'password': password, 'email': email},
-  //       // options: Options(headers: {'Content-type': 'application/json'}),
-  //     );
-
-  //     var userRegister = UserRegister();
-  //     userRegister = UserRegister.fromJson((response));
-
-  //     if (userRegister.token == null) {
-  //       throw Exception("Registering failed: token is null in response");
-  //     }
-  //     _authProvider.isAuthenticated = true;
-  //     _authProvider.authToken = userRegister.token!;
-  //     // logger.i('authToken: ${_authProvider.authToken}');
-  //     // logger.i("userRegister from Repositories: ${userRegister.toString()}");
-  //     return userRegister;
-  //   } on BadRequestException {
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<dynamic> signout() async {
-  //   try {
-  //     logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
-  //     final response = await _apiProvider.post(
-  //       signOutEndpoint,
-  //       // options: Options(
-  //       //   headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
-  //       // ),
-  //       {"token": _authProvider.authToken},
-  //     );
-  //     logger.i("Response from Auth Repositories logout: ${response}");
-  //     _authProvider.reset();
-  //     print("Auth Repositories: reset authProvider ${_authProvider.authToken}");
-  //     if (!_authProvider.isAuthenticated) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } on BadRequestException {
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<List<dynamic>> fetchVentes() async {
-  //   try {
-  //     logger.i("Auth Repositories: Fetching list of ventes");
-  //     final res = await _apiProvider.get(venteListEndpoint);
-  //     logger.w('List Ventes response: $res');
-  //     return res;
-  //   } on BadRequestException {
-  //     rethrow;
-  //   }
-  // }
-
-  // Future<List<dynamic>> fetchVentes() async {
-  //   final response = await _authProvider.getVentes(); // Calls provider
-  //   if (response.statusCode == 200) {
-  //     // Assuming response.body is a JSON array
-  //     return response.body;
-  //   } else {
-  //     throw Exception('Failed to fetch ventes');
-  //   }
-  // }
-
-  // Future<VenteInfo> listVentes() async {
-  //   final response = await _apiProvider.getVentes();
-  //   //final ventesResponse = VenteResponse.fromJson(response.data);
-  //   return VenteInfo.fromJson(response.data);
-  // }
-
   Future<dynamic> fetchSearchVideos(String query) async {
     var _query = query;
     try {
@@ -244,6 +162,17 @@ class VideosRepositories {
 
       var res = VideosInfo.fromJson(response);
       print("Liste des videos ${res}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> toggleFollow(String userId) async {
+    try {
+      final res = await _apiProvider.post('$toggleFollowsEndpoint/$userId', {});
+      print(
+          'VideosRepositories: Toggle follow response: $res, ${res['following']}');
       return res;
     } on BadRequestException {
       rethrow;

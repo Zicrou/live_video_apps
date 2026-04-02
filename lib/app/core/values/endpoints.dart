@@ -36,3 +36,4 @@ const addCommentReplyEndpoint = '$baseUrl/comments/';
 const addCommentEndpoint = '$baseUrl/comments/';
 const toggleLikesDislikesCommentEndpoint = '$baseUrl/likeUnlike/comments';
 const resultsSearchVideoEndpoint = '$baseUrl/videos/search';
+const toggleFollowsEndpoint = '$baseUrl/follow';

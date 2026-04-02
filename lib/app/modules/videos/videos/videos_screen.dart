@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
@@ -37,6 +39,7 @@ class _VideosScreenState extends State<VideosScreen> {
   final CommentsController commentsController = Get.put(CommentsController());
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
+  final follow = Get.find<FollowsController>();
 
   @override
   void initState() {
@@ -226,8 +229,8 @@ class _VideosScreenState extends State<VideosScreen> {
                                   print("Ok");
                                   Get.offAll(SearchVideosScreen());
                                 },
-                                child: const Icon(Icons.search,
-                                    color: Colors.white),
+                                child:
+                                    const Icon(Icons.search, color: Colors.red),
                               )
                             ],
                           ),
@@ -287,6 +290,20 @@ class _VideosScreenState extends State<VideosScreen> {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.person_add,
+                                  color: follow.isFollowing.value
+                                      ? Colors.green
+                                      : Colors.white,
+                                  size: 32,
+                                ),
+                                onPressed: () {
+                                  follow.toggleFollow(state.ownerId!);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
                               // ❤️ LIKE
                               IconButton(
                                 icon: Icon(

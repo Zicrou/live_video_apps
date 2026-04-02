@@ -82,7 +82,10 @@ class HomePage extends StatelessWidget {
               child: const Text("Videos"),
               onPressed: () {
                 logger.i("Videos page...");
-                Get.to(VideoListScreen());
+                // VideosRepositories().toggleFollow(
+                //     "b4bf210c-83b1-4034-86e7-68e710a7f1bd"); // Test toggle follow function
+                Get.to(VideosScreen());
+
                 // Test Share videos function
 
                 // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));

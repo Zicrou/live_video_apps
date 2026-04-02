@@ -10,6 +10,7 @@ import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/login/login_controller.dart';
 import 'package:live_video_apps/app/modules/signup/Signup_controller.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
@@ -32,5 +33,6 @@ class AppInitialBindings extends Bindings {
     Get.lazyPut(() => VideoController());
     Get.lazyPut(() => CommentsController());
     Get.lazyPut(() => SearchVideosController());
+    Get.lazyPut(() => FollowsController());
   }
 }
