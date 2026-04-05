@@ -32,6 +32,7 @@ class Videos {
   RxInt commentCount = 0.obs;
   RxInt savedCount = 0.obs;
   RxInt sharesCount = 0.obs;
+  RxBool isFollowing = false.obs;
 
   Videos(
       {this.id,
@@ -72,7 +73,7 @@ class Videos {
 
     isLiked.value = json['isLiked'] > 0 ? true : false;
     isSaved.value = json['isSaveds'] > 0 ? true : false;
-
+    isFollowing.value = json['is_following'];
     // if (json['comments'] != null) {
     //   logger.i("Listing Comments in Video Model: ${json['comments']}");
     //   comments = <Comments>[].obs;

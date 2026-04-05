@@ -4,16 +4,28 @@ import 'package:live_video_apps/app/data/providers/api_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 
 class FollowsController extends GetxController {
-  var isFollowing = false.obs;
+  var followingMap = <String, bool>{}.obs;
   VideosRepositories _videosRepositories = VideosRepositories();
 
   Future<void> toggleFollow(String userId) async {
+    final current = followingMap[userId] ?? false;
     try {
+      /// 🔥 Optimistic update (instant UI)
+      followingMap[userId] = !current;
       final res = await _videosRepositories.toggleFollow(userId);
-
-      isFollowing.value = res['following'];
+      print(
+          "Response from toggleFollow in FollowsController: ${res['following']} for userId: $userId");
     } catch (e) {
       print(e);
+
+      /// rollback if API fails
+      followingMap[userId] = current;
+    }
+  }
+
+  void initFollowing(List videos) {
+    for (var video in videos) {
+      followingMap[video.ownerId] = video.isFollowing;
     }
   }
 }

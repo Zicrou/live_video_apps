@@ -12,6 +12,7 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:logger/logger.dart';
 import 'package:share_plus/share_plus.dart';
@@ -32,6 +33,7 @@ class VideosController extends GetxController {
   Rx<File?> selectedVideo = Rx<File?>(null);
   RxBool previewInitialized = false.obs;
   String? user_id;
+  final followsController = Get.find<FollowsController>();
   VideosController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
@@ -97,8 +99,9 @@ class VideosController extends GetxController {
 
       videosList.assignAll([response]);
       // videos.assignAll(videosList[0].videos);
-      logger.i("Liste videos a partir du controller ${videosList}");
-      logger.i("Liste videos a partir du controller ${videosList[0].videos}");
+      // logger.i("Liste videos a partir du controller ${videosList}");
+      // logger.i("Liste videos a partir du controller ${videosList[0].videos}");
+      followsController.initFollowing(videosList[0].videos!.toList());
     } catch (e) {
       print("Error fetching videos: $e");
     } finally {

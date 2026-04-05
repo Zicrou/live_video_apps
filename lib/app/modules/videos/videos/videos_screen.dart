@@ -11,6 +11,7 @@ import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_button_screen.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart';
@@ -287,20 +288,20 @@ class _VideosScreenState extends State<VideosScreen> {
                             return const SizedBox.shrink();
                           }
 
+                          // _actionsController.videosList[0].videos![index].isFollowing.value =
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.person_add,
-                                  color: follow.isFollowing.value
-                                      ? Colors.green
-                                      : Colors.white,
-                                  size: 32,
+                              if (state.ownerId != _actionsController.user_id)
+                                FollowsButtonScreen(video: state),
+
+                              const SizedBox(height: 16),
+                              Text(
+                                state.ownerId!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
                                 ),
-                                onPressed: () {
-                                  follow.toggleFollow(state.ownerId!);
-                                },
                               ),
                               const SizedBox(height: 16),
 
