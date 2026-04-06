@@ -35,7 +35,8 @@ class FollowsButtonScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: const DecorationImage(
-                    image: AssetImage('assets/images/avatar.webp'),
+                    image: NetworkImage(
+                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'), //AssetImage('assets/images/avatar.webp'),
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(

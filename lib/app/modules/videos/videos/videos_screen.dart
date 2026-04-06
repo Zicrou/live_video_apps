@@ -294,16 +294,15 @@ class _VideosScreenState extends State<VideosScreen> {
                             children: [
                               if (state.ownerId != _actionsController.user_id)
                                 FollowsButtonScreen(video: state),
-
-                              const SizedBox(height: 16),
                               Text(
-                                state.ownerId!,
+                                _actionsController.formatCount(state
+                                    .sharesCount.value), // Use FollowsCount
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // ❤️ LIKE
                               IconButton(
@@ -338,7 +337,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // 💬 COMMENT
                               IconButton(
@@ -364,7 +363,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // 💾 SAVE
                               IconButton(
@@ -401,7 +400,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
 
                               // 🔗 SHARE
                               IconButton(
@@ -439,7 +438,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
                             ],
                           );
                         });
