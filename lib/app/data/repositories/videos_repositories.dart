@@ -178,4 +178,34 @@ class VideosRepositories {
       rethrow;
     }
   }
+
+  Future<dynamic> getFollowers(String userId) async {
+    try {
+      final res = await _apiProvider.get('$followersEndpoint/$userId');
+      print('VideosRepositories: Get followers response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getFollowing(String userId) async {
+    try {
+      final res = await _apiProvider.get('$followingEndpoint/$userId');
+      print('VideosRepositories: Get following response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getSuggestions(String userId) async {
+    try {
+      final res = await _apiProvider.get('$suggestionsEndpoint/$userId');
+      print('VideosRepositories: Get suggestions response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
 }

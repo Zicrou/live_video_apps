@@ -6,6 +6,9 @@ import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 class FollowsController extends GetxController {
   var followingMap = <String, bool>{}.obs;
   VideosRepositories _videosRepositories = VideosRepositories();
+  var followers = [].obs;
+  var following = [].obs;
+  var suggestions = [].obs;
 
   Future<void> toggleFollow(String userId) async {
     final current = followingMap[userId] ?? false;
@@ -27,5 +30,20 @@ class FollowsController extends GetxController {
     for (var video in videos) {
       followingMap[video.ownerId] = video.isFollowing;
     }
+  }
+
+  Future<void> getFollowers(String userId) async {
+    final res = await _videosRepositories.getFollowers('/followers/$userId');
+    followers.value = res;
+  }
+
+  Future<void> getFollowing(String userId) async {
+    final res = await _videosRepositories.getFollowing('/following/$userId');
+    following.value = res;
+  }
+
+  Future<void> getSuggestions() async {
+    final res = await _videosRepositories.getSuggestions('/suggestions');
+    suggestions.value = res;
   }
 }

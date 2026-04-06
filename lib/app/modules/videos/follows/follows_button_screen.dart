@@ -17,29 +17,66 @@ class FollowsButtonScreen extends StatelessWidget {
       // final isFollowing = controller.isFollowing.value;
 
       // 🔥 update THIS video only
-      return GestureDetector(
-        onTap: () {
-          controller.toggleFollow(video.ownerId);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          decoration: BoxDecoration(
-            color: isFollowing ? Colors.grey : Colors.red,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) =>
-                ScaleTransition(scale: animation, child: child),
-            child: Text(
-              isFollowing ? "Following" : "Follow",
-              key: ValueKey(video.isFollowing.value),
-              style: const TextStyle(color: Colors.white),
+      return SizedBox(
+        width: 50,
+        height: 60,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            /// 👤 AVATAR
+            GestureDetector(
+              onTap: () {
+                // Navigate to profile
+                print("Navigate to profile of userId: ${video.ownerId}");
+              },
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: const DecorationImage(
+                    image: AssetImage('assets/images/avatar.webp'),
+                    fit: BoxFit.cover,
+                  ),
+                  border: Border.all(
+                    color: isFollowing ? Colors.green : Colors.red,
+                    width: 2,
+                  ),
+                ),
+              ),
             ),
-          ),
+
+            /// ➕ FOLLOW ICON
+            Positioned(
+              bottom: -2,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  controller.toggleFollow(video.ownerId);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isFollowing ? Icons.check : Icons.add,
+                    size: 16,
+                    color: isFollowing ? Colors.green : Colors.red,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       );
     });
   }
 }
+// Text(
+            //   isFollowing ? "Following" : "Follow",
+            //   key: ValueKey(video.isFollowing.value),
+            //   style: const TextStyle(color: Colors.white),
+            // ),
