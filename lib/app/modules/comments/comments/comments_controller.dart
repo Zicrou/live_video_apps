@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:live_video_apps/app/data/models/Videos.dart';
 import 'package:live_video_apps/app/data/models/comment_info.dart';
+import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
@@ -66,7 +67,7 @@ class CommentsController extends GetxController {
       };
       try {
         var response = _commentsRepository.addComment(data);
-        print(response);
+        print("Response from addComment: $response");
         getComments(data['video_id']!);
         // Get.offAll(CommentSheet(videoId: data['video_id']!));
       } catch (e) {}
@@ -175,5 +176,19 @@ class CommentsController extends GetxController {
   void closeReply() {
     parentID = null;
     update();
+  }
+
+  Future<void> deleteComment(dynamic comment) async {
+    try {
+      var response = await _commentsRepository.deleteComment(comment.id!);
+      print("Delete response: $response");
+      if (response['message'] == "Comment deleted successfully") {
+        update(); // Refresh UI after deletion
+        // Refresh comments after deletion
+        getComments(comment.video_id!);
+      }
+    } catch (e) {
+      print("Error deleting comment: ${e.toString()}");
+    }
   }
 }

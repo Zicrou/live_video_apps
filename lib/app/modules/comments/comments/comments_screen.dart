@@ -140,46 +140,96 @@ class _CommentTileState extends State<CommentTile> {
           final isReplying = controller.parentID == c.id;
 
           return ListTile(
-            title: Text(
-              c.user!.name!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Column(
-              // 👈 CHANGE THIS (important)
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(c.comment ?? ""),
-
-                /// 🔥 REPLY BUTTON (ADD HERE)
-                TextButton(
-                  onPressed: () {
-                    commentController.openReply(c.id!);
-                  },
-                  child: Text("Reply"),
-                ),
-
-                /// 🔥 REPLY FORM (SHOW ONLY IF CLICKED)
-                if (isReplying)
-                  ReplyForm(
-                    commentId: c.id!,
-                  ),
-              ],
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                c.isLiked.value ? Icons.favorite : Icons.favorite_border,
-                color: Colors.black,
-                // size: 32,
+              title: Text(
+                c.user!.name!,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              onPressed: () {
-                // like comment
-                print("Like this comment ${c.id}");
-                // if (controller.toggleLike(c) == true) {
-                controller.toggleLike(c);
-                // }
-              },
-            ),
-          );
+              subtitle: Column(
+                // 👈 CHANGE THIS (important)
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(c.comment ?? ""),
+
+                  /// 🔥 REPLY BUTTON (ADD HERE)
+                  TextButton(
+                    onPressed: () {
+                      commentController.openReply(c.id!);
+                    },
+                    child: Text("Reply"),
+                  ),
+
+                  /// 🔥 REPLY FORM (SHOW ONLY IF CLICKED)
+                  if (isReplying)
+                    ReplyForm(
+                      commentId: c.id!,
+                    ),
+                ],
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// 🗑️ DELETE / REPORT
+                  IconButton(
+                    icon: Icon(
+                      (commentController.user_id! == c.user_id)
+                          ? Icons.delete
+                          : Icons.report,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      if (commentController.user_id! == c.user_id) {
+                        // delete comment
+                        commentController.deleteComment(c);
+                      } else {
+                        // report comment
+                        print("Report comment ${c.id}");
+                      }
+                    },
+                  ),
+
+                  const SizedBox(width: 4), // 👈 spacing
+
+                  /// ❤️ LIKE BUTTON + COUNT
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          c.isLiked.value
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          controller.toggleLike(c);
+                        },
+                      ),
+
+                      /// 🔢 LIKE COUNT BADGE
+                      if (c.likeCount.value > 0)
+                        Positioned(
+                          right: 5,
+                          top: 5,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${c.likeCount.value}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ));
         }),
 
         /// Reply button
@@ -224,6 +274,64 @@ class _CommentTileState extends State<CommentTile> {
                           TextSpan(text: '${r.comment}\n'),
                         ],
                       ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        /// 🗑️ DELETE / REPORT
+                        IconButton(
+                          icon: Icon(
+                            (commentController.user_id! == r.user_id)
+                                ? Icons.delete
+                                : Icons.report,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {},
+                        ),
+
+                        const SizedBox(width: 4), // 👈 spacing
+
+                        /// ❤️ LIKE BUTTON + COUNT
+                        // Stack(
+                        //   clipBehavior: Clip.none,
+                        //   children: [
+                        //     IconButton(
+                        //       icon: Icon(
+                        //         r.isLiked.value
+                        //             ? Icons.favorite
+                        //             : Icons.favorite_border,
+                        //         color: Colors.black,
+                        //       ),
+                        //       onPressed: () {
+                        //         //like reply
+                        //         // commentController.toggleLikeReply(r);
+                        //       },
+                        //     ),
+
+                        //     /// 🔢 LIKE COUNT BADGE
+                        //     if (r.likeCount.value > 0)
+                        //       Positioned(
+                        //         right: -2,
+                        //         top: -2,
+                        //         child: Container(
+                        //           padding: const EdgeInsets.symmetric(
+                        //               horizontal: 5, vertical: 1),
+                        //           decoration: BoxDecoration(
+                        //             color: Colors.red,
+                        //             borderRadius: BorderRadius.circular(10),
+                        //           ),
+                        //           child: Text(
+                        //             '${r.likeCount.value}',
+                        //             style: const TextStyle(
+                        //               color: Colors.white,
+                        //               fontSize: 9,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //   ],
+                        // ),
+                      ],
                     ),
                   );
                 }).toList(),

@@ -40,7 +40,7 @@ class _VideosScreenState extends State<VideosScreen> {
   final CommentsController commentsController = Get.put(CommentsController());
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
-  final follow = Get.find<FollowsController>();
+  final followsController = Get.find<FollowsController>();
 
   @override
   void initState() {
@@ -51,27 +51,27 @@ class _VideosScreenState extends State<VideosScreen> {
   Future<void> _initVideos() async {
     await _actionsController.fetchVideos();
 
-    final videos = _actionsController.videosList[0].videos!;
-    for (final video in videos) {
-      final controller = VideoPlayerController.networkUrl(
-        Uri.parse(video.videoUrl!),
-      );
+    final videos = _actionsController.videosList[0].videos!.first;
+    // for (final video in videos) {
+    final controller = VideoPlayerController.networkUrl(
+      Uri.parse(videos.videoUrl!),
+    );
 
-      // await controller.initialize();
-      // controller.setLooping(true);
+    // await controller.initialize();
+    // controller.setLooping(true);
 
-      // _controllers.add(controller);
+    // _controllers.add(controller);
 
-      await controller.initialize().then((_) {
-        controller.setLooping(true);
-        // setState(() {
-        _controllers.add(controller);
+    await controller.initialize().then((_) {
+      controller.setLooping(true);
+      // setState(() {
+      _controllers.add(controller);
 
-        // _videoPaths.add(video.videoUrl!); // Add the video path
+      // _videoPaths.add(video.videoUrl!); // Add the video path
 
-        // });
-      });
-    }
+      // });
+    });
+    // }
 
     setState(() {
       _controllersInitialized = true;
@@ -128,21 +128,27 @@ class _VideosScreenState extends State<VideosScreen> {
         if (_actionsController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (_actionsController.videosList[0] == null) {
-          print("No videos");
+        if (_actionsController.videosList.isEmpty ||
+            _actionsController.videosList[0].videos == null ||
+            _actionsController.videosList[0].videos!.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
+        // if (_actionsController.videosList[0] == null) {
+        //   print("No videos");
+        //   return const Center(child: CircularProgressIndicator());
+        // }
         if (_controllers.isEmpty) {
           print("VideoControllerPlayer.value is empty or is charging...");
           return const Center(child: CircularProgressIndicator());
         }
+        var firstVideo = _actionsController.videosList[0].videos!.first;
         print("Videos: ${_actionsController.videosList[0].videos}");
         return PageView.builder(
           scrollDirection: Axis.vertical,
           itemCount: _actionsController.videosList[0].videos!.length,
           itemBuilder: (context, index) {
-            var video = _actionsController.videosList[0].videos![index];
-            final controller = _controllers[index];
+            var video = firstVideo;
+            final controller = _controllers.first;
             print("Video Id: ${video.id}");
             if (!controller.value.isInitialized) {
               return const Center(child: CircularProgressIndicator());
@@ -295,8 +301,8 @@ class _VideosScreenState extends State<VideosScreen> {
                               if (state.ownerId != _actionsController.user_id)
                                 FollowsButtonScreen(video: state),
                               Text(
-                                _actionsController.formatCount(state
-                                    .sharesCount.value), // Use FollowsCount
+                                _actionsController.formatCount(
+                                    followsController.followersCount.value),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -308,29 +314,20 @@ class _VideosScreenState extends State<VideosScreen> {
                               IconButton(
                                 icon: Icon(
                                   Icons.favorite,
-                                  color: state.isLiked.value
+                                  color: _actionsController.isLiked.value
                                       ? Colors.red
                                       : Colors.white,
                                   size: 32,
                                 ),
                                 onPressed: () {
-                                  // var likes = state.likes;
-                                  // var like;
-                                  // like = likes!
-                                  //     .where((like) =>
-                                  //         like.userId ==
-                                  //         _actionsController.user_id)
-                                  //     .first;
-                                  // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone,
-                                  // avoir un boulot pour me permettra de le faire,
-                                  // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
+                                  // _actionsController.isLoading(true);
 
                                   _actionsController.toggleLike(state);
                                 },
                               ),
                               Text(
                                 _actionsController
-                                    .formatCount(state.likeCount.value),
+                                    .formatCount(state.likeCount!),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -369,7 +366,7 @@ class _VideosScreenState extends State<VideosScreen> {
                               IconButton(
                                 icon: Icon(
                                   Icons.bookmark,
-                                  color: state.isSaved.value
+                                  color: _actionsController.isSaved.value
                                       ? Colors.yellow
                                       : Colors.white,
                                   size: 30,
@@ -378,9 +375,9 @@ class _VideosScreenState extends State<VideosScreen> {
                                   _actionsController.toggleSave(state);
 
                                   logger.i(
-                                    "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved.value}",
+                                    "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved}, savedCount: ${state.savedCount}",
                                   );
-                                  if (state.isSaved.value) {
+                                  if (state.isSaved!) {
                                     logger.i(
                                       "Video at index ${state.id} is now saved.",
                                     );
@@ -393,7 +390,7 @@ class _VideosScreenState extends State<VideosScreen> {
                               ),
                               Text(
                                 _actionsController
-                                    .formatCount(state.savedCount.value),
+                                    .formatCount(state.savedCount!),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -415,8 +412,7 @@ class _VideosScreenState extends State<VideosScreen> {
                                     await showCannotShareEmptyVideoDialog(
                                         context);
                                   } else {
-                                    state.sharesCount.value =
-                                        state.sharesCount.value + 1;
+                                    // state.sharesCount = state.sharesCount! + 1;
                                     await SharePlus.instance.share(
                                       ShareParams(
                                         text:
@@ -430,8 +426,8 @@ class _VideosScreenState extends State<VideosScreen> {
                                 },
                               ),
                               Text(
-                                _actionsController
-                                    .formatCount(state.sharesCount.value),
+                                _actionsController.formatCount(
+                                    _actionsController.sharesCount.value),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -453,9 +449,9 @@ class _VideosScreenState extends State<VideosScreen> {
                     right: 80,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          '@username',
+                          "${video.owner?.name ?? 'Unknown'}", // Use username from video data, or "Unknown" if null
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -463,8 +459,7 @@ class _VideosScreenState extends State<VideosScreen> {
                         ),
                         SizedBox(height: 6),
                         Text(
-                          // var current_video = _actionsController.videosList[0].videos![index];
-                          "Caption",
+                          "${video.caption}", // Use caption from video data, or empty string if null
                           style: TextStyle(color: Colors.white),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,

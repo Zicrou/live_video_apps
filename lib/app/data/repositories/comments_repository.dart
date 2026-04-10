@@ -83,4 +83,20 @@ class CommentsRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> deleteComment(String commentId) async {
+    try {
+      final response =
+          await _apiProvider.delete('$deleteCommentEndpoint/$commentId');
+      if (response == null) {
+        return response;
+      }
+      print(
+        'Delete Comment response comment repositories: ${response}',
+      );
+      return response;
+    } catch ($e) {
+      print($e.toString());
+    }
+  }
 }

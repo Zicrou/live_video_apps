@@ -17,7 +17,7 @@ class RightActions extends StatelessWidget {
           () => IconButton(
             icon: Icon(
               Icons.favorite,
-              color: video.isLiked.value ? Colors.red : Colors.white,
+              color: video.isLiked! ? Colors.red : Colors.white,
               size: 32,
             ),
             onPressed: () {},
@@ -25,7 +25,7 @@ class RightActions extends StatelessWidget {
         ),
         Obx(
           () => Text(
-            '${video.likeCount.value}',
+            '${video.likeCount}',
             style: const TextStyle(color: Colors.white),
           ),
         ),

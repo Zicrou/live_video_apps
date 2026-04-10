@@ -38,29 +38,13 @@ class VideosController extends GetxController {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
   }
-  final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://your-api.com/api',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer YOUR_TOKEN',
-      },
-    ),
-  );
-
-  // RxMap<RxInt, VideoActionsState> videoStates =
-  //     <RxInt, VideoActionsState>{}.obs;
-
-  // void initVideo(RxInt videoId) {
-  //   videoStates[videoId] ??= VideoActionsState(
-  //     id: videoId,
-  //     isLiked: false.obs,
-  //     isSaved: false.obs,
-  //     likeCount: 0.obs,
-  //     commentCount: 0.obs,
-  //     url: ''.obs,
-  //   );
-  // }
+  final RxBool isLiked = false.obs;
+  final RxBool isSaved = false.obs;
+  final RxInt likeCount = 0.obs;
+  final RxInt commentCount = 0.obs;
+  // final RxString videoUrl = ''.obs;
+  final RxInt sharesCount = 0.obs;
+  final RxInt savedCount = 0.obs;
 
   @override
   void onInit() {
@@ -96,14 +80,11 @@ class VideosController extends GetxController {
       //   // ],
       // };
       final response = await _videosRepositories.fetchVideos();
-
       videosList.assignAll([response]);
-      // videos.assignAll(videosList[0].videos);
-      // logger.i("Liste videos a partir du controller ${videosList}");
-      // logger.i("Liste videos a partir du controller ${videosList[0].videos}");
+
       followsController.initFollowing(videosList[0].videos!.toList());
     } catch (e) {
-      print("Error fetching videos: $e");
+      print("Error fetching videos: ${e.toString()}");
     } finally {
       isLoading(false);
     }
@@ -112,38 +93,53 @@ class VideosController extends GetxController {
   // ❤️ LIKE
   Future<void> toggleLike(videofromScreen) async {
     try {
-      videofromScreen.isLiked.value = !videofromScreen.isLiked.value!;
-      videofromScreen.likeCount.value = videofromScreen.likeCount.value +
-          (videofromScreen.isLiked.value ? 1 : -1);
+      videofromScreen.isLiked = !videofromScreen.isLiked!;
+      videofromScreen.likeCount =
+          videofromScreen.likeCount + (videofromScreen.isLiked ? 1 : -1);
       var json = {
         "video_id": videofromScreen.id,
       };
-      var response = _videosRepositories.toggleLikeDislike(json);
-      // await fetchVideos();
+      var response = await _videosRepositories.toggleLikeDislike(json);
+      if (response['message'] == "Video liked successfully") {
+        isLiked(true);
+      } else {
+        isLiked(false);
+      }
     } catch (e) {
       // rollback on error
-      videofromScreen.isLiked.value = !videofromScreen.isLiked.value!;
-      videofromScreen.likeCount.value = videofromScreen.likeCount.value +
-          (videofromScreen.isLiked.value ? 1 : -1);
+      videofromScreen.isLiked = !videofromScreen.isLiked!;
+      videofromScreen.likeCount =
+          videofromScreen.likeCount + (videofromScreen.isLiked ? 1 : -1);
+      isLiked(false);
+    } finally {
+      // isLoading(false);
     }
   }
 
   // 💾 SAVE
   Future<void> toggleSave(videofromScreen) async {
     try {
-      videofromScreen.isSaved.value = !videofromScreen.isSaved.value!;
-      videofromScreen.savedCount.value = videofromScreen.savedCount.value +
-          (videofromScreen.isSaved.value ? 1 : -1);
+      videofromScreen.isSaved = !videofromScreen.isSaved!;
+      videofromScreen.savedCount =
+          videofromScreen.savedCount + (videofromScreen.isSaved ? 1 : -1);
       var json = {
         "video_id": videofromScreen.id,
       };
-      var response = _videosRepositories.toggleSavedUnsaved(json);
-      // await fetchVideos();
+      var response = await _videosRepositories.toggleSavedUnsaved(json);
+      if (response['message'] == "Video saved successfully") {
+        isSaved(true);
+        // savedCount.value = response['savedCount'];
+      } else {
+        isSaved(false);
+        savedCount.value = videofromScreen.savedCount;
+      }
     } catch (e) {
       // rollback on error
-      videofromScreen.isSaved.value = !videofromScreen.isSaved.value!;
-      videofromScreen.savedCount.value = videofromScreen.savedCount.value +
-          (videofromScreen.isSaved.value ? 1 : -1);
+      videofromScreen.isSaved = !videofromScreen.isSaved!;
+      videofromScreen.savedCount =
+          videofromScreen.savedCount + (videofromScreen.isSaved ? 1 : -1);
+      isSaved(false);
+      // savedCount.value = videofromScreen.savedCount;
     }
   }
 
@@ -153,8 +149,17 @@ class VideosController extends GetxController {
       // video.sharesCount.value =
       //     video.sharesCount.value + 1;
       var response = await _videosRepositories.shareVideos(video.id);
+      if (response['message'] == "Video shared successfully") {
+        sharesCount.value = response['shares'];
+
+        // Share the video URL using share_plus
+        ShareParams(
+          text: "🔥Sharing this video\n${video.videoUrl}",
+          subject: "Check this video",
+        );
+      }
     } catch (e) {
-      // video.sharesCount.value = video.sharesCount.value + 1;
+      sharesCount.value = video.sharesCount;
       print("share error: ${e.toString()}");
     }
   }

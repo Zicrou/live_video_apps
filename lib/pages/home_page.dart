@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/repositories/comments_repository.dart';
+import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/lives/livesController.dart';
@@ -10,6 +11,7 @@ import 'package:live_video_apps/app/modules/signup/signup_screen.dart';
 import 'package:live_video_apps/app/modules/videos/learn_cloud/video_list_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
 import 'package:logger/logger.dart';
 
@@ -82,8 +84,9 @@ class HomePage extends StatelessWidget {
               child: const Text("Videos"),
               onPressed: () {
                 logger.i("Videos page...");
-                // VideosRepositories().toggleFollow(
-                //     "b4bf210c-83b1-4034-86e7-68e710a7f1bd"); // Test toggle follow function
+                // VideosController().fetchVideos();
+                // getProfile(
+                //     "b4bf210c-83b1-4034-86e7-68e710a7f1bd"); // Test get Profile function
                 Get.to(VideosScreen());
 
                 // Test Share videos function

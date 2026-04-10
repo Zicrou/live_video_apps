@@ -40,3 +40,5 @@ const toggleFollowsEndpoint = '$baseUrl/follow';
 const followersEndpoint = '$baseUrl/followers/';
 const followingEndpoint = '$baseUrl/following/';
 const suggestionsEndpoint = '$baseUrl/suggestions';
+const profileEndpoint = '$baseUrl/profile';
+const deleteCommentEndpoint = '$baseUrl/comments';

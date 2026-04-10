@@ -26,7 +26,7 @@ class VideosRepositories {
       if (response == null) {
         return response;
       }
-      logger.w(
+      print(
         'Fetching Videos response video repositories: ${response['videos']}',
       );
       // print("Response.data ${response.data}");
@@ -34,7 +34,7 @@ class VideosRepositories {
       // print("Data type 2: ${response['videos'].runtimeType}");
 
       var res = VideosInfo.fromJson(response);
-      logger.i("Liste des videos ${res}");
+      print("Liste des videos ${res.toString()}");
       return res;
     } on BadRequestException {
       rethrow;
@@ -203,6 +203,16 @@ class VideosRepositories {
     try {
       final res = await _apiProvider.get('$suggestionsEndpoint/$userId');
       print('VideosRepositories: Get suggestions response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getProfile(String userId) async {
+    try {
+      final res = await _apiProvider.get('$baseUrl/profile/$userId');
+      print('VideosRepositories: Get profile response: $res');
       return res;
     } on BadRequestException {
       rethrow;
