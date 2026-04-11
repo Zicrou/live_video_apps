@@ -286,7 +286,15 @@ class _CommentTileState extends State<CommentTile> {
                                 : Icons.report,
                             color: Colors.red,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            if (commentController.user_id! == r.user_id) {
+                              // delete reply
+                              commentController.deleteReply(r);
+                            } else {
+                              // report reply
+                              print("Report reply ${r.id}");
+                            }
+                          },
                         ),
 
                         const SizedBox(width: 4), // 👈 spacing

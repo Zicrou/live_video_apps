@@ -191,4 +191,18 @@ class CommentsController extends GetxController {
       print("Error deleting comment: ${e.toString()}");
     }
   }
+
+  Future<void> deleteReply(dynamic reply) async {
+    try {
+      var response = await _commentsRepository.deleteReply(reply.id!);
+      print("Delete response: $response");
+      if (response['message'] == "Reply deleted successfully") {
+        update(); // Refresh UI after deletion
+        // Refresh replys after deletion
+        getComments(reply.video_id!);
+      }
+    } catch (e) {
+      print("Error deleting comment: ${e.toString()}");
+    }
+  }
 }

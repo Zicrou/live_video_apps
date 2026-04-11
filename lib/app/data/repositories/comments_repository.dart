@@ -99,4 +99,21 @@ class CommentsRepository {
       print($e.toString());
     }
   }
+
+  Future<dynamic> deleteReply(String replyId) async {
+    try {
+      final response =
+          await _apiProvider.delete('$deleteReplyEndpoint/$replyId');
+      if (response == null) {
+        return response;
+      }
+      print(
+        'Delete Reply response reply repositories: ${response}',
+      );
+
+      return response;
+    } catch ($e) {
+      print($e.toString());
+    }
+  }
 }
