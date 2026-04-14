@@ -43,3 +43,4 @@ const suggestionsEndpoint = '$baseUrl/suggestions';
 const profileEndpoint = '$baseUrl/profile';
 const deleteCommentEndpoint = '$baseUrl/comments';
 const deleteReplyEndpoint = '$baseUrl/comment/reply';
+const toggleLikesDislikesReplyEndpoint = '$baseUrl/likeUnlike/replies';

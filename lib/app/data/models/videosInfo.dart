@@ -6,7 +6,7 @@ Logger logger = Logger();
 
 class VideosInfo {
   RxList<Videos> videos = <Videos>[].obs;
-
+  RxInt? commentCount = 0.obs;
   VideosInfo({
     required this.videos,
   });

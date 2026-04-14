@@ -13,15 +13,16 @@ class Reply {
   String? video_id;
   String? parent_id;
   User? user;
-
+  RxInt? likeCount = 0.obs;
   Reply(
       {this.id,
       this.comment,
       this.user_id,
       this.video_id,
       this.parent_id,
-      this.user
-      }); //
+      this.user}); //
+
+  RxBool? isLiked = false.obs;
 
   Reply.fromJson(Map<String, dynamic> json) {
     logger.i("Listing Reply in Reply Model: $json");
@@ -36,6 +37,8 @@ class Reply {
     logger.w("Adding this user ${json['user']} to Reply list");
     user = User.fromJson(json['user']);
     logger.i("User: ${user.toString()}");
+    isLiked?.value = (json['isLiked'] == 1) ? true : false;
+    likeCount?.value = json['likes_count'];
   }
 
   Map<String, dynamic> toJson() {

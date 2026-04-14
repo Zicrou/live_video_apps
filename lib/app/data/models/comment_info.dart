@@ -6,22 +6,21 @@ Logger logger = Logger();
 
 class CommentInfo {
   RxList<Comments>? comments = <Comments>[].obs;
-  
-  RxInt? commentCount;
 
-  CommentInfo({
-    required this.comments
-  });
+  int? commentCount;
+
+  CommentInfo({required this.comments});
 
   CommentInfo.fromJson(Map<String, dynamic> json) {
     if (json['comments'] != null) {
       comments = comments;
       json['comments'].forEach((c) {
-        logger.w("liste comments CommentInfo: $c");
+        print("liste comments CommentInfo: $c");
         comments!.add(new Comments.fromJson(c));
       });
-        commentCount?.value = json['commentsCount'];
     }
+    //
+    commentCount = json['commentsCount'];
 
     // likesCount = json['videos']['likesCount'];
   }
@@ -35,6 +34,6 @@ class CommentInfo {
 
   @override
   String toString() {
-    return '{comment: $comments}';
+    return 'commentsCount: ${commentCount}, Comments:{$comments}';
   }
 }

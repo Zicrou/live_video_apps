@@ -18,6 +18,7 @@ import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:logger/logger.dart';
 import 'package:video_player/video_player.dart';
 
@@ -34,6 +35,8 @@ class CommentsController extends GetxController {
   String? user_id;
   String? videoID;
   String? parentID;
+  final videosController = Get.find<VideosController>();
+  RxBool addOrDeleteCommentSuccess = false.obs;
   CommentsController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
@@ -66,11 +69,24 @@ class CommentsController extends GetxController {
         // 'parent_id': parent_id
       };
       try {
-        var response = _commentsRepository.addComment(data);
+        var response = await _commentsRepository.addComment(data);
         print("Response from addComment: $response");
-        getComments(data['video_id']!);
-        // Get.offAll(CommentSheet(videoId: data['video_id']!));
-      } catch (e) {}
+        var commentInfo = await getComments(data['video_id']!);
+        // update()
+        var videoId = data['video_id'];
+        final index = videosController.videosList[0].videos!
+            .indexWhere((v) => v.id == videoId);
+        if (index != -1) {
+          videosController.videosList[0].videos![index].commentCount =
+              commentInfo.commentCount!;
+        }
+        addOrDeleteCommentSuccess.value = true;
+        print(
+            "addOrDeleteCommentSuccess: ${addOrDeleteCommentSuccess.value}, comment from add comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
+      } catch (e) {
+        addOrDeleteCommentSuccess.value = false;
+        throw Exception("Error adding Comment: ${e.toString()}");
+      }
     }
   }
 
@@ -78,30 +94,32 @@ class CommentsController extends GetxController {
     try {
       var response = await _commentsRepository.fetchVideoComments(video_id);
       print("Response controller comments ${response.comments}");
-      response.comments!.forEach((c) {
-        print("User: ${c.user!.name} \n comment: ${c.comment}");
-        c.replies?.forEach((r) {
-          print(r.user!.name);
-          print(r.comment);
-        });
-      });
+      // response.comments!.forEach((c) {
+      //   print("User: ${c.user!.name} \n comment: ${c.comment}");
+      //   c.replies?.forEach((r) {
+      //     print(r.user!.name);
+      //     print(r.comment);
+      //   });
+      // });
 
       commentList.assignAll([response]);
-      print("CommentList ${commentList}");
-      var comment = commentList[0].comments;
-      comment?.forEach((c) {
-        // comment
-        // var comment = c.comments;
-        // comment!.forEach((c) {
-        print("User and comment from commentList");
-        print(c.user!.name);
-        print(c.comment);
-        c.replies?.forEach((r) {
-          print(r.user!.name);
-          print(r.comment);
-        });
-        // });
-      });
+
+      // var comment = commentList[0].comment;
+      // print("commentsCount in Controller: ${comment}");
+      // comment?.forEach((c) {
+      // comment
+      // var comment = c.comments;
+      // comment!.forEach((c) {
+      // print("User and comment from commentList");
+      // print(c.user!.name);
+      // print(c.comment);
+
+      // c.replies?.forEach((r) {
+      //   print(r.user!.name);
+      //   print(r.comment);
+      // });
+      // });
+      // });
       return response;
     } catch (e) {
       print(e.toString());
@@ -183,12 +201,25 @@ class CommentsController extends GetxController {
       var response = await _commentsRepository.deleteComment(comment.id!);
       print("Delete response: $response");
       if (response['message'] == "Comment deleted successfully") {
+        // deleteCommentSuccess.value = true;
         update(); // Refresh UI after deletion
         // Refresh comments after deletion
-        getComments(comment.video_id!);
+        var commentInfo = await getComments(comment.video_id!);
+        var videoId = comment.video_id!;
+        final index = videosController.videosList[0].videos!
+            .indexWhere((v) => v.id == videoId);
+        if (index != -1) {
+          videosController.videosList[0].videos![index].commentCount =
+              commentInfo.commentCount!;
+        }
+        addOrDeleteCommentSuccess.value = true;
+        print(
+            "addOrDeleteCommentSuccess: ${addOrDeleteCommentSuccess.value}, comment from delete comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
       }
     } catch (e) {
       print("Error deleting comment: ${e.toString()}");
+      addOrDeleteCommentSuccess.value = false;
+      throw Exception("Error deleting Comment: ${e.toString()}");
     }
   }
 
@@ -203,6 +234,27 @@ class CommentsController extends GetxController {
       }
     } catch (e) {
       print("Error deleting comment: ${e.toString()}");
+    }
+  }
+
+  Future<void> toggleLikeReplies(reply) async {
+    try {
+      print("toggleLikeReplies controller");
+      reply.isLiked.value = !reply.isLiked.value!;
+      reply.likeCount.value =
+          reply.likeCount.value + (reply.isLiked.value ? 1 : -1);
+      var json = {
+        "reply_id": reply.id,
+      };
+      var response = _commentsRepository.toggleLikeDislikeReplies(json);
+      update(); // 🔥 THIS refreshes GetBuilder UI
+      // return true;
+    } catch (e) {
+      // rollback on error
+      reply.isLiked.value = !reply.isLiked.value!;
+      reply.likeCount.value =
+          reply.likeCount.value + (reply.isLiked.value ? 1 : -1);
+      throw "${e.toString()}";
     }
   }
 }

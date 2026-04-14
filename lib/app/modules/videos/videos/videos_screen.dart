@@ -37,10 +37,11 @@ class VideosScreen extends StatefulWidget {
 class _VideosScreenState extends State<VideosScreen> {
   final VideosController _actionsController = Get.put(VideosController());
   final VideoController _video_controller = Get.put(VideoController());
-  final CommentsController commentsController = Get.put(CommentsController());
+  // final CommentsController commentsController = Get.put(CommentsController());
   final List<VideoPlayerController> _controllers = [];
   bool _controllersInitialized = false;
   final followsController = Get.find<FollowsController>();
+  final commentsController = Get.find<CommentsController>();
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _VideosScreenState extends State<VideosScreen> {
   Future<void> _initVideos() async {
     await _actionsController.fetchVideos();
 
-    final videos = _actionsController.videosList[0].videos!.first;
+    final videos = _actionsController.videosList[0].videos.first;
     // for (final video in videos) {
     final controller = VideoPlayerController.networkUrl(
       Uri.parse(videos.videoUrl!),
@@ -82,7 +83,6 @@ class _VideosScreenState extends State<VideosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var videos = _actionsController.videosList[0].videos;
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -143,6 +143,7 @@ class _VideosScreenState extends State<VideosScreen> {
         }
         var firstVideo = _actionsController.videosList[0].videos!.first;
         print("Videos: ${_actionsController.videosList[0].videos}");
+
         return PageView.builder(
           scrollDirection: Axis.vertical,
           itemCount: _actionsController.videosList[0].videos!.length,
@@ -287,10 +288,13 @@ class _VideosScreenState extends State<VideosScreen> {
                       builder: (context) {
                         return Obx(() {
                           final state = video;
+
                           if (state == null) {
                             logger.w(
                               "No state found for video at index $index, id: ${_actionsController.videosList[0].videos![index]}",
                             );
+                            print(
+                                "State Comment count videos: ${state.commentCount}");
                             return const SizedBox.shrink();
                           }
 
@@ -349,11 +353,13 @@ class _VideosScreenState extends State<VideosScreen> {
                                   Get.bottomSheet(
                                       CommentSheet(videoId: video.id!),
                                       isScrollControlled: true);
+                                  print(
+                                      "Comment count from screen : ${video.commentCount}");
                                   // }
                                 },
                               ),
                               Text(
-                                '${state.commentCount}',
+                                '${(commentsController.addOrDeleteCommentSuccess.value == true) ? state.commentCount : video.commentCount}', // Display the comment count // 31
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

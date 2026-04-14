@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/user.dart';
 import 'package:logger/web.dart';
 
@@ -66,6 +67,6 @@ class Videos {
   @override
   String toString() {
     // TODO: implement toString
-    return "ID: $id, Video_url: $videoUrl, Caption: $caption, Owner_id: $ownerId, Post_id: $postId, Post_type: $postType,sharesCount: $sharesCount, isFollowing: $isFollowing, Owner: ${owner.toString()}, likeCount: $likeCount, commentCount: $commentCount, savedCount: $savedCount, isLiked: $isLiked, isSaved: $isSaved";
+    return "ID: $id, Video_url: $videoUrl, Caption: $caption, Owner_id: $ownerId, Post_id: $postId, Post_type: $postType,sharesCount: $sharesCount, isFollowing: $isFollowing, Owner: ${owner.toString()}, likeCount: $likeCount, commentCount: ${commentCount}, savedCount: $savedCount, isLiked: $isLiked, isSaved: $isSaved";
   }
 }

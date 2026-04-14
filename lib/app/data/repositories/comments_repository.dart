@@ -23,15 +23,17 @@ class CommentsRepository {
       if (response == null) {
         return response;
       }
+
       logger.w(
         'Fetching Comment response video repositories: ${response['comments']}',
       );
+      print("Comments count: ${response['commentsCount']}");
       // print("Response.data ${response.data}");
       // print("Data type 1: ${response.runtimeType}");
       // print("Data type 2: ${response['videos'].runtimeType}");
 
       var res = CommentInfo.fromJson(response);
-      logger.i("Liste des comments ${res.toString()}");
+      print("Liste des comments ${res.toString()}");
       return res;
     } on BadRequestException {
       rethrow;
@@ -114,6 +116,21 @@ class CommentsRepository {
       return response;
     } catch ($e) {
       print($e.toString());
+    }
+  }
+
+  Future<dynamic> toggleLikeDislikeReplies(Map<String, dynamic> json) async {
+    try {
+      print("toggleLikeReplies repositories");
+
+      print("Json from Repositories: ${json}");
+      final res =
+          await _apiProvider.post(toggleLikesDislikesReplyEndpoint, json);
+      print(
+          'CommentsRepositories: Toggle likeUnlike for Replies response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
     }
   }
 }

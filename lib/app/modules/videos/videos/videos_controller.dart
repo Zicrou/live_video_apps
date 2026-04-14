@@ -12,7 +12,9 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 import 'package:live_video_apps/app/data/services/remote_services.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
+import 'package:live_video_apps/app/modules/videos/learn_cloud/video_list_screen.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:logger/logger.dart';
 import 'package:share_plus/share_plus.dart';
@@ -41,7 +43,7 @@ class VideosController extends GetxController {
   final RxBool isLiked = false.obs;
   final RxBool isSaved = false.obs;
   final RxInt likeCount = 0.obs;
-  final RxInt commentCount = 0.obs;
+  RxMap<String, int> commentCountMap = <String, int>{}.obs;
   // final RxString videoUrl = ''.obs;
   final RxInt sharesCount = 0.obs;
   final RxInt savedCount = 0.obs;

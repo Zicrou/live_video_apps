@@ -101,6 +101,9 @@ class _CommentSheetState extends State<CommentSheet> {
                         print("Videos id: ${widget.videoId}, User : ${userId}");
                         _commentController.videoID = widget.videoId;
                         _commentController.addComment();
+
+                        print(
+                            "CommentList ${_commentController.commentList[0].commentCount}");
                         _commentController.comment.clear();
                       },
                     ),
@@ -128,6 +131,7 @@ class CommentTile extends StatefulWidget {
 class _CommentTileState extends State<CommentTile> {
   bool showReplies = false;
   // final controller = Get.find<CommentsController>();
+
   @override
   Widget build(BuildContext context) {
     var commentController = Get.find<CommentsController>();
@@ -299,46 +303,46 @@ class _CommentTileState extends State<CommentTile> {
 
                         const SizedBox(width: 4), // 👈 spacing
 
-                        /// ❤️ LIKE BUTTON + COUNT
-                        // Stack(
-                        //   clipBehavior: Clip.none,
-                        //   children: [
-                        //     IconButton(
-                        //       icon: Icon(
-                        //         r.isLiked.value
-                        //             ? Icons.favorite
-                        //             : Icons.favorite_border,
-                        //         color: Colors.black,
-                        //       ),
-                        //       onPressed: () {
-                        //         //like reply
-                        //         // commentController.toggleLikeReply(r);
-                        //       },
-                        //     ),
+                        // ❤️ LIKE BUTTON + COUNT
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                r.isLiked!.value //r.isLiked!.value
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                //like reply
+                                commentController.toggleLikeReplies(r);
+                              },
+                            ),
 
-                        //     /// 🔢 LIKE COUNT BADGE
-                        //     if (r.likeCount.value > 0)
-                        //       Positioned(
-                        //         right: -2,
-                        //         top: -2,
-                        //         child: Container(
-                        //           padding: const EdgeInsets.symmetric(
-                        //               horizontal: 5, vertical: 1),
-                        //           decoration: BoxDecoration(
-                        //             color: Colors.red,
-                        //             borderRadius: BorderRadius.circular(10),
-                        //           ),
-                        //           child: Text(
-                        //             '${r.likeCount.value}',
-                        //             style: const TextStyle(
-                        //               color: Colors.white,
-                        //               fontSize: 9,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //   ],
-                        // ),
+                            /// 🔢 LIKE COUNT BADGE
+                            if (r.likeCount!.value > 0) //r.likeCount!.value > 0
+                              Positioned(
+                                right: 5,
+                                top: 5,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    '${r.likeCount!.value}', //${r.likeCount!.value}
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
                     ),
                   );
