@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:live_video_apps/app/data/providers/auth_providers.dart';
+import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 
 class FollowsButtonScreen extends StatelessWidget {
@@ -12,6 +14,9 @@ class FollowsButtonScreen extends StatelessWidget {
     final controller = Get.find<FollowsController>();
     print(
         "userId: ${video.ownerId}, isFollowing: ${controller.followingMap[video.ownerId]}"); // Debug print
+    final authProvider = Get.find<AuthProvider>();
+    print(
+        "Video ownerId: ${video.ownerId}, Current userId: ${authProvider.user?.user?.id}"); // Debug print
     return Obx(() {
       final isFollowing = controller.followingMap[video.ownerId] ?? false;
       // final isFollowing = controller.isFollowing.value;
@@ -58,14 +63,20 @@ class FollowsButtonScreen extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: (video.ownerId != authProvider.user?.user?.id)
+                      ? BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        )
+                      : null,
                   child: Icon(
-                    isFollowing ? Icons.check : Icons.add,
+                    (video.ownerId != authProvider.user?.user?.id)
+                        ? (isFollowing ? Icons.check : Icons.add)
+                        : null, // Show person icon if it's the user's own video
                     size: 16,
-                    color: isFollowing ? Colors.green : Colors.red,
+                    color: (video.ownerId != authProvider.user?.user?.id)
+                        ? (isFollowing ? Colors.green : Colors.red)
+                        : Colors.grey, // Grey color for own video
                   ),
                 ),
               ),

@@ -102,8 +102,10 @@ class VideosController extends GetxController {
         "video_id": videofromScreen.id,
       };
       var response = await _videosRepositories.toggleLikeDislike(json);
+      print("Response from toggle like: ${response}");
       if (response['message'] == "Video liked successfully") {
         isLiked(true);
+        print("IsLiked inside toggling ${isLiked.value}");
       } else {
         isLiked(false);
       }
@@ -151,7 +153,7 @@ class VideosController extends GetxController {
       // video.sharesCount.value =
       //     video.sharesCount.value + 1;
       var response = await _videosRepositories.shareVideos(video.id);
-      if (response['message'] == "Video shared successfully") {
+      if (response['message'] == "Shared") {
         sharesCount.value = response['shares'];
 
         // Share the video URL using share_plus

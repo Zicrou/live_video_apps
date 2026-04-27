@@ -36,7 +36,7 @@ class CommentsController extends GetxController {
   String? videoID;
   String? parentID;
   final videosController = Get.find<VideosController>();
-  RxBool addOrDeleteCommentSuccess = false.obs;
+  RxBool commentsCountChanged = false.obs;
   CommentsController() {
     final authProvider = Get.find<AuthProvider>();
     user_id = authProvider.user?.user?.id;
@@ -77,14 +77,16 @@ class CommentsController extends GetxController {
         final index = videosController.videosList[0].videos!
             .indexWhere((v) => v.id == videoId);
         if (index != -1) {
-          videosController.videosList[0].videos![index].commentCount =
-              commentInfo.commentCount!;
+          final video = videosController.videosList[0].videos![index];
+          video.commentCount = commentInfo.commentCount!;
         }
-        addOrDeleteCommentSuccess.value = true;
+        commentsCountChanged.value = true;
+        // 🔥 force safe rebuild AFTER frame
+        videosController.videosList.refresh();
         print(
-            "addOrDeleteCommentSuccess: ${addOrDeleteCommentSuccess.value}, comment from add comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
+            "commentsCountChanged: ${commentsCountChanged.value}, comment from add comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
       } catch (e) {
-        addOrDeleteCommentSuccess.value = false;
+        commentsCountChanged.value = false;
         throw Exception("Error adding Comment: ${e.toString()}");
       }
     }
@@ -209,16 +211,17 @@ class CommentsController extends GetxController {
         final index = videosController.videosList[0].videos!
             .indexWhere((v) => v.id == videoId);
         if (index != -1) {
-          videosController.videosList[0].videos![index].commentCount =
-              commentInfo.commentCount!;
+          final video = videosController.videosList[0].videos![index];
+          video.commentCount = commentInfo.commentCount!;
         }
-        addOrDeleteCommentSuccess.value = true;
+        commentsCountChanged.value = true;
+        videosController.videosList.refresh();
         print(
-            "addOrDeleteCommentSuccess: ${addOrDeleteCommentSuccess.value}, comment from delete comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
+            "commentsCountChanged: ${commentsCountChanged.value}, comment from delete comment : ${commentInfo.commentCount}, comment count from video list: ${videosController.videosList[0].videos![index].commentCount}");
       }
     } catch (e) {
       print("Error deleting comment: ${e.toString()}");
-      addOrDeleteCommentSuccess.value = false;
+      commentsCountChanged.value = false;
       throw Exception("Error deleting Comment: ${e.toString()}");
     }
   }
