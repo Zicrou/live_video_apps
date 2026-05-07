@@ -55,8 +55,8 @@ class Videos {
     savedCount = json['saveds_count'] ?? 0;
     sharesCount = json['shares_count'] ?? 0;
 
-    isLiked = (json['isLiked'] > 0) ? true : false;
-    isSaved = (json['isSaveds'] > 0) ? true : false;
+    isLiked = ((json['isLiked'] ?? json['isliked']) > 0) ? true : false;
+    isSaved = ((json['isSaved'] ?? json['issaveds']) > 0) ? true : false;
     isFollowing = json['is_following'] ?? false;
 
     if (json['owner'] != null) {

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:live_video_apps/app/data/models/videosArgs.dart';
+import 'package:live_video_apps/app/data/providers/auth_providers.dart';
+import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart'
+    hide logger;
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart'
+    hide logger;
+import 'package:live_video_apps/app/modules/login/login_screen.dart'
     hide logger;
 import 'package:live_video_apps/app/modules/videos/follows/follows_button_screen.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
-import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart'
     hide logger;
-import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
+import 'package:live_video_apps/utilites/dialogs/should_get_connected_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -35,6 +40,8 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
       : Get.put(VideosController());
   final followsController = Get.find<FollowsController>();
   final commentsController = Get.find<CommentsController>();
+  // final dynamic args = Get.arguments;
+  final authProvider = Get.find<AuthProvider>();
 
   @override
   void initState() {
@@ -44,7 +51,7 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
         VideoPlayerController.networkUrl(Uri.parse(widget.video.videoUrl!))
           ..initialize().then((_) {
             setState(() {});
-            if (widget.isActive) {
+            if (widget.isActive == true) {
               _controller.play();
             }
             _controller.setLooping(true);
@@ -59,7 +66,7 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
   void didUpdateWidget(covariant VideoItemScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.isActive) {
+    if (widget.isActive == true) {
       _controller.play();
     } else {
       _controller.pause();
@@ -68,12 +75,20 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
 
   @override
   void dispose() {
+    _controller.pause();
     _controller.dispose();
     super.dispose();
   }
 
+  dynamic noData() {
+    return Scaffold(body: Text("No data"));
+  }
+
   @override
   Widget build(BuildContext context) {
+    // if (widget.video == null) {
+    //   return noData();
+    // }
     if (!_controller.value.isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -85,10 +100,12 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
     return VisibilityDetector(
         key: Key("video-${widget.video.id}"), // 🔥 VERY IMPORTANT (unique key)
         onVisibilityChanged: (info) {
-          if (widget.isActive && info.visibleFraction > 0.7) {
+          if (widget.isActive == true && info.visibleFraction > 0.7) {
             _controller.play();
           } else {
+            // if (_controller.dispose() != true) {
             _controller.pause();
+            // }
           }
         },
         child: GestureDetector(
@@ -99,81 +116,6 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
             },
             child: Stack(
               children: [
-                Positioned(
-                  top: 50,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /// Following / Explore
-                        Row(
-                          children: [
-                            Text(
-                              'Following',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.5),
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Text(
-                              'Explore',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        /// LIVE + SEARCH
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                // Navigate to live list screen
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Text(
-                                  'LIVE',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            // Search button
-                            // TextButton(
-                            //   onPressed: () {
-                            //     print("Ok");
-                            //     Get.offAll(SearchVideosScreen());
-                            //   },
-                            //   child:
-                            //       const Icon(Icons.search, color: Colors.red),
-                            // ),
-                            // const SizedBox(width: 16),
-                            // T
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
                 // Video
                 Stack(
                   children: [
@@ -253,7 +195,12 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                               onPressed: () {
                                 print(
                                     "IsLiked before toggle: ${actionsController.isLiked.value}");
-                                actionsController.toggleLike(state);
+                                if (authProvider.user?.user?.id == null) {
+                                  showShouldGetConnectedDialog(context, "like");
+                                  return;
+                                } else {
+                                  actionsController.toggleLike(state);
+                                }
                                 print(
                                     "IsLiked after toggle: ${actionsController.isLiked.value}");
                               },
@@ -306,20 +253,24 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                                 size: 30,
                               ),
                               onPressed: () {
-                                actionsController.toggleSave(state);
-
+                                if (authProvider.user?.user?.id == null) {
+                                  showShouldGetConnectedDialog(context, "save");
+                                  return;
+                                } else {
+                                  actionsController.toggleSave(state);
+                                }
                                 logger.i(
                                   "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved}, savedCount: ${state.savedCount}",
                                 );
-                                if (state.isSaved!) {
-                                  logger.i(
-                                    "Video at index ${state.id} is now saved.",
-                                  );
-                                } else {
-                                  logger.i(
-                                    "Video at index ${state.id} is now unsaved.",
-                                  );
-                                }
+                                // if (state.isSaved!) {
+                                //   logger.i(
+                                //     "Video at index ${state.id} is now saved.",
+                                //   );
+                                // } else {
+                                //   logger.i(
+                                //     "Video at index ${state.id} is now unsaved.",
+                                //   );
+                                // }
                               },
                             ),
                             Text(
@@ -399,7 +350,6 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                     ],
                   ),
                 ),
-                const TopBar(),
               ],
             )));
   }

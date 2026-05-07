@@ -45,3 +45,4 @@ const profileEndpoint = '$baseUrl/profile';
 const deleteCommentEndpoint = '$baseUrl/comments';
 const deleteReplyEndpoint = '$baseUrl/comment/reply';
 const toggleLikesDislikesReplyEndpoint = '$baseUrl/likeUnlike/replies';
+const listVideosFollowingEndpoint = '$baseUrl/videos/following';

@@ -5,8 +5,8 @@ import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 
 class VideoPreviewScreen extends StatefulWidget {
-  final File videoFile;
-  const VideoPreviewScreen({super.key, required this.videoFile});
+  final File? videoFile;
+  const VideoPreviewScreen({super.key, this.videoFile});
 
   @override
   State<VideoPreviewScreen> createState() => _VideoPreviewScreenState();
@@ -21,15 +21,15 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
   void initState() {
     super.initState();
 
-    _controller =
-        VideoPlayerController.networkUrl(Uri.parse(widget.videoFile.path))
-          ..initialize().then((_) {
-            setState(() {
-              isInitialized = true;
-            });
-            _controller.setLooping(true);
-            _controller.play();
-          });
+    _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.videoFile?.path ?? ""))
+      ..initialize().then((_) {
+        setState(() {
+          isInitialized = true;
+        });
+        _controller.setLooping(true);
+        _controller.play();
+      });
   }
 
   @override

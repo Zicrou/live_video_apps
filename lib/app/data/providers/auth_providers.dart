@@ -73,7 +73,7 @@ class AuthProvider extends GetxService {
     _refreshToken.value = _storageProvider.refreshToken ?? '';
 
     if (isAuthenticated) {
-      logger.i('authToken : $authToken');
+      print('authToken : $authToken');
     }
   }
 

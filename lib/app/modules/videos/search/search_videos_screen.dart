@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_controller.dart';
+import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart'
     hide logger;
 import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
+import 'package:live_video_apps/app/routes/routes.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:share_plus/share_plus.dart';
@@ -174,7 +176,7 @@ class _SearchVideosScreenState extends State<SearchVideosScreen> {
                 // mainAxisExtent: 300, // 🔥 control height directly
                 // crossAxisSpacing: 4,
                 // mainAxisSpacing: 4,
-                childAspectRatio: 3 / 4),
+                childAspectRatio: 3 / 3),
             itemCount: videos.length,
             itemBuilder: (context, index) {
               final item = videos[index];
@@ -197,7 +199,7 @@ class _SearchVideosScreenState extends State<SearchVideosScreen> {
                       _controllers[index].value.isInitialized
                           ? SizedBox.expand(
                               child: AspectRatio(
-                                aspectRatio: 3 / 4, // 🔥 force TikTok ratio
+                                aspectRatio: 3 / 3, // 🔥 force TikTok ratio
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: VideoPlayer(_controllers[index]),
@@ -265,7 +267,7 @@ class FullVideoScreen extends StatefulWidget {
 class _FullVideoScreenState extends State<FullVideoScreen> {
   late VideoPlayerController _controller;
   bool isInitialized = false;
-  final VideosController _actionsController = Get.put(VideosController());
+  final VideosController _actionsController = Get.find<VideosController>();
 
   @override
   void initState() {
@@ -306,240 +308,31 @@ class _FullVideoScreenState extends State<FullVideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Get.to(VideosScreen());
+      // Get.to(VideosScreen());
+      appBar: AppBar(
+        // backgroundColor: Colors.transparent,
+        title: TopBar(),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.black,
       body: GestureDetector(
-        onTap: togglePlay,
+        onTap: () {
+          togglePlay(); // your existing logic
+
+          if (isInitialized) {
+            Get.toNamed(
+              Routes.videoItem,
+              arguments: {
+                'video': widget.video,
+                'isActive': true,
+              },
+            );
+          }
+        },
         child: Center(
           child: isInitialized
-              ? Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    /// 🎥 VIDEO
-                    SizedBox.expand(
-                      child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: SizedBox(
-                          width: _controller.value.size.width,
-                          height: _controller.value.size.height,
-                          child: VideoPlayer(_controller),
-                        ),
-                      ),
-                    ),
-
-                    /// ▶️ Pause icon
-                    if (!_controller.value.isPlaying)
-                      const Icon(
-                        Icons.play_arrow,
-                        color: Colors.white70,
-                        size: 80,
-                      ),
-
-                    /// ⏱️ PROGRESS BAR (no time)
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: VideoProgressIndicator(
-                        _controller,
-                        allowScrubbing: true, // optional (user can seek)
-                        colors: VideoProgressColors(
-                          playedColor: Colors.white,
-                          bufferedColor: Colors.white30,
-                          backgroundColor: Colors.white10,
-                        ),
-                      ),
-                    ),
-
-                    /// ❤️ RIGHT ACTIONS
-                    Positioned(
-                      right: 12,
-                      bottom: 120,
-                      child: Builder(
-                        builder: (context) {
-                          return Obx(() {
-                            final state = widget.video;
-                            if (state == null) {
-                              logger.w(
-                                "No state found for video",
-                              );
-                              return const SizedBox.shrink();
-                            }
-
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                // ❤️ LIKE
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.favorite,
-                                    color: state.isLiked.value
-                                        ? Colors.red
-                                        : Colors.white,
-                                    size: 32,
-                                  ),
-                                  onPressed: () {
-                                    // var likes = state.likes;
-                                    // var like;
-                                    // like = likes!
-                                    //     .where((like) =>
-                                    //         like.userId ==
-                                    //         _actionsController.user_id)
-                                    //     .first;
-                                    // Je veux avoir un smartPhone pour tester mes apps sans vendre mon Iphone,
-                                    // avoir un boulot pour me permettra de le faire,
-                                    // Un soutien, une connaissance mais qui? Abou s'il en a d'abord?                                   print("like ${like}");
-
-                                    _actionsController.toggleLike(state);
-                                  },
-                                ),
-                                Text(
-                                  _actionsController
-                                      .formatCount(state.likeCount.value),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // 💬 COMMENT
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.comment,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    // void openComments(videoId) {
-                                    print("Video id:: ${widget.video.id}");
-                                    Get.bottomSheet(
-                                        CommentSheet(videoId: widget.video.id!),
-                                        isScrollControlled: true);
-                                    // }
-                                  },
-                                ),
-                                Text(
-                                  '${state.commentCount}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // 💾 SAVE
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.bookmark,
-                                    color: state.isSaved.value
-                                        ? Colors.yellow
-                                        : Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    _actionsController.toggleSave(state);
-
-                                    logger.i(
-                                      "After toggling save for video at index ${state.id}, ${state.videoUrl}, current state: ${state.isSaved.value}",
-                                    );
-                                    if (state.isSaved.value) {
-                                      logger.i(
-                                        "Video at index ${state.id} is now saved.",
-                                      );
-                                    } else {
-                                      logger.i(
-                                        "Video at index ${state.id} is now unsaved.",
-                                      );
-                                    }
-                                  },
-                                ),
-                                Text(
-                                  _actionsController
-                                      .formatCount(state.savedCount.value),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // 🔗 SHARE
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.share,
-                                    color: Colors.white,
-                                    size: 28,
-                                  ),
-                                  onPressed: () async {
-                                    final videoUrl = state.videoUrl;
-                                    if (videoUrl!.isEmpty) {
-                                      await showCannotShareEmptyVideoDialog(
-                                          context);
-                                    } else {
-                                      state.sharesCount.value =
-                                          state.sharesCount.value + 1;
-                                      await SharePlus.instance.share(
-                                        ShareParams(
-                                          text:
-                                              "🔥 Watch this video\n${videoUrl}",
-                                          subject: "Check this video",
-                                        ),
-                                      );
-                                      await _actionsController
-                                          .shareVideo(state);
-                                    }
-                                    // state.id.value,
-                                  },
-                                ),
-                                Text(
-                                  _actionsController
-                                      .formatCount(state.sharesCount.value),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-                              ],
-                            );
-                          });
-                        },
-                      ),
-                    ),
-
-                    /// 📝 CAPTION
-                    Positioned(
-                      left: 12,
-                      bottom: 40,
-                      right: 80,
-                      child: Column(
-                        // video = widget.video;
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${widget.video.owner.name}",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            "${widget.video.caption}",
-                            style: TextStyle(color: Colors.white),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const TopBar(),
-                  ],
-                )
+              ? const Icon(Icons.play_arrow) // or your UI
               : const CircularProgressIndicator(),
         ),
       ),

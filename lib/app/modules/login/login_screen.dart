@@ -8,8 +8,14 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 class LoginScreen extends GetView<AuthController> {
+  // final args = Get.arguments;
+
+  @override
+  final AuthController controller = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
+    // print("LoginScreen received args: ${args['previousRoute']}");
+    // print("Previous route in LoginScreen: ${Get.previousRoute}");
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       body: Center(
@@ -125,7 +131,6 @@ class LoginScreen extends GetView<AuthController> {
                           ),
                         ),
                 ),
-
                 SizedBox(height: 20),
                 TextButton(
                   onPressed: () => Get.offAll(SignupScreen()),

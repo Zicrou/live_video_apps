@@ -7,7 +7,7 @@ import 'package:video_player/video_player.dart';
 class ProfileScreen extends StatelessWidget {
   final VideosController _actionsController = Get.put(VideosController());
 
-@override
+  @override
   void initState() {
     // super.initState();
     // _initVideos();
@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
   //       controller.setLooping(true);
   //       // setState(() {
   //       _controllers.add(controller);
-        
+
   //       // _videoPaths.add(video.videoUrl!); // Add the video path
 
   //       // });
@@ -90,8 +90,8 @@ class ProfileScreen extends StatelessWidget {
           final video = videos[index];
           final controller =
               VideoPlayerController.networkUrl(Uri.parse(video.videoUrl!));
-              controller.initialize();
-              controller.setLooping(true);
+          controller.initialize();
+          controller.setLooping(true);
 
           return GestureDetector(
             onTap: () {

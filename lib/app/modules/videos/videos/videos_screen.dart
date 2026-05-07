@@ -19,6 +19,7 @@ import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.d
 import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
+import 'package:live_video_apps/app/routes/routes.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:logger/web.dart';
 import 'package:share_plus/share_plus.dart';
@@ -44,41 +45,6 @@ class _VideosScreenState extends State<VideosScreen> {
   // final followsController = Get.find<FollowsController>();
   // final commentsController = Get.find<CommentsController>();
 
-  @override
-  void initState() {
-    super.initState();
-    _initVideos();
-  }
-
-  Future<void> _initVideos() async {
-    await _actionsController.fetchVideos();
-
-    // final videos = _actionsController.videosList[0].videos;
-    // for (final video in videos) {
-    //   final controller = VideoPlayerController.networkUrl(
-    //     Uri.parse(video.videoUrl!),
-    //   );
-
-    //   // await controller.initialize();
-    //   // controller.setLooping(true);
-
-    //   // _controllers.add(controller);
-
-    //   await controller.initialize().then((_) {
-    //     controller.setLooping(true);
-    //     // setState(() {
-    //     _controllers.add(controller);
-    //   });
-    // }
-
-    // setState(() {
-    //   _controllersInitialized = true;
-    // });
-    // setState(() {
-    //   _actionsController.isLoading(false);
-    // });
-  }
-
   int currentIndex = 0;
 
   void onPageChanged(int index) {
@@ -91,7 +57,18 @@ class _VideosScreenState extends State<VideosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Current route in VideosScreen: ${Get.currentRoute}");
     return Scaffold(
+      extendBodyBehindAppBar: true, // 🔥 key for overlay effect
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: TopBar(),
+        centerTitle: true,
+      ),
+
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         selectedItemColor: Colors.white,
@@ -128,8 +105,6 @@ class _VideosScreenState extends State<VideosScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.inbox), label: 'Inbox'),
         ],
       ),
-      backgroundColor: Colors.black,
-
       // backgroundColor: Colors.black,
       // bottomNavigationBar: BottomNavigationBar(),
       body: Obx(() {
@@ -146,7 +121,7 @@ class _VideosScreenState extends State<VideosScreen> {
         //   print("VideoControllerPlayer.value is empty or is loading...");
         //   return const Center(child: CircularProgressIndicator());
         // }
-        var firstVideo = _actionsController.videosList[0].videos!.first;
+        // var firstVideo = _actionsController.videosList[0].videos!.first;
         print("Videos: ${_actionsController.videosList[0].videos}");
         print("ActionsController hashCode: ${_actionsController.hashCode}");
         return PageView.builder(

@@ -10,6 +10,9 @@ import 'package:live_video_apps/app/data/models/user_register.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/api_providers.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
+import 'package:live_video_apps/utilites/dialogs/generic_dialog.dart';
+import 'package:live_video_apps/utilites/dialogs/should_get_connected_dialog.dart'
+    show showShouldGetConnectedDialog;
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -26,6 +29,7 @@ class VideosRepositories {
       if (response == null) {
         return response;
       }
+
       print(
         'Fetching Videos response video repositories: ${response['videos']}',
       );
@@ -213,6 +217,26 @@ class VideosRepositories {
     try {
       final res = await _apiProvider.get('$baseUrl/profile/$userId');
       print('VideosRepositories: Get profile response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchVideosFollowing() async {
+    try {
+      final response = await _apiProvider.get(listVideosFollowingEndpoint);
+      print("Following Response Videos from Videos Repositories : ${response}");
+      if (response == null) {
+        return response;
+      }
+
+      print(
+        'Following Fetching Videos response video repositories: ${response['videos']}',
+      );
+
+      var res = VideosInfo.fromJson(response);
+      print("Following Liste des videos ${res.toString()}");
       return res;
     } on BadRequestException {
       rethrow;

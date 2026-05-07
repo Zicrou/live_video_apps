@@ -4,7 +4,9 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/services/auth_services.dart';
 import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/videos/search/search_videos_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/videos_following_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart';
+import 'package:live_video_apps/app/routes/routes.dart';
 import 'package:live_video_apps/app/utils/messages.dart';
 import 'package:live_video_apps/pages/home_page.dart';
 import 'package:logger/web.dart';
@@ -28,11 +30,15 @@ class AuthController extends GetxController {
   var isPasswordValid = true.obs;
   var isNameValid = true.obs;
   var isEmailValid = true.obs;
+  // var args = Get.arguments;
+
+  void onInit() {
+    super.onInit();
+  }
 
   void login() async {
-    logger.i("LoginFormKey: ${loginFormKey}");
     try {
-      logger.i("conecting..");
+      print("conecting..");
       _isLoading.value = true;
       if (loginFormKey.currentState!.validate()) {
         loginFormKey.currentState!.save();
@@ -47,9 +53,24 @@ class AuthController extends GetxController {
         passwordController.clear();
 
         authProvider.user = userInfo;
-        // print(authProvider.user.token);
+
+        print("Current route: ${Get.currentRoute}"); // Debugging line
+        print("Previous route: ${Get.previousRoute}"); // Debugging line
         // Get.offAll(() => VentesScreen());
-        Get.offAll(() => HomePage());
+        if (Get.previousRoute == Routes.videosFollowing) {
+          Get.toNamed(Routes.videosFollowing);
+        } else {
+          Get.toNamed(Routes.home);
+        }
+        // if (Get.previousRoute == Routes.videosFollowing) {
+        //   Get.toNamed(
+        //     Routes.videosFollowing,
+        //   );
+        // } else if (Get.previousRoute == Routes.home) {
+        //   Get.toNamed(
+        //     Routes.home,
+        //   );
+        // }
         goodMessage("Connexion avec succés");
       }
     } catch (e) {

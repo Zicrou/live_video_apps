@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
+import 'package:live_video_apps/app/modules/profiles/profile_screen.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 
 class FollowsButtonScreen extends StatelessWidget {
@@ -32,7 +33,7 @@ class FollowsButtonScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Navigate to profile
-                print("Navigate to profile of userId: ${video.ownerId}");
+                Get.to(ProfileScreen(), arguments: video.ownerId);
               },
               child: Container(
                 width: 44,
