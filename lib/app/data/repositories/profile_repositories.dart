@@ -61,19 +61,109 @@ class ProfileRepositories {
     }
   }
 
+  // Future<dynamic> getProfile(String userId) async {
+  //   try {
+  //     final response = await _apiProvider.get('$profileEndpoint/$userId');
+  //     print('VideosRepositories: Get profile response: $response');
+
+  //     return;
+  //     var res = Profile.fromJson(response);
+  //     print("Profile data: ${res.toString()}");
+  //     // return res;
+  //   } on BadRequestException {
+  //     rethrow;
+  //   }
+  // }
+
+  Future<dynamic> fetchLikedVideos() async {
+    try {
+      final response = await _apiProvider.get(listLikedVideosEndpoint);
+      print("Liked Response Videos from Videos Repositories : ${response}");
+      if (response == null) {
+        return response;
+      }
+
+      print(
+        'Liked Fetching Videos response video repositories: ${response['videos']}',
+      );
+
+      var res = VideosInfo.fromJson(response);
+      print("Liked Liste des videos ${res.toString()}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchSavedVideos() async {
+    try {
+      final response = await _apiProvider.get(listSavedVideosEndpoint);
+      print("Saved Response Videos from Videos Repositories : ${response}");
+      if (response == null) {
+        return response;
+      }
+
+      print(
+        'Saved Fetching Videos response video repositories: ${response['videos']}',
+      );
+
+      var res = VideosInfo.fromJson(response);
+      print("Saved Liste des videos ${res.toString()}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchSharedVideos() async {
+    try {
+      final response = await _apiProvider.get(listSharedVideosEndpoint);
+      print("Shared Response Videos from Videos Repositories : ${response}");
+      if (response == null) {
+        return response;
+      }
+
+      print(
+        'Shared Fetching Videos response video repositories: ${response['videos']}',
+      );
+
+      var res = VideosInfo.fromJson(response);
+      print("Shared Liste des videos ${res.toString()}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchMyVideos() async {
+    try {
+      final response = await _apiProvider.get(listMyVideosEndpoint);
+      print("My Videos Response from Videos Repositories : ${response}");
+      if (response == null) {
+        return response;
+      }
+
+      print(
+        'My Videos Fetching Videos response video repositories: ${response['videos']}',
+      );
+
+      var res = VideosInfo.fromJson(response);
+      print("My Videos Liste des videos ${res.toString()}");
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
   Future<dynamic> getProfile(String userId) async {
     try {
-      final response = await _apiProvider.get('$profileEndpoint/$userId');
-      print('VideosRepositories: Get profile response: $response');
-
-      print(" //. //. //. ...");
-      print(
-          "VideosRepositories: Get video from profile response: ${response['videos']}");
-      print(" //. //. //. Parsing profile data...");
-
-      var res = Profile.fromJson(response);
-      print("Profile data: ${res.toString()}");
-      // return res;
+      final res = await _apiProvider.get('$profileEndpoint/$userId');
+      // print("VideosRepositories: Get profile response: ${res['videos']}");
+      // print("Data type 1: ${res.runtimeType}");
+      // print("Data type 2: ${res['videos'].runtimeType}");
+      var profileData = Profile.fromJson(res);
+      print("Profile data: ${profileData.toString()}");
+      return profileData;
     } on BadRequestException {
       rethrow;
     }

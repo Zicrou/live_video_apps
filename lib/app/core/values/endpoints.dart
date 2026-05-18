@@ -46,3 +46,7 @@ const deleteCommentEndpoint = '$baseUrl/comments';
 const deleteReplyEndpoint = '$baseUrl/comment/reply';
 const toggleLikesDislikesReplyEndpoint = '$baseUrl/likeUnlike/replies';
 const listVideosFollowingEndpoint = '$baseUrl/videos/following';
+const listMyVideosEndpoint = '$baseUrl/videos/myvideos';
+const listLikedVideosEndpoint = '$baseUrl/videos/liked';
+const listSavedVideosEndpoint = '$baseUrl/videos/saved';
+const listSharedVideosEndpoint = '$baseUrl/videos/shared';

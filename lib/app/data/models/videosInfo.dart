@@ -17,6 +17,10 @@ class VideosInfo {
       json['videos'].forEach((v) {
         videos!.add(new Videos.fromJson(v));
       });
+    } else if (json != null) {
+      videos = videos;
+      print("Adding this video from videoInfo ${json} to videos list");
+      videos!.add(new Videos.fromJson(json));
     }
   }
 

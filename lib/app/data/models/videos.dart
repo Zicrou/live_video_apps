@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/user.dart';
 import 'package:logger/web.dart';
 

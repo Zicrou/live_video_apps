@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
 import 'package:live_video_apps/app/data/models/comment_info.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
@@ -30,7 +30,6 @@ class VideosController extends GetxController {
   VideosRepositories _videosRepositories = VideosRepositories();
   final authControler = Get.find<AuthController>();
   var videosList = <VideosInfo>[].obs;
-  RxList<Videos> videos = <Videos>[].obs;
   final ImagePicker _picker = ImagePicker();
 
   VideoPlayerController? previewController;
@@ -46,9 +45,12 @@ class VideosController extends GetxController {
   final RxBool isSaved = false.obs;
   final RxInt likeCount = 0.obs;
   RxMap<String, int> commentCountMap = <String, int>{}.obs;
-  // final RxString videoUrl = ''.obs;
   final RxInt sharesCount = 0.obs;
   final RxInt savedCount = 0.obs;
+  RxList<Videos> myVideosList = <Videos>[].obs;
+  RxList<Videos> likedVideosList = <Videos>[].obs;
+  RxList<Videos> savedVideosList = <Videos>[].obs;
+  RxList<Videos> sharedVideosList = <Videos>[].obs;
 
   @override
   void onInit() {

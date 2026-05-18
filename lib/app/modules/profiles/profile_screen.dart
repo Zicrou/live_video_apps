@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
+import 'package:live_video_apps/app/data/models/videosInfo.dart';
+import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
+import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:video_player/video_player.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final VideosController _actionsController = Get.put(VideosController());
+  final ProfilesController profilesController = Get.put(ProfilesController());
 
   @override
-  void initState() {
-    // super.initState();
-    // _initVideos();
-  }
+  void initState() {}
 
   // Future<void> _initVideos() async {
   //   await _actionsController.fetchVideos();
@@ -45,34 +45,46 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4, // Tabs: My Videos, Likes, Saved, Shared
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Profile'),
-          backgroundColor: Colors.blueAccent,
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'My Videos'),
-              Tab(text: 'Likes'),
-              Tab(text: 'Saved'),
-              Tab(text: 'Shared'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            // _buildVideoGrid(controller.myVideos), // My videos
-            // _buildVideoGrid(controller.likedVideos), // Liked videos
-            // _buildVideoGrid(controller.savedVideos), // Saved videos
-            // _buildVideoGrid(controller.sharedVideos), // Shared videos
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Center(
+        child: Text('Profile Screen'),
       ),
     );
+    // DefaultTabController(
+    //   length: 4, // Tabs: My Videos, Likes, Saved, Shared
+    //   child: Scaffold(
+    //     appBar: AppBar(
+    //       title: const Text('Profile'),
+    //       backgroundColor: Colors.blueAccent,
+    //       bottom: const TabBar(
+    //         tabs: [
+    //           Tab(text: 'My Videos'),
+    //           Tab(text: 'Likes'),
+    //           Tab(text: 'Saved'),
+    //           Tab(text: 'Shared'),
+    //         ],
+    //       ),
+    //     ),
+    //     body: TabBarView(
+    //       children: [
+    //         // _buildVideoGrid(profilesController.myVideos()), // My videos
+    //         // _buildVideoGrid(
+    //         //     profilesController.likedVideosMethod()), // Liked videos
+    //         // _buildVideoGrid(
+    //         //     profilesController.savedVideosMethod()), // Saved videos
+    //         // _buildVideoGrid(
+    //         //     profilesController.sharedVideosMethods()), // Shared videos
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
-  Widget _buildVideoGrid(RxList<Videos> videos) {
+  Widget _buildVideoGrid(RxList<VideosInfo> videos) {
     return Obx(() {
       if (videos.isEmpty) {
         return const Center(child: Text('No videos found'));
@@ -88,8 +100,8 @@ class ProfileScreen extends StatelessWidget {
         itemCount: videos.length,
         itemBuilder: (context, index) {
           final video = videos[index];
-          final controller =
-              VideoPlayerController.networkUrl(Uri.parse(video.videoUrl!));
+          final controller = VideoPlayerController.networkUrl(
+              Uri.parse(video.videos![0].videoUrl!));
           controller.initialize();
           controller.setLooping(true);
 
