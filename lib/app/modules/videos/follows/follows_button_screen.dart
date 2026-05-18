@@ -42,7 +42,6 @@ class FollowsButtonScreen extends StatelessWidget {
                   print("Error fetching profile: $error");
                   // Optionally show an error dialog here
                 });
-                //Get.to(ProfileScreen(), arguments: video.ownerId);
               },
               child: Container(
                 width: 44,
