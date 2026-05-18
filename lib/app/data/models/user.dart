@@ -6,7 +6,7 @@ class User {
   String? deletedAt;
   String? createdAt;
   String? updatedAt;
-  // int? team_id;
+  String? avatar;
 
   User({
     this.id,
@@ -16,6 +16,7 @@ class User {
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
+    this.avatar,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -26,6 +27,7 @@ class User {
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    avatar = json['avatar'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -37,11 +39,12 @@ class User {
     data['deleted_at'] = deletedAt;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['avatar'] = avatar;
     return data;
   }
 
   @override
   String toString() {
-    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, Email: ${email}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
+    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, Email: ${email}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}, Avatar: ${avatar}";
   }
 }

@@ -34,14 +34,16 @@ class FollowsButtonScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Navigate to profile
-                ProfileRepositories()
-                    .getProfile(video.ownerId)
-                    .then((profileData) {
-                  // Get.to(ProfileScreen(), arguments: profileData);
-                }).catchError((error) {
-                  print("Error fetching profile: $error");
-                  // Optionally show an error dialog here
-                });
+                // ProfileRepositories()
+                //     .getProfile(video.ownerId)
+                //     .then((profileData) {
+                //   // Get.to(ProfileScreen(), arguments: profileData);
+                // }).catchError((error) {
+                //   print("Error fetching profile: $error");
+                //   // Optionally show an error dialog here
+                // });
+                Get.to(ProfileScreen(), arguments: {"ownerId": video.ownerId});
+                // Get.to(ProfileScreen(), arguments: video.ownerId);
               },
               child: Container(
                 width: 44,

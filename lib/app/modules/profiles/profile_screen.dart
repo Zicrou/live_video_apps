@@ -7,12 +7,26 @@ import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:video_player/video_player.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final ProfilesController profilesController = Get.put(ProfilesController());
 
   @override
-  void initState() {}
-
+  void initState() {
+    super.initState();
+    final args = Get.arguments;
+    print("ProfileScreen initState called : ${args?["ownerId"]}");
+    profilesController.ownerId.value = args?["ownerId"] ?? "";
+    profilesController.getProfile(profilesController.ownerId.value);
+    print(
+        "Videos list in profile screen initState: ${profilesController.ownerId.value}, ${profilesController.videos.toString()}");
+  }
   // Future<void> _initVideos() async {
   //   await _actionsController.fetchVideos();
 
@@ -45,49 +59,44 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Center(
-        child: Text('Profile Screen'),
+    final args = Get.arguments;
+    profilesController.ownerId.value = args?["ownerId"] ?? "";
+    print("UserId in ProfileScreen: ${profilesController.videos.toString()}");
+
+    return DefaultTabController(
+      length: 4, // Tabs: My Videos, Likes, Saved, Shared
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Profile'),
+          backgroundColor: Colors.blueAccent,
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'My Videos'),
+              Tab(text: 'Likes'),
+              Tab(text: 'Saved'),
+              Tab(text: 'Shared'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildVideoGrid(profilesController.videos), // My videos
+            _buildVideoGrid(profilesController.videos), // Liked videos
+            _buildVideoGrid(profilesController.videos), // Saved videos
+            _buildVideoGrid(profilesController.videos), // Shared videos
+          ],
+        ),
       ),
     );
-    // DefaultTabController(
-    //   length: 4, // Tabs: My Videos, Likes, Saved, Shared
-    //   child: Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('Profile'),
-    //       backgroundColor: Colors.blueAccent,
-    //       bottom: const TabBar(
-    //         tabs: [
-    //           Tab(text: 'My Videos'),
-    //           Tab(text: 'Likes'),
-    //           Tab(text: 'Saved'),
-    //           Tab(text: 'Shared'),
-    //         ],
-    //       ),
-    //     ),
-    //     body: TabBarView(
-    //       children: [
-    //         // _buildVideoGrid(profilesController.myVideos()), // My videos
-    //         // _buildVideoGrid(
-    //         //     profilesController.likedVideosMethod()), // Liked videos
-    //         // _buildVideoGrid(
-    //         //     profilesController.savedVideosMethod()), // Saved videos
-    //         // _buildVideoGrid(
-    //         //     profilesController.sharedVideosMethods()), // Shared videos
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _buildVideoGrid(RxList<VideosInfo> videos) {
     return Obx(() {
+      if (profilesController.isLoading.value) {
+        return Center(child: CircularProgressIndicator());
+      }
       if (videos.isEmpty) {
-        return const Center(child: Text('No videos found'));
+        return Center(child: Text('No videos found'));
       }
 
       return GridView.builder(
@@ -106,25 +115,30 @@ class ProfileScreen extends StatelessWidget {
           controller.setLooping(true);
 
           return GestureDetector(
-            onTap: () {
-              // Play video in a new screen or inline
-              // Get.to(() => VideoPreviewScreen(controller: controller));
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
-                  child: VideoPlayer(controller),
-                ),
-                const Icon(
-                  Icons.play_circle_outline,
-                  size: 48,
-                  color: Colors.white70,
-                ),
-              ],
-            ),
-          );
+              onTap: () {
+                // Play video in a new screen or inline
+                // Get.to(() => VideoPreviewScreen(controller: controller));
+              },
+              child: Container(
+                  margin: const EdgeInsets.all(4),
+                  color: Colors.black,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // controller.value.isInitialized ?
+                      // SizedBox.expand(
+                      AspectRatio(
+                        aspectRatio: 2 / 2, // 🔥
+                        child: VideoPlayer(controller),
+                      ),
+                      Icon(
+                        Icons.play_circle_outline,
+                        size: 48,
+                        color: Colors.white70,
+                      ),
+                      // )
+                    ],
+                  )));
         },
       );
     });

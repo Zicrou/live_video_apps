@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
+import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
 import 'package:live_video_apps/app/data/repositories/videos_repositories.dart';
 
@@ -14,55 +15,53 @@ class ProfilesController extends GetxController {
   var followingCount = 0.obs;
   var likesCount = 0.obs;
 
-  var videos = [].obs;
-  var likedVideos = [].obs;
-  var savedVideos = [].obs;
-  RxList<Videos> myVideosList = <Videos>[].obs;
-  RxList<Videos> likedVideosList = <Videos>[].obs;
-  RxList<Videos> savedVideosList = <Videos>[].obs;
-  RxList<Videos> sharedVideosList = <Videos>[].obs;
-
+  var videos = <VideosInfo>[].obs;
+  var likedVideos = <VideosInfo>[].obs;
+  var savedVideos = <VideosInfo>[].obs;
+  final ownerId = "".obs;
   Future<void> getProfile(String userId) async {
     try {
       isLoading(true);
 
       final res = await _profileRepositories.getProfile(userId);
+      print("Profile data in controller: ${res.toString()}");
+      username.value = res.user?.name ?? "";
+      avatar.value = res.user?.avatar ?? "";
+      followersCount.value = res.followersCount ?? 0;
+      followingCount.value = res.followingCount ?? 0;
+      likesCount.value = res.likesCount ?? 0;
+      videos.assignAll(res.videos);
+      print(
+          "Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${videos[0].videos[0].id.toString()}");
       return;
-      username.value = res['user']['name'];
-      avatar.value = res['user']['avatar'] ?? "";
-
-      followersCount.value = res['followers_count'];
-      followingCount.value = res['following_count'];
-      likesCount.value = res['likes_count'];
-
-      videos.value = res['videos'];
-      likedVideos.value = res['liked'];
-      savedVideos.value = res['saved'];
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<dynamic> myVideos() async {
-    try {
-      isLoading(true);
-      final response = await _videosRepositories.fetchVideosFollowing();
-      return myVideosList;
     } catch (e) {
-      print("Error fetching videos following: ${e.toString()}");
-      throw Exception("Failed to fetch videos");
+      print("Error fetching profile: ${e.toString()}");
+      throw Exception("Failed to fetch profile");
     } finally {
       isLoading(false);
     }
   }
 
-  Future<RxList<Videos>> likedVideosMethod() async {
+  // Future<dynamic> myVideos() async {
+  //   try {
+  //     isLoading(true);
+  //     final response = await _videosRepositories.fetchVideosFollowing();
+  //     return myVideosList;
+  //   } catch (e) {
+  //     print("Error fetching videos following: ${e.toString()}");
+  //     throw Exception("Failed to fetch videos");
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
+
+  Future<RxList<VideosInfo>> likedVideosMethod() async {
     try {
       isLoading(true);
       final response = await _profileRepositories.fetchLikedVideos();
-      likedVideosList.clear();
-      likedVideosList.assignAll([response]);
-      return likedVideosList;
+      likedVideos.clear();
+      likedVideos.assignAll([response]);
+      return likedVideos;
     } catch (e) {
       print("Error fetching liked videos: ${e.toString()}");
       throw Exception("Failed to fetch liked videos");
@@ -71,31 +70,16 @@ class ProfilesController extends GetxController {
     }
   }
 
-  Future<RxList<Videos>> savedVideosMethod() async {
+  Future<RxList<VideosInfo>> savedVideosMethod() async {
     try {
       isLoading(true);
       final response = await _profileRepositories.fetchSavedVideos();
-      savedVideosList.clear();
-      savedVideosList.assignAll([response]);
-      return savedVideosList;
+      savedVideos.clear();
+      savedVideos.assignAll([response]);
+      return savedVideos;
     } catch (e) {
       print("Error fetching saved videos: ${e.toString()}");
       throw Exception("Failed to fetch saved videos");
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<RxList<Videos>> sharedVideosMethods() async {
-    try {
-      isLoading(true);
-      final response = await _profileRepositories.fetchSharedVideos();
-      sharedVideosList.clear();
-      sharedVideosList.assignAll([response]);
-      return sharedVideosList;
-    } catch (e) {
-      print("Error fetching shared videos: ${e.toString()}");
-      throw Exception("Failed to fetch shared videos");
     } finally {
       isLoading(false);
     }
@@ -106,6 +90,8 @@ class ProfilesController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     print("ProfilesController initialized with get profile");
-    getProfile("b4bf210c-83b1-4034-86e7-68e710a7f1bd");
+    // var args = Get.arguments;
+    // print("UserId in ProfilesController onInit: ${args}");
+    // getProfile(args?["ownerId"] as String);
   }
 }

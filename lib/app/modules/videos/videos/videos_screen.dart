@@ -57,7 +57,6 @@ class _VideosScreenState extends State<VideosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Current route in VideosScreen: ${Get.currentRoute}");
     return Scaffold(
       extendBodyBehindAppBar: true, // 🔥 key for overlay effect
       backgroundColor: Colors.black,
