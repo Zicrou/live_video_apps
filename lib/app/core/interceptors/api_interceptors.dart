@@ -12,8 +12,11 @@ class ApiInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (_authProvider.isAuthenticated) {
-      options.headers['Authorization'] = "Bearer ${_authProvider.authToken}";
-      logger.i("Bearer ${_authProvider.authToken}");
+      options.headers['Authorization'] =
+          "Bearer ${_authProvider.authToken}"; //${_authProvider.authToken}
+
+      logger
+          .i("Bearer ${_authProvider.authToken}"); // ${_authProvider.authToken}
       logger.i(options.data);
     }
     options.headers['Content-Type'] = 'application/json';

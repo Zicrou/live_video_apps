@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:logger/logger.dart';
 
 Logger logger = Logger();
@@ -12,11 +12,17 @@ class VideosInfo {
   });
 
   VideosInfo.fromJson(Map<String, dynamic> json) {
-    if (json['videos'] != null) {
+    if (json['videos'] != null || json['likes'] != null) {
       videos = videos;
-      json['videos'].forEach((v) {
-        videos!.add(new Videos.fromJson(v));
-      });
+      if (json['videos'] != null) {
+        json['videos'].forEach((v) {
+          videos!.add(new Videos.fromJson(v));
+        });
+      } else if (json['likes'] != null) {
+        json['likes'].forEach((v) {
+          videos!.add(new Videos.fromJson(v));
+        });
+      }
     } else if (json != null) {
       videos = videos;
       print("Adding this video from videoInfo ${json} to videos list");
@@ -26,6 +32,6 @@ class VideosInfo {
 
   @override
   String toString() {
-    return 'videos: ${videos.toString()}';
+    return '${videos.toString()}';
   }
 }

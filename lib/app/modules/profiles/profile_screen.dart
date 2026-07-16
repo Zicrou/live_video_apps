@@ -69,7 +69,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           title: const Text('Profile'),
           backgroundColor: Colors.blueAccent,
-          bottom: const TabBar(
+          bottom: TabBar(
+            onTap: (index) {
+              if (index == 0) {
+                profilesController.getProfile(profilesController.ownerId.value);
+              } else if (index == 1) {
+                profilesController
+                    .likedVideosMethod(profilesController.ownerId.value);
+                // ProfileRepositories()
+                //     .fetchLikedVideos(profilesController.ownerId.value);
+              } else if (index == 2) {
+                profilesController
+                    .savedVideosMethod(profilesController.ownerId.value);
+              } else if (index == 3) {
+                // profilesController.fetchSharedVideos(profilesController.ownerId.value);
+              }
+            },
             tabs: [
               Tab(text: 'My Videos'),
               Tab(text: 'Likes'),
@@ -81,8 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: TabBarView(
           children: [
             _buildVideoGrid(profilesController.videos), // My videos
-            _buildVideoGrid(profilesController.videos), // Liked videos
-            _buildVideoGrid(profilesController.videos), // Saved videos
+            _buildVideoGrid(profilesController.likedVideos), // Liked videos
+            _buildVideoGrid(profilesController.savedVideos), // Saved videos
             _buildVideoGrid(profilesController.videos), // Shared videos
           ],
         ),
@@ -93,12 +108,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildVideoGrid(RxList<VideosInfo> videos) {
     return Obx(() {
       if (profilesController.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
       if (videos.isEmpty) {
-        return Center(child: Text('No videos found'));
+        return const Center(child: Text('No videos found'));
       }
-
+      print("Videos list in profile screen build: ${videos.length}");
       return GridView.builder(
         padding: const EdgeInsets.all(8),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -110,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         itemBuilder: (context, index) {
           final video = videos[index];
           final controller = VideoPlayerController.networkUrl(
-              Uri.parse(video.videos![0].videoUrl!));
+              Uri.parse(videos[0].videos[0].videoUrl!));
           controller.initialize();
           controller.setLooping(true);
 

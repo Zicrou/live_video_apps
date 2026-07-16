@@ -1,4 +1,4 @@
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/likes.dart';
 import 'package:live_video_apps/app/data/models/user.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';

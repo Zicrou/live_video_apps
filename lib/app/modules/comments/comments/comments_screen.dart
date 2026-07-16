@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/modules/comments/comments/comments_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';

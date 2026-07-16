@@ -75,36 +75,42 @@ class ProfileRepositories {
   //   }
   // }
 
-  Future<dynamic> fetchLikedVideos() async {
+  Future<dynamic> fetchLikedVideos(String userId) async {
     try {
-      final response = await _apiProvider.get(listLikedVideosEndpoint);
-      print("Liked Response Videos from Videos Repositories : ${response}");
+      final response =
+          await _apiProvider.get('$profileEndpoint/$userId/liked_videos');
+      print("Liked Response Videos from Profile Repositories : ${response}");
+
       if (response == null) {
         return response;
       }
-
       print(
-        'Liked Fetching Videos response video repositories: ${response['videos']}',
+        'Liked Fetching Videos response profile repositories: ${response['likes']}',
+      );
+      print(
+        'Liked Fetching Videos response profile repositories until data: ${response['likes'][0]}',
       );
 
-      var res = VideosInfo.fromJson(response);
-      print("Liked Liste des videos ${res.toString()}");
-      return res;
+      var resp = VideosInfo.fromJson(response);
+      print("Liked Liste des videos ${resp.toString()}");
+      print("Liked videos runtime type: ${resp.runtimeType}");
+      return resp;
     } on BadRequestException {
       rethrow;
     }
   }
 
-  Future<dynamic> fetchSavedVideos() async {
+  Future<dynamic> fetchSavedVideos(String userId) async {
     try {
-      final response = await _apiProvider.get(listSavedVideosEndpoint);
-      print("Saved Response Videos from Videos Repositories : ${response}");
+      final response =
+          await _apiProvider.getN('$profileEndpoint/$userId/saved_videos');
+      print("Saved Response Videos from Profile Repositories : ${response}");
       if (response == null) {
         return response;
       }
 
       print(
-        'Saved Fetching Videos response video repositories: ${response['videos']}',
+        'Saved Fetching Videos response video repositories: ${response['data']}',
       );
 
       var res = VideosInfo.fromJson(response);
@@ -115,27 +121,27 @@ class ProfileRepositories {
     }
   }
 
-  Future<dynamic> fetchSharedVideos() async {
-    try {
-      final response = await _apiProvider.get(listSharedVideosEndpoint);
-      print("Shared Response Videos from Videos Repositories : ${response}");
-      if (response == null) {
-        return response;
-      }
+  // Future<dynamic> fetchSharedVideos() async {
+  //   try {
+  //     final response = await _apiProvider.get(profileEndpoint);
+  //     print("Shared Response Videos from Videos Repositories : ${response}");
+  //     if (response == null) {
+  //       return response;
+  //     }
 
-      print(
-        'Shared Fetching Videos response video repositories: ${response['videos']}',
-      );
+  //     print(
+  //       'Shared Fetching Videos response video repositories: ${response['videos']}',
+  //     );
 
-      var res = VideosInfo.fromJson(response);
-      print("Shared Liste des videos ${res.toString()}");
-      return res;
-    } on BadRequestException {
-      rethrow;
-    }
-  }
+  //     var res = VideosInfo.fromJson(response);
+  //     print("Shared Liste des videos ${res.toString()}");
+  //     return res;
+  //   } on BadRequestException {
+  //     rethrow;
+  //   }
+  // }
 
-  Future<dynamic> fetchMyVideos() async {
+  Future<dynamic> fetchMyVideos(String userId) async {
     try {
       final response = await _apiProvider.get(listMyVideosEndpoint);
       print("My Videos Response from Videos Repositories : ${response}");

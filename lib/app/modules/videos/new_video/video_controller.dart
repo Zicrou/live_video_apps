@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/providers/auth_providers.dart';

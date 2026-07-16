@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/comment_info.dart';
 import 'package:live_video_apps/app/data/models/comments.dart';
 import 'package:live_video_apps/app/data/models/videoActionState.dart';

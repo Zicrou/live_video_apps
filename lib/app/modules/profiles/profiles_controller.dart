@@ -30,9 +30,11 @@ class ProfilesController extends GetxController {
       followersCount.value = res.followersCount ?? 0;
       followingCount.value = res.followingCount ?? 0;
       likesCount.value = res.likesCount ?? 0;
+      print("Videos list in profile controller: ${res.videos.toString()}");
+      print("Runtimetype: ${res.videos.runtimeType}");
       videos.assignAll(res.videos);
       print(
-          "Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${videos[0].videos[0].id.toString()}");
+          "Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${videos[0].toString()}");
       return;
     } catch (e) {
       print("Error fetching profile: ${e.toString()}");
@@ -55,13 +57,18 @@ class ProfilesController extends GetxController {
   //   }
   // }
 
-  Future<RxList<VideosInfo>> likedVideosMethod() async {
+  Future<void> likedVideosMethod(String userId) async {
     try {
       isLoading(true);
-      final response = await _profileRepositories.fetchLikedVideos();
-      likedVideos.clear();
-      likedVideos.assignAll([response]);
-      return likedVideos;
+      final response = await _profileRepositories
+          .fetchLikedVideos("edecc2ae-4eb5-4581-9424-b42e77c40392");
+      print("Liked videos response in controller: ${response}");
+      print("Response in controller: ${response.toString()}");
+      print("response runtime type: ${response.runtimeType}");
+      return;
+      likedVideos.assign(response);
+      print("Liked videos in controller: ${likedVideos}");
+      // return likedVideos;
     } catch (e) {
       print("Error fetching liked videos: ${e.toString()}");
       throw Exception("Failed to fetch liked videos");
@@ -70,12 +77,13 @@ class ProfilesController extends GetxController {
     }
   }
 
-  Future<RxList<VideosInfo>> savedVideosMethod() async {
+  Future<RxList<VideosInfo>> savedVideosMethod(String userId) async {
     try {
       isLoading(true);
-      final response = await _profileRepositories.fetchSavedVideos();
-      savedVideos.clear();
+      final response = await _profileRepositories
+          .fetchSavedVideos("edecc2ae-4eb5-4581-9424-b42e77c40392");
       savedVideos.assignAll([response]);
+      print("Saved videos in controller: ${savedVideos.toString()}");
       return savedVideos;
     } catch (e) {
       print("Error fetching saved videos: ${e.toString()}");

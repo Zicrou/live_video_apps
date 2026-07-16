@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:live_video_apps/app/data/models/Videos.dart';
+import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/profile.dart';
 import 'package:live_video_apps/app/data/models/user.dart';
 import 'package:logger/logger.dart';
