@@ -93,8 +93,16 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 // Initialize isLiked  and isSaved in the controller based on the video state
-    actionsController.isLiked.value = widget.video.isLiked!;
-    actionsController.isSaved.value = widget.video.isSaved!;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    
+      if (!mounted) return;
+
+      actionsController.isLiked.value = widget.video.isLiked ?? false;
+    
+      actionsController.isSaved.value = widget.video.isSaved ?? false;
+      
+    });
+    
 
     var videoInfo = widget.video;
     return VisibilityDetector(
@@ -184,27 +192,49 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                             const SizedBox(height: 10),
 
                             // ❤️ LIKE
-                            IconButton(
-                              icon: Icon(
-                                Icons.favorite,
-                                color: actionsController.isLiked.value
-                                    ? Colors.red
-                                    : Colors.white,
-                                size: 32,
-                              ),
-                              onPressed: () {
-                                print(
-                                    "IsLiked before toggle: ${actionsController.isLiked.value}");
-                                if (authProvider.user?.user?.id == null) {
-                                  showShouldGetConnectedDialog(context, "like");
-                                  return;
-                                } else {
-                                  actionsController.toggleLike(state);
-                                }
-                                print(
-                                    "IsLiked after toggle: ${actionsController.isLiked.value}");
-                              },
+                            Obx(
+                              () => IconButton(
+                              
+                                icon: Icon(
+
+                                  Icons.favorite,
+
+                                  color: actionsController.isLiked.value
+                                    
+                                      ? Colors.red
+                                    
+                                      : Colors.white,
+                                
+                                  size: 32,
+                                
+                                ),
+                                
+                                onPressed: () {
+                                
+                                  print(
+                                      "IsLiked before toggle: ${actionsController.isLiked.value}");
+                                
+                                  if (authProvider.user?.user?.id == null) {
+                                  
+                                    showShouldGetConnectedDialog(context, "like");
+                                  
+                                    return;
+                                  
+                                  } else {
+                                  
+                                    actionsController.toggleLike(state);
+                                  
+                                  }
+                                  
+                                  print(
+                                      "IsLiked after toggle: ${actionsController.isLiked.value}");
+                                
+                                },
+                            
+                              )
+
                             ),
+                            
                             Text(
                               actionsController.formatCount(state.likeCount!),
                               style: const TextStyle(
@@ -212,6 +242,9 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                                 fontSize: 12,
                               ),
                             ),
+
+                          
+                      
 
                             const SizedBox(height: 10),
 
@@ -347,10 +380,21 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
+
                     ],
+
+
                   ),
+
                 ),
+
               ],
-            )));
+
+            )
+            
+      )
+            
+    );
+
   }
 }

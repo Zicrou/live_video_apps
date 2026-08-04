@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
+import 'package:live_video_apps/app/modules/profiles/profile_video_preview_screen.dart';
 import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
+import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:video_player/video_player.dart';
 
@@ -97,32 +100,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
           controller.initialize();
           controller.setLooping(true);
 
-          return GestureDetector(
+          // In your grid item
+            final selectedVideo = videos[index].videos.first;
+
+            return GestureDetector(
+              
               onTap: () {
-                // Play video in a new screen or inline
-                // Get.to(() => VideoPreviewScreen(controller: controller));
+                
+                Get.to(
+                  () => VideoItemScreen(video: selectedVideo, isActive: true),
+                
+                );
+
               },
+
               child: Container(
-                  margin: const EdgeInsets.all(4),
-                  color: Colors.black,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // controller.value.isInitialized ?
-                      // SizedBox.expand(
-                      AspectRatio(
-                        aspectRatio: 2 / 2, // 🔥
-                        child: VideoPlayer(controller),
-                      ),
-                      Icon(
-                        Icons.play_circle_outline,
-                        size: 48,
-                        color: Colors.white70,
-                      ),
-                      // )
-                    ],
-                  )));
-        },
+
+                margin: const EdgeInsets.all(4),
+                
+                color: Colors.black,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: VideoPlayer(controller),
+                    ),
+                    const Icon(
+                      Icons.play_circle_outline,
+                      size: 48,
+                      color: Colors.white70,
+                    ),
+                  ],
+                ),
+              ),
+            );
+            
+            }
+          
       );
     });
   }
