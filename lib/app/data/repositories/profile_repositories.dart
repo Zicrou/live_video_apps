@@ -78,23 +78,26 @@ class ProfileRepositories {
   Future<dynamic> fetchLikedVideos(String userId) async {
     try {
       final response =
-          await _apiProvider.get('$profileEndpoint/$userId/liked_videos');
+          await _apiProvider.get('$profileEndpoint/$userId');
       print("Liked Response Videos from Profile Repositories : ${response}");
 
       if (response == null) {
         return response;
       }
-      print(
-        'Liked Fetching Videos response profile repositories: ${response['likes']}',
-      );
-      print(
-        'Liked Fetching Videos response profile repositories until data: ${response['likes'][0]}',
-      );
+       print("Response in fetchLikedVideos repository: $response"); // should print the “bee.mp4” video
+      
+      print("Videos response in fetchLikedVideos: ${response['videos']}"); // should print the “bee.mp4” video
+      
+      print("Liked response in fetchLikedVideos: ${response['liked']}");  // should print the “butterfly.mp4” video
+      
+      print("Saved response in fetchLikedVideos: ${response['saved']}");  // should print the “butterfly.mp4” video
+      
+      print("Url api in fetchLikedVideos: $profileEndpoint/$userId");
 
-      var resp = VideosInfo.fromJson(response);
-      print("Liked Liste des videos ${resp.toString()}");
-      print("Liked videos runtime type: ${resp.runtimeType}");
-      return resp;
+      var responseLiked = VideosInfo.fromJson(response['liked']);
+      print("Liked Liste des videos ${responseLiked.toString()})");
+      print("Liked videos runtime type: ${responseLiked.runtimeType}");
+      return responseLiked;
     } on BadRequestException {
       rethrow;
     }
@@ -121,26 +124,6 @@ class ProfileRepositories {
     }
   }
 
-  // Future<dynamic> fetchSharedVideos() async {
-  //   try {
-  //     final response = await _apiProvider.get(profileEndpoint);
-  //     print("Shared Response Videos from Videos Repositories : ${response}");
-  //     if (response == null) {
-  //       return response;
-  //     }
-
-  //     print(
-  //       'Shared Fetching Videos response video repositories: ${response['videos']}',
-  //     );
-
-  //     var res = VideosInfo.fromJson(response);
-  //     print("Shared Liste des videos ${res.toString()}");
-  //     return res;
-  //   } on BadRequestException {
-  //     rethrow;
-  //   }
-  // }
-
   Future<dynamic> fetchMyVideos(String userId) async {
     try {
       final response = await _apiProvider.get(listMyVideosEndpoint);
@@ -163,13 +146,62 @@ class ProfileRepositories {
 
   Future<dynamic> getProfile(String userId) async {
     try {
+      
       final res = await _apiProvider.get('$profileEndpoint/$userId');
-      // print("VideosRepositories: Get profile response: ${res['videos']}");
-      // print("Data type 1: ${res.runtimeType}");
-      // print("Data type 2: ${res['videos'].runtimeType}");
+      
       var profileData = Profile.fromJson(res);
+      
       print("Profile data: ${profileData.toString()}");
+      
       return profileData;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getProfileLikedVideos(String userId) async {
+    try {
+      
+      final res = await _apiProvider.get('$profileEndpoint/$userId/liked');
+      
+      print("Response in getProfileLikedVideos repository: $res"); // should print the “bee.mp4” video
+      
+      
+      print("Liked response: ${res['liked']}");  // should print the “butterfly.mp4” video
+      
+      print("Url api: $profileEndpoint/$userId");  // should print the “butterfly.mp4” video
+      
+      final likedVideos = (res['liked'] as List? ?? [])
+        .map((video) => VideosInfo.fromJson(video as Map<String, dynamic>))
+        .toList();
+      
+      print("Liked videos in profile repositories data: ${likedVideos.toString()}");
+      
+      return likedVideos;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getProfileSavedVideos(String userId) async {
+    try {
+      
+      final res = await _apiProvider.get('$profileEndpoint/$userId/saved');
+      
+      print("Response in getProfileSavedVideos repository: $res"); // should print the “bee.mp4” video
+      
+      
+      print("Saved response: ${res['saved']}");  // should print the “butterfly.mp4” video
+      
+      print("Url api: $profileEndpoint/$userId/saved");  // should print the “butterfly.mp4” video
+      
+      final savedVideos = (res['saved'] as List? ?? [])
+        .map((video) => VideosInfo.fromJson(video as Map<String, dynamic>))
+        .toList();
+      
+      print("Saved videos in profile repositories data: ${savedVideos.toString()}");
+      
+      return savedVideos;
     } on BadRequestException {
       rethrow;
     }

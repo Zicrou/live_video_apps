@@ -11,7 +11,7 @@ class LoginScreen extends GetView<AuthController> {
   // final args = Get.arguments;
 
   @override
-  final AuthController controller = Get.find<AuthController>();
+  final AuthController controller = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     // print("LoginScreen received args: ${args['previousRoute']}");

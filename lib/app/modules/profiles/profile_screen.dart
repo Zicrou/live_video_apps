@@ -27,35 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print(
         "Videos list in profile screen initState: ${profilesController.ownerId.value}, ${profilesController.videos.toString()}");
   }
-  // Future<void> _initVideos() async {
-  //   await _actionsController.fetchVideos();
-
-  //   final videos = _actionsController.videosList[0].videos!;
-  //   for (final video in videos) {
-  //     final controller = VideoPlayerController.networkUrl(
-  //       Uri.parse(video.videoUrl!),
-  //     );
-
-  //     // await controller.initialize();
-  //     // controller.setLooping(true);
-
-  //     // _controllers.add(controller);
-
-  //     await controller.initialize().then((_) {
-  //       controller.setLooping(true);
-  //       // setState(() {
-  //       _controllers.add(controller);
-
-  //       // _videoPaths.add(video.videoUrl!); // Add the video path
-
-  //       // });
-  //     });
-  //   }
-
-  //   setState(() {
-  //     _controllersInitialized = true;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (index == 0) {
                 profilesController.getProfile(profilesController.ownerId.value);
               } else if (index == 1) {
-                profilesController
-                    .likedVideosMethod(profilesController.ownerId.value);
-                // ProfileRepositories()
-                //     .fetchLikedVideos(profilesController.ownerId.value);
+                profilesController.getLikedVideosInProfile(profilesController.ownerId.value);
+                
               } else if (index == 2) {
-                profilesController
-                    .savedVideosMethod(profilesController.ownerId.value);
+                profilesController.getSavedVideosInProfile(profilesController.ownerId.value);
               } else if (index == 3) {
                 // profilesController.fetchSharedVideos(profilesController.ownerId.value);
               }

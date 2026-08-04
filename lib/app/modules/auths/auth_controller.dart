@@ -14,7 +14,7 @@ import 'package:logger/web.dart';
 Logger logger = Logger();
 
 class AuthController extends GetxController {
-  final AuthProvider authProvider = Get.find<AuthProvider>();
+  final AuthProvider authProvider = Get.put(AuthProvider());
   final AuthServices authServices = AuthServices();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
@@ -56,21 +56,8 @@ class AuthController extends GetxController {
 
         print("Current route: ${Get.currentRoute}"); // Debugging line
         print("Previous route: ${Get.previousRoute}"); // Debugging line
-        // Get.offAll(() => VentesScreen());
-        if (Get.previousRoute == Routes.videosFollowing) {
-          Get.toNamed(Routes.videosFollowing);
-        } else {
-          Get.toNamed(Routes.home);
-        }
-        // if (Get.previousRoute == Routes.videosFollowing) {
-        //   Get.toNamed(
-        //     Routes.videosFollowing,
-        //   );
-        // } else if (Get.previousRoute == Routes.home) {
-        //   Get.toNamed(
-        //     Routes.home,
-        //   );
-        // }
+        Get.offAll(() => VideosScreen());
+        
         goodMessage("Connexion avec succés");
       }
     } catch (e) {

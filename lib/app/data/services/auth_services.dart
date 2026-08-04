@@ -8,7 +8,7 @@ final logger = Logger();
 
 class AuthServices extends GetxService {
   //final _authProvider = Get.find<AuthProvider>();
-  final _authRepositories = Get.find<AuthRepositories>();
+  final _authRepositories = Get.put(AuthRepositories());
 
   @override
   void onInit() {

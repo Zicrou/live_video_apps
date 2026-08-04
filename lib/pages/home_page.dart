@@ -18,7 +18,7 @@ import 'package:logger/logger.dart';
 Logger logger = Logger();
 
 class HomePage extends StatelessWidget {
-  final AuthController controller = Get.find<AuthController>();
+  final AuthController controller = Get.put(AuthController());
   VideosRepositories _videosRepositories = VideosRepositories();
 
   @override
@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
               child: const Text("Sign Up"),
               onPressed: () {
                 logger.i("Navigating to Sign Up Page...");
-                Get.to(SignupScreen());
+                // Get.to(SignupScreen());
               },
               // () => Get.to(ViewerPage()),
             ),
@@ -89,9 +89,6 @@ class HomePage extends StatelessWidget {
                 //     "b4bf210c-83b1-4034-86e7-68e710a7f1bd"); // Test get Profile function
                 Get.to(VideosScreen());
 
-                // Test Share videos function
-
-                // Get.to(() => ViewerFeedPage(lives: controller.lives.toList()));
               },
               // () => Get.to(ViewerPage()),
             ),

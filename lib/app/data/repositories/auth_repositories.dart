@@ -14,7 +14,7 @@ final logger = Logger();
 class AuthRepositories {
   final dio = Dio();
   final _authProvider = Get.find<AuthProvider>();
-  final _apiProvider = Get.find<ApiProvider>();
+  final _apiProvider = Get.put(ApiProvider());
 
   Future<UserInfo> login(String email, String password) async {
     try {

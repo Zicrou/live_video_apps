@@ -8,7 +8,7 @@ import '../models/user_info.dart';
 final logger = Logger();
 
 class AuthProvider extends GetxService {
-  final _storageProvider = Get.find<StorageProvider>();
+  final _storageProvider = Get.put(StorageProvider());
   final _user = UserInfo().obs;
   final _userRegister = UserRegister().obs;
   final _isAuthenticated = false.obs;

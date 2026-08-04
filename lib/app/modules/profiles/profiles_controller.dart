@@ -44,53 +44,61 @@ class ProfilesController extends GetxController {
     }
   }
 
-  // Future<dynamic> myVideos() async {
-  //   try {
-  //     isLoading(true);
-  //     final response = await _videosRepositories.fetchVideosFollowing();
-  //     return myVideosList;
-  //   } catch (e) {
-  //     print("Error fetching videos following: ${e.toString()}");
-  //     throw Exception("Failed to fetch videos");
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
+  
 
-  Future<void> likedVideosMethod(String userId) async {
+  Future<void> getLikedVideosInProfile(String userId) async {
     try {
       isLoading(true);
-      final response = await _profileRepositories
-          .fetchLikedVideos("edecc2ae-4eb5-4581-9424-b42e77c40392");
-      print("Liked videos response in controller: ${response}");
-      print("Response in controller: ${response.toString()}");
-      print("response runtime type: ${response.runtimeType}");
+
+      final res = await _profileRepositories.getProfileLikedVideos(userId);
+      
+      print("Liked videos list in profile controller: ${res.toString()}");
+      
+      likedVideos.assignAll(res);
+
+      print("Liked videos list in profile controller: ${likedVideos.toString()}");
+
+      print("Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${likedVideos[0].toString()}");
+
       return;
-      likedVideos.assign(response);
-      print("Liked videos in controller: ${likedVideos}");
-      // return likedVideos;
+
     } catch (e) {
-      print("Error fetching liked videos: ${e.toString()}");
-      throw Exception("Failed to fetch liked videos");
+      print("Error fetching profile: ${e.toString()}");
+      throw Exception("Failed to fetch profile");
     } finally {
       isLoading(false);
     }
   }
 
-  Future<RxList<VideosInfo>> savedVideosMethod(String userId) async {
+  Future<void> getSavedVideosInProfile(String userId) async {
     try {
+      
       isLoading(true);
-      final response = await _profileRepositories
-          .fetchSavedVideos("edecc2ae-4eb5-4581-9424-b42e77c40392");
-      savedVideos.assignAll([response]);
-      print("Saved videos in controller: ${savedVideos.toString()}");
-      return savedVideos;
+
+      final res = await _profileRepositories.getProfileSavedVideos(userId);
+      
+      print("Saved videos list in profile controller: ${res.toString()}");
+      
+      savedVideos.assignAll(res);
+
+      print("Saved videos list in profile controller: ${savedVideos.toString()}");
+
+      print("Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${savedVideos[0].toString()}");
+
+      return;
+
     } catch (e) {
-      print("Error fetching saved videos: ${e.toString()}");
-      throw Exception("Failed to fetch saved videos");
+      
+      print("Error fetching profile: ${e.toString()}");
+      
+      throw Exception("Failed to fetch profile");
+
     } finally {
+
       isLoading(false);
+
     }
+    
   }
 
   @override

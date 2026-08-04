@@ -54,8 +54,8 @@ class Videos {
     savedCount = json['saveds_count'] ?? 0;
     sharesCount = json['shares_count'] ?? 0;
 
-    isLiked = ((json['isLiked'] ?? json['isliked']) > 0) ? true : false;
-    isSaved = ((json['isSaved'] ?? json['issaveds']) > 0) ? true : false;
+    isLiked = _asBool(json['isLiked'] ?? json['isliked']);
+    isSaved = _asBool(json['isSaved'] ?? json['issaved']);
     isFollowing = json['is_following'] ?? false;
 
     if (json['owner'] != null) {
@@ -68,4 +68,11 @@ class Videos {
     // TODO: implement toString
     return "ID: $id, Video_url: $videoUrl, Caption: $caption, Owner_id: $ownerId, Post_id: $postId, Post_type: $postType,sharesCount: $sharesCount, isFollowing: $isFollowing, Owner: ${owner.toString()}, likeCount: $likeCount, commentCount: ${commentCount}, savedCount: $savedCount, isLiked: $isLiked, isSaved: $isSaved";
   }
+
+  bool _asBool(dynamic value) {
+  if (value is bool) return value;
+  if (value is num) return value > 0;
+  if (value is String) return value == '1' || value.toLowerCase() == 'true';
+  return false;
+}
 }
