@@ -4,6 +4,7 @@ import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
 import 'package:live_video_apps/app/modules/auths/auth_controller.dart';
 import 'package:live_video_apps/app/modules/profiles/profile_screen.dart';
+import 'package:live_video_apps/app/modules/profiles/visitor_profile_screen.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 
 class FollowsButtonScreen extends StatelessWidget {
@@ -33,17 +34,17 @@ class FollowsButtonScreen extends StatelessWidget {
             /// 👤 AVATAR
             GestureDetector(
               onTap: () {
-                // Navigate to profile
-                // ProfileRepositories()
-                //     .getProfile(video.ownerId)
-                //     .then((profileData) {
-                //   // Get.to(ProfileScreen(), arguments: profileData);
-                // }).catchError((error) {
-                //   print("Error fetching profile: $error");
-                //   // Optionally show an error dialog here
-                // });
-                Get.to(ProfileScreen(), arguments: {"ownerId": video.ownerId});
-                // Get.to(ProfileScreen(), arguments: video.ownerId);
+                
+                if(video.ownerId == authProvider.user?.user?.id) {
+                 
+                  Get.to(ProfileScreen(), arguments: {"ownerId": video.ownerId});
+                
+                } else {
+                
+                  Get.to(VisitorProfileScreen(), arguments: {"ownerId": video.ownerId});
+               
+                }
+
               },
               child: Container(
                 width: 44,

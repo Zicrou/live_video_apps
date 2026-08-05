@@ -11,8 +11,11 @@ import 'package:live_video_apps/app/modules/login/login_screen.dart'
     hide logger;
 import 'package:live_video_apps/app/modules/videos/follows/follows_button_screen.dart';
 import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
+import 'package:live_video_apps/app/modules/videos/new_video/video_screen.dart' hide logger;
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart'
     hide logger;
+import 'package:live_video_apps/app/modules/videos/videos/videos_screen.dart' hide logger;
+import 'package:live_video_apps/app/modules/videos/videos_features/top_bar_screen.dart';
 import 'package:live_video_apps/utilites/dialogs/cannot_share_empty_video_dialog.dart';
 import 'package:live_video_apps/utilites/dialogs/should_get_connected_dialog.dart';
 import 'package:share_plus/share_plus.dart';
@@ -105,7 +108,54 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
     
 
     var videoInfo = widget.video;
-    return VisibilityDetector(
+    return Scaffold(
+      extendBodyBehindAppBar: true, // 🔥 key for overlay effect
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: TopBar(),
+        centerTitle: true,
+      ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white54,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 0,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Get.off(() => VideosScreen());
+              break;
+
+            case 1:
+              Get.to(() => "ExploreScreen");
+              break;
+
+            case 2:
+              Get.to(() => VideoScreen());
+              break;
+
+            case 3:
+              Get.to(() => "InboxScreen");
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_box, size: 32),
+            label: 'Ajouter',
+            // backgroundColor: Colors.black.
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.inbox), label: 'Inbox'),
+        ],
+      ),
+      body: VisibilityDetector(
         key: Key("video-${widget.video.id}"), // 🔥 VERY IMPORTANT (unique key)
         onVisibilityChanged: (info) {
           if (widget.isActive == true && info.visibleFraction > 0.7) {
@@ -393,8 +443,8 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
             )
             
       )
-            
+    )
     );
-
+    
   }
 }

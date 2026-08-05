@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
-import 'package:live_video_apps/app/modules/profiles/profile_video_preview_screen.dart';
 import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
@@ -18,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  
   final ProfilesController profilesController = Get.put(ProfilesController());
 
   @override
@@ -108,6 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onTap: () {
                 
                 Get.to(
+                  
                   () => VideoItemScreen(video: selectedVideo, isActive: true),
                 
                 );
