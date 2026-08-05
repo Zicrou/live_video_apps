@@ -33,6 +33,8 @@ class ProfilesController extends GetxController {
       print("Videos list in profile controller: ${res.videos.toString()}");
       print("Runtimetype: ${res.videos.runtimeType}");
       videos.assignAll(res.videos);
+      likedVideos.assignAll(res.likedVideos);
+      savedVideos.assignAll(res.savedVideos);
       print(
           "Username: ${username.value}, Avatar: ${avatar.value}, Followers: ${followersCount.value}, Following: ${followingCount.value}, Likes: ${likesCount.value}, Videos: ${videos[0].toString()}");
       return;
@@ -52,9 +54,19 @@ class ProfilesController extends GetxController {
 
       final res = await _profileRepositories.getProfileLikedVideos(userId);
       
-      print("Liked videos list in profile controller: ${res.toString()}");
+      username.value = res.user?.name ?? "";
+     
+      avatar.value = res.user?.avatar ?? "";
       
-      likedVideos.assignAll(res);
+      followersCount.value = res.followersCount ?? 0;
+        
+      followingCount.value = res.followingCount ?? 0;
+        
+      likesCount.value = res.likesCount ?? 0;
+
+      print("Liked videos list in profile controller: ${res.toString()}");
+        
+      likedVideos.assignAll(res.videos);
 
       print("Liked videos list in profile controller: ${likedVideos.toString()}");
 
@@ -77,9 +89,19 @@ class ProfilesController extends GetxController {
 
       final res = await _profileRepositories.getProfileSavedVideos(userId);
       
+      username.value = res.user?.name ?? "";
+     
+      avatar.value = res.user?.avatar ?? "";
+      
+      followersCount.value = res.followersCount ?? 0;
+        
+      followingCount.value = res.followingCount ?? 0;
+        
+      likesCount.value = res.likesCount ?? 0;
+
       print("Saved videos list in profile controller: ${res.toString()}");
       
-      savedVideos.assignAll(res);
+      savedVideos.assignAll(res.videos);
 
       print("Saved videos list in profile controller: ${savedVideos.toString()}");
 

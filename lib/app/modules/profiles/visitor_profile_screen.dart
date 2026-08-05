@@ -4,6 +4,7 @@ import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
 import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
 import 'package:video_player/video_player.dart';
@@ -42,9 +43,11 @@ class _VisitorProfileScreenState extends State<VisitorProfileScreen> {
     
     print("UserId in ProfileScreen: ${profilesController.videos.toString()}");
 
+    final followController = Get.find<FollowsController>();
+
     return DefaultTabController(
       
-      length: 4, // Tabs: My Videos, Likes, Saved, Shared
+      length: 1, // Tabs: My Videos, Likes, Saved, Shared
       
       child: Scaffold(
         
@@ -52,29 +55,113 @@ class _VisitorProfileScreenState extends State<VisitorProfileScreen> {
           
           title: const Text('Profile'),
           
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: Colors.white,
           
-          bottom: TabBar(
-            
-            onTap: (index) {
-              
-              if (index == 0) {
-               
-                profilesController.getProfile(profilesController.ownerId.value);
-              
-              }
-
-            },
-            tabs: [
-
-              Tab(text: 'My Videos'),
-
-            ],
-          ),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            _buildVideoGrid(profilesController.videos), // My videos
+            Obx(
+              () {
+              final isFollowing = followController.followingMap[profilesController.ownerId.value] ?? false;
+
+                 return Container(
+                            width: double.infinity,
+                            color: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: NetworkImage(
+                                        profilesController.avatar.value.isEmpty
+                                            ? 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'
+                                            : profilesController.avatar.value,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        profilesController.username.value,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+
+                                    TextButton(
+                                      onPressed: () {
+                                        followController.toggleFollow(profilesController.ownerId.value);
+                                      },
+                                      child: isFollowing
+                                          ? const Text('Unfollow')
+                                          : const Text('Follow'), // check if the user is already following and change the text accordingly
+                                    ),
+                                    
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _buildProfileStat(
+                                      profilesController.followersCount.value,
+                                      'Followers',
+                                    ),
+                                    _buildProfileStat(
+                                      profilesController.followingCount.value,
+                                      'Following',
+                                    ),
+                                    _buildProfileStat(
+                                      profilesController.likesCount.value,
+                                      'Likes',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+              }),
+
+            // TabBar is now inside the body.
+            Material(
+              color: Colors.white,
+              child: TabBar(
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.blueAccent,
+                onTap: (index) {
+                  if (index == 0) {
+                    profilesController.getProfile(
+                      profilesController.ownerId.value,
+                    );
+                  }
+                },
+                tabs: const [
+                  
+                  Tab(text: 'My Videos'),
+
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: TabBarView(
+                children: [
+                  
+                  _buildVideoGrid(profilesController.videos),
+                  
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -146,5 +233,28 @@ class _VisitorProfileScreenState extends State<VisitorProfileScreen> {
           
       );
     });
+  }
+
+  Widget _buildProfileStat(int count, String label) {
+    return Column(
+      children: [
+        Text(
+          '$count',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+        ),
+      ],
+    );
   }
 }

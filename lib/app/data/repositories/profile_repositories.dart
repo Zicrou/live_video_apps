@@ -167,13 +167,15 @@ class ProfileRepositories {
       print("Response in getProfileLikedVideos repository: $res"); // should print the “bee.mp4” video
       
       
-      print("Liked response: ${res['liked']}");  // should print the “butterfly.mp4” video
+      print("Liked response: ${res}");  // should print the “butterfly.mp4” video
       
       print("Url api: $profileEndpoint/$userId");  // should print the “butterfly.mp4” video
       
-      final likedVideos = (res['liked'] as List? ?? [])
-        .map((video) => VideosInfo.fromJson(video as Map<String, dynamic>))
-        .toList();
+      // final likedVideos = (res['liked'] as List? ?? [])
+      //   .map((video) => VideosInfo.fromJson(video as Map<String, dynamic>))
+      //   .toList();
+      var likedVideos = Profile.fromJson(res);
+
       
       print("Liked videos in profile repositories data: ${likedVideos.toString()}");
       

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:live_video_apps/app/data/models/videos.dart';
 import 'package:live_video_apps/app/data/models/videosInfo.dart';
+import 'package:live_video_apps/app/data/providers/auth_providers.dart';
 import 'package:live_video_apps/app/data/repositories/profile_repositories.dart';
+import 'package:live_video_apps/app/modules/login/login_screen.dart';
 import 'package:live_video_apps/app/modules/profiles/profiles_controller.dart';
+import 'package:live_video_apps/app/modules/videos/follows/follows_controller.dart';
 import 'package:live_video_apps/app/modules/videos/new_video/video_preview_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/video_item_screen.dart';
 import 'package:live_video_apps/app/modules/videos/videos/videos_controller.dart';
@@ -37,39 +40,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
     profilesController.ownerId.value = args?["ownerId"] ?? "";
     print("UserId in ProfileScreen: ${profilesController.videos.toString()}");
 
+  final followController = Get.find<FollowsController>();
+  
+  final authProvider = Get.find<AuthProvider>();
+  
     return DefaultTabController(
       length: 4, // Tabs: My Videos, Likes, Saved, Shared
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Profile'),
-          backgroundColor: Colors.blueAccent,
-          bottom: TabBar(
-            onTap: (index) {
-              if (index == 0) {
-                profilesController.getProfile(profilesController.ownerId.value);
-              } else if (index == 1) {
-                profilesController.getLikedVideosInProfile(profilesController.ownerId.value);
-                
-              } else if (index == 2) {
-                profilesController.getSavedVideosInProfile(profilesController.ownerId.value);
-              } else if (index == 3) {
-                // profilesController.fetchSharedVideos(profilesController.ownerId.value);
-              }
-            },
-            tabs: [
-              Tab(text: 'My Videos'),
-              Tab(text: 'Likes'),
-              Tab(text: 'Saved'),
-              Tab(text: 'Shared'),
-            ],
-          ),
+          backgroundColor: Colors.white,
+          
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            _buildVideoGrid(profilesController.videos), // My videos
-            _buildVideoGrid(profilesController.likedVideos), // Liked videos
-            _buildVideoGrid(profilesController.savedVideos), // Saved videos
-            _buildVideoGrid(profilesController.videos), // Shared videos
+            Obx(
+              () => Container(
+                width: double.infinity,
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(
+                            profilesController.avatar.value.isEmpty
+                                ? 'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'
+                                : profilesController.avatar.value,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            profilesController.username.value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildProfileStat(
+                          profilesController.followersCount.value,
+                          'Followers',
+                        ),
+                        _buildProfileStat(
+                          profilesController.followingCount.value,
+                          'Following',
+                        ),
+                        _buildProfileStat(
+                          profilesController.likesCount.value,
+                          'Likes',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // TabBar is now inside the body.
+            Material(
+              color: Colors.white,
+              child: TabBar(
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.blueAccent,
+                onTap: (index) {
+                  if (index == 0) {
+                    profilesController.getProfile(
+                      profilesController.ownerId.value,
+                    );
+                  }
+                },
+                tabs: const [
+                  Tab(text: 'My Videos'),
+                  Tab(text: 'Likes'),
+                  Tab(text: 'Saved'),
+                  Tab(text: 'Shared'),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _buildVideoGrid(profilesController.videos),
+                  _buildVideoGrid(profilesController.likedVideos),
+                  _buildVideoGrid(profilesController.savedVideos),
+                  _buildVideoGrid(profilesController.videos),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -141,5 +217,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           
       );
     });
+  }
+
+    Widget _buildProfileStat(int count, String label) {
+    return Column(
+      children: [
+        Text(
+          '$count',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+        ),
+      ],
+    );
   }
 }

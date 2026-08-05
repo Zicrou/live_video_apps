@@ -7,7 +7,7 @@ class FollowsController extends GetxController {
   var followingMap = <String, bool>{}.obs;
   VideosRepositories _videosRepositories = VideosRepositories();
   var followers = [].obs;
-  var following = [].obs;
+  var following = false.obs;
   var suggestions = [].obs;
   var followersCount = 0.obs;
   var followingCount = 0.obs;
@@ -22,6 +22,7 @@ class FollowsController extends GetxController {
           "Response from toggleFollow in FollowsController: ${res['following']} for userId: $userId");
       followersCount.value = res['followersCount'] ?? followersCount.value;
       followingCount.value = res['followingCount'] ?? followingCount.value;
+      following.value = res['following'] ?? following.value;
       // return res;
     } catch (e) {
       print(e);
