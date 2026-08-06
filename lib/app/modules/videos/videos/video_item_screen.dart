@@ -119,42 +119,6 @@ class _VideoItemScreenState extends State<VideoItemScreen> {
         centerTitle: true,
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white54,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Get.off(() => VideosScreen());
-              break;
-
-            case 1:
-              Get.to(() => "ExploreScreen");
-              break;
-
-            case 2:
-              Get.to(() => VideoScreen());
-              break;
-
-            case 3:
-              Get.to(() => "InboxScreen");
-              break;
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box, size: 32),
-            label: 'Ajouter',
-            // backgroundColor: Colors.black.
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.inbox), label: 'Inbox'),
-        ],
-      ),
       body: VisibilityDetector(
         key: Key("video-${widget.video.id}"), // 🔥 VERY IMPORTANT (unique key)
         onVisibilityChanged: (info) {
